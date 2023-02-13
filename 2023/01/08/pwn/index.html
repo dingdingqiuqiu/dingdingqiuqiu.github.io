@@ -28,8 +28,16 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230212/buu_pwn_test_your_nc.2bm5qt7kk82s.webp">
 <meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230212/test_your_nc.3nq539nh7q00.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip00.kgbw3sxbnhs.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip11.zt7elp7folc.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/kali-2023-02-13-09-00-17.5g7j1ahvh4o0.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip1.frd6gmrhck0.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip2.5sau6846vnc0.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip01.76j14bgykng0.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/kali-2023-02-13-09-20-07.2gk6kikynbvo.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/kali-2023-02-13-09-19-29.4dtzaicd0ye0.webp">
 <meta property="article:published_time" content="2023-01-08T10:16:17.000Z">
-<meta property="article:modified_time" content="2023-02-12T05:30:13.933Z">
+<meta property="article:modified_time" content="2023-02-13T01:22:00.758Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="pwn">
 <meta name="twitter:card" content="summary">
@@ -110,7 +118,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BUU"><span class="nav-number">1.</span> <span class="nav-text">BUU</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-test-your-nc"><span class="nav-number">1.1.</span> <span class="nav-text">1.test_your_nc</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BUU"><span class="nav-number">1.</span> <span class="nav-text">BUU</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-test-your-nc"><span class="nav-number">1.1.</span> <span class="nav-text">1.test_your_nc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-rip"><span class="nav-number">1.2.</span> <span class="nav-text">2.rip</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -195,7 +203,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-12 13:30:13" itemprop="dateModified" datetime="2023-02-12T13:30:13+08:00">2023-02-12</time>
+      <time title="Modified: 2023-02-13 09:22:00" itemprop="dateModified" datetime="2023-02-13T09:22:00+08:00">2023-02-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -220,6 +228,7 @@
     <div class="post-body" itemprop="articleBody">
         <h2 id="BUU"><a href="#BUU" class="headerlink" title="BUU"></a>BUU</h2><h3 id="1-test-your-nc"><a href="#1-test-your-nc" class="headerlink" title="1.test_your_nc"></a>1.test_your_nc</h3><hr>
 <p>靶机如图所示<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230212/buu_pwn_test_your_nc.2bm5qt7kk82s.webp" alt="111"><br>根据题目描述直接nc远程连接即可<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230212/test_your_nc.3nq539nh7q00.webp" alt="111"><br>如图得到flag。<br>nc回显如果出现莫名错误，建议重新安装kali</p>
+<h3 id="2-rip"><a href="#2-rip" class="headerlink" title="2.rip"></a>2.rip</h3><p>靶机如图所示<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip00.kgbw3sxbnhs.webp" alt="111"><br>基本功能<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip11.zt7elp7folc.webp" alt="111"><br>gets函数可能导致栈溢出，又checksec后知金丝雀未开<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/kali-2023-02-13-09-00-17.5g7j1ahvh4o0.webp" alt="111"><br>可构造payload &#x3D; b’a’ *（“填满危险参数的长度 + 返回地址长度 ”）+ p64（目标跳转位置）&#x2F;p32（目标跳转位置）<br>由下图知填满危险参数长度为0xF,返回地址长度为0x8（双击参数s可查看位置）<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip1.frd6gmrhck0.webp" alt="111"><br>shift + f12 查看字符串信息,发现后门函数所用字符串”&#x2F;bin&#x2F;sh”,双击进入<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip2.5sau6846vnc0.webp" alt="111"><br>找到目标函数,位置为0x401186<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/rip01.76j14bgykng0.webp" alt="111"><br>为保持堆栈平衡,payload中需要将p64(目标跳转地址重复一次),如下<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/kali-2023-02-13-09-20-07.2gk6kikynbvo.webp" alt="111"><br>运行脚本，得到flag<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@main/20230213/kali-2023-02-13-09-19-29.4dtzaicd0ye0.webp" alt="111"></p>
 
     </div>
 
