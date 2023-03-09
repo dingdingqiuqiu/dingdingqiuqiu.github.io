@@ -19,28 +19,34 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"dingdingqiuqiu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="why_pwn">
+    <meta name="description" content="kali">
 <meta property="og:type" content="article">
-<meta property="og:title" content="know_why_pwn">
-<meta property="og:url" content="https://dingdingqiuqiu.github.io/2023/01/08/know-why-pwn/index.html">
+<meta property="og:title" content="kali">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io/2023/03/09/kali/index.html">
 <meta property="og:site_name" content="Ding">
-<meta property="og:description" content="why_pwn">
+<meta property="og:description" content="kali">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-01-08T10:16:17.000Z">
-<meta property="article:modified_time" content="2023-02-15T07:34:03.908Z">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-37-24.5xfk1e3kknk0.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-39-01.oaknnpy35rk.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-37-24.5xfk1e3kknk0.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-39-42.83kgp8ayoj8.webp">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-46-01.1fh7gze0f98g.webp">
+<meta property="article:published_time" content="2023-03-09T04:33:52.000Z">
+<meta property="article:modified_time" content="2023-03-09T06:01:52.667Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="why_pwn">
+<meta property="article:tag" content="kali">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-37-24.5xfk1e3kknk0.webp">
 
 
-<link rel="canonical" href="https://dingdingqiuqiu.github.io/2023/01/08/know-why-pwn/">
+<link rel="canonical" href="https://dingdingqiuqiu.github.io/2023/03/09/kali/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://dingdingqiuqiu.github.io/2023/01/08/know-why-pwn/","path":"2023/01/08/know-why-pwn/","title":"know_why_pwn"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://dingdingqiuqiu.github.io/2023/03/09/kali/","path":"2023/03/09/kali/","title":"kali"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>know_why_pwn | Ding</title>
+<title>kali | Ding</title>
   
 
 
@@ -107,7 +113,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%E6%BA%A2%E5%87%BA"><span class="nav-number">1.</span> <span class="nav-text">栈溢出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Checksec"><span class="nav-number">1.1.</span> <span class="nav-text">Checksec</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bug"><span class="nav-number">1.</span> <span class="nav-text">Bug</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pwn-%E5%B7%A5%E5%85%B7%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E4%BF%AE%E5%A4%8D"><span class="nav-number">1.1.</span> <span class="nav-text">pwn 工具无法使用修复</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -156,7 +162,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io/2023/01/08/know-why-pwn/">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io/2023/03/09/kali/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -169,12 +175,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="know_why_pwn | Ding">
-      <meta itemprop="description" content="why_pwn">
+      <meta itemprop="name" content="kali | Ding">
+      <meta itemprop="description" content="kali">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          know_why_pwn
+          kali
         </h1>
 
         <div class="post-meta-container">
@@ -184,15 +190,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
+      
 
-      <time title="Created: 2023-01-08 18:16:17" itemprop="dateCreated datePublished" datetime="2023-01-08T18:16:17+08:00">2023-01-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-15 15:34:03" itemprop="dateModified" datetime="2023-02-15T15:34:03+08:00">2023-02-15</time>
+      <time title="Created: 2023-03-09 12:33:52 / Modified: 14:01:52" itemprop="dateCreated datePublished" datetime="2023-03-09T12:33:52+08:00">2023-03-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -200,14 +200,14 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/why-pwn/" itemprop="url" rel="index"><span itemprop="name">why_pwn</span></a>
+          <a href="/categories/kali/" itemprop="url" rel="index"><span itemprop="name">kali</span></a>
         </span>
     </span>
 
   
 </div>
 
-            <div class="post-description">why_pwn</div>
+            <div class="post-description">kali</div>
         </div>
       </header>
 
@@ -215,8 +215,14 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h3><h4 id="Checksec"><a href="#Checksec" class="headerlink" title="Checksec"></a>Checksec</h4><p>RELRO:此项技术主要针对GOT改写的攻击方式。分为Partial和Full两种，部分（Partial）RELRO易受到攻击，而完全(Full)RELRO使整个GOT只读，从而无法被覆盖，但这样会大大增加程序启动时间，因为程序在启动之前需要解析所有的符号。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gcc -o hello test.c // 默认情况下，是Partial RELRO</span><br><span class="line">gcc -z norelro -o hello test.c // 关闭，即No RELRO</span><br><span class="line">gcc -z lazy -o hello test.c // 部分开启，即Partial RELRO</span><br><span class="line">gcc -z now -o hello test.c // 全部开启，即Full RELRO</span><br></pre></td></tr></table></figure>
+        <h2 id="Bug"><a href="#Bug" class="headerlink" title="Bug"></a>Bug</h2><h3 id="pwn-工具无法使用修复"><a href="#pwn-工具无法使用修复" class="headerlink" title="pwn 工具无法使用修复"></a>pwn 工具无法使用修复</h3><p>具体情况如下：</p>
+<p><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-37-24.5xfk1e3kknk0.webp" alt="111"><br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-39-01.oaknnpy35rk.webp" alt="111"><br>尝试用以下命令解决</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential -y</span><br><span class="line">python3 -m pip install --upgrade pip</span><br><span class="line">pip3 install --upgrade pwntools</span><br></pre></td></tr></table></figure>
+
+<p>结果<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-37-24.5xfk1e3kknk0.webp" alt="111"><br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-39-42.83kgp8ayoj8.webp" alt="111"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt --fix-broken install -o Dpkg::Options::=<span class="string">&quot;--force-overwrite&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>成功后：<br><img src="https://cdn.staticaly.com/gh/dingdingqiuqiu/img-hosting@master/Snipaste_2023-03-09_12-46-01.1fh7gze0f98g.webp" alt="111"><br>注意到python版本发生了变化,猜测可能是python版本导致的问题。<br>不知道，反正能用了。</p>
 
     </div>
 
@@ -226,21 +232,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/why-pwn/" rel="tag"># why_pwn</a>
+              <a href="/tags/kali/" rel="tag"># kali</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/01/08/pwn/" rel="prev" title="pwn">
-                  <i class="fa fa-chevron-left"></i> pwn
+                <a href="/2023/03/06/basic/" rel="prev" title="basic">
+                  <i class="fa fa-chevron-left"></i> basic
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/01/08/Web/" rel="next" title="web-week01">
-                  web-week01 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
