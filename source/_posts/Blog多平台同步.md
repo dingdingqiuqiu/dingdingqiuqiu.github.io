@@ -12,25 +12,25 @@ tags:
 
 > `Github`：博客托管平台，`main`为主分支，计划以`master`分支作为部署文件。
 
-更改`master`分支为默认分支（方便`Arch`通过`git clone`获得部署文件）
+更改`master`分支为默认分支（方便`Arch`通过`git clone`获得部署文件)
 
-![改变默认分支](../../../../../OneDrive/图片/Blog/Blog多平台同步/改变默认分支.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212640&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" />
 
-![改变默认分支2](../../../../../OneDrive/图片/Blog/Blog多平台同步/改变默认分支2.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212639&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" />
 
 选择后点`Update`即可，最后结果是
 
-![默认分支改变结果](../../../../../OneDrive/图片/Blog/Blog多平台同步/默认分支改变结果.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212642&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" />
 
 把该分支克隆到本地，进入`dingdingqiuqiu.github.io`文件夹，可以看到分支为`master`
 
-![远程仓库克隆到本地](../../../../../OneDrive/图片/Blog/Blog多平台同步/远程仓库克隆到本地.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212644&authkey=%21ANiKrfTOh3bHFkY&width=1728&height=944" width="1728" height="" />
 
 删除原分支除`.git`外的所有文件（这里误删了`.git`，后面将其恢复了），并将原`dingdingqiuqiu`文件里除`.deploy_git`外所有文件移动到`dingdingqiuqiu.github.io`
 
-![删除原分支所有文件](../../../../../OneDrive/图片/Blog/Blog多平台同步/删除原分支所有文件.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212646&authkey=%21ANiKrfTOh3bHFkY&width=1558&height=740" width="1558" height="" />
 
-![新DDqiuqiu_Github_IO文件夹](../../../../../OneDrive/图片/Blog/Blog多平台同步/新DDqiuqiu_Github_IO文件夹.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212648&authkey=%21ANiKrfTOh3bHFkY&width=1914&height=952" width="1914" height="" />
 
 安装一些必要插件（可能不是很必要，装上也没啥影响）
 
@@ -52,11 +52,11 @@ npm install hexo-generator-search --save
 npm install hexo-generator-searchdb --sava
 ```
 
-![Install_hexo插件](../../../../../OneDrive/图片/Blog/Blog多平台同步/Install_hexo插件.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212650&authkey=%21ANiKrfTOh3bHFkY&width=1481&height=944" width="1481" height="" />
 
 最后剩下的文件结构
 
-![最终新分支项目目录](../../../../../OneDrive/图片/Blog/Blog多平台同步/最终新分支项目目录.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212652&authkey=%21ANiKrfTOh3bHFkY&width=1710&height=952" width="1710" height="" />
 
 注意到这里存在`.gitignore`文件，如果不存在，创建并写入
 
@@ -89,14 +89,19 @@ git push
 
 提交后看下两个分支，`main`为静态`HTML`,`master`为博客部署文件，符合预期。
 
-![BlogMaster](../../../../../OneDrive/图片/Blog/Blog多平台同步/BlogMaster.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212656&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" />
 
-![BlogMain](../../../../../OneDrive/图片/Blog/Blog多平台同步/BlogMain.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212655&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" />
 
 Linux下
 
 ```zsh
 git clone git@github.com:dingdingqiuqiu/dingdingqiuqiu.github.io.git
+```
+
+```zsh
+#赋予文件夹被修改的权限，不然无法编辑
+chmod -R 777 dingdingqiuqiu.github.io.git
 ```
 
 ```zsh
