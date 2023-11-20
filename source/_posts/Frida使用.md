@@ -1,8 +1,12 @@
+---
+title: Frida使用
+date: 2023-11-18 22:19:17
+tags:
+---
+
 ### Frida使用
 
-
-
- c:\users\lenovo\appdata\local\pip\cache\wheels\fb\7a\50\0944b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a
+c:\users\lenovo\appdata\local\pip\cache\wheels\fb\7a\50\0944b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a
 
 ```cmd
 PS C:\Users\lenovo\Desktop> pip install frida-tools
