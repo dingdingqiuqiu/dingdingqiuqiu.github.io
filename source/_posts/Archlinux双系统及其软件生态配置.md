@@ -60,6 +60,8 @@ https://zhuanlan.zhihu.com/p/617640635
 
 `Clash for Windows`可以用[Clash Verge](https://github.com/zzzgydi/clash-verge/releases/tag/v1.3.8)代替
 
+> [翻过高墙（passwd:horton）](https://www.hortonyyx.com/article/over-the-wall)
+
 <img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212659&authkey=%21ANiKrfTOh3bHFkY&width=1918&height=1036" width="1918" height="" />
 
 系统代理设置这里和`Clash for windows`一致

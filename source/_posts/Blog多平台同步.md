@@ -6,6 +6,12 @@ tags:
 
 ### 当前配置
 
+> 博客搭建推荐视频：[手把手教你搭建属于自己的hexo+github博客](https://www.bilibili.com/video/BV1cW411A7Jx/?spm_id_from=333.999.0.0&vd_source=13e2561436a72606df7175a92524fa50)
+
+> 图床推荐使用Onedrive : [图床折腾之旅](https://www.hortonyyx.com/article/image-bed)
+
+> 博客迁移原理视频：[备份和迁移hexo博客](https://www.bilibili.com/video/BV13g41147yV/?spm_id_from=333.999.0.0&vd_source=13e2561436a72606df7175a92524fa50)
+
 > `Windows`:`hexo`部署平台所在地，已生成一定量的博客托管在`Github`上
 
 > `Arch`:新系统,已有`nodejs`环境。
