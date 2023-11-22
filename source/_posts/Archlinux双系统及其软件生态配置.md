@@ -210,3 +210,7 @@ source .zshrc
 p10k configure
 ```
 
+安装i3桌面
+
+[i3 安装配置](https://doc.houdunren.com/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87/3%20i3.html#%E5%9F%BA%E7%A1%80%E6%8E%A7%E5%88%B6)
+
