@@ -123,6 +123,31 @@ cd dingdingqiuqiu.github.io
 pacman -S npm
 ```
 
+> 第一次配置时出了点问题，下面是第二次写的，首先，目录结构应该是这样的：
+
+```zsh
+# ls                                                                                                         
+_config.landscape.yml  _config.yml  package.json  package-lock.json  scaffolds  source  themes
+```
+
+```zsh
+pacman -S npm
+```
+
+```zsh
+npm install hexo  
+```
+
+```zsh
+npm install      
+```
+
+```zsh
+npm install hexo-deployer-git 
+```
+
+> 开梯子对安装似乎有效果，三次安装只有梯子延迟低的时候装上了
+
 ```zsh
 ##对post文件进行修改
 ........
