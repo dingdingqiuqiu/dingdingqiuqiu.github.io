@@ -6,6 +6,8 @@ tags:
 
 ### 当前配置
 
+> 原理及操作详解： [先看这个和视频，整懂原理](https://blog.csdn.net/K1052176873/article/details/122879462)
+
 > 博客搭建推荐视频：[手把手教你搭建属于自己的hexo+github博客](https://www.bilibili.com/video/BV1cW411A7Jx/?spm_id_from=333.999.0.0&vd_source=13e2561436a72606df7175a92524fa50)
 
 > 图床推荐使用Onedrive : [图床折腾之旅](https://www.hortonyyx.com/article/image-bed)
@@ -17,6 +19,10 @@ tags:
 > `Arch`:新系统,已有`nodejs`环境。
 
 > `Github`：博客托管平台，`main`为主分支，计划以`master`分支作为部署文件。
+
+### 同步原理
+
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212674&authkey=%21ANiKrfTOh3bHFkY&width=1238&height=456" width="1238" height="" />
 
 更改`master`分支为默认分支（方便`Arch`通过`git clone`获得部署文件)
 
