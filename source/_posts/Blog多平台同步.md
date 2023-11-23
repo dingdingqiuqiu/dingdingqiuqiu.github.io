@@ -2,6 +2,7 @@
 title: Blog多平台同步
 date: 2023-11-20 22:22:17
 tags:
+
 ---
 
 ### 当前配置
@@ -47,22 +48,20 @@ tags:
 安装一些必要插件（可能不是很必要，装上也没啥影响）
 
 ```cmd
-npm install hexo-generator-index --save
-npm install hexo-generator-archive --save
-npm install hexo-generator-category --save
-npm install hexo-generator-tag --save
-npm install hexo-server --save
-npm install hexo-deployer-git --save
-npm install hexo-deployer-heroku --save
-npm install hexo-deployer-rsync --save
-npm install hexo-deployer-openshift --save
-npm install hexo-renderer-marked@0.2 --save
-npm install hexo-renderer-stylus@0.2 --save
-npm install hexo-generator-feed@1 --save
-npm install hexo-generator-sitemap@1 --save
-npm install hexo-generator-search --save
-npm install hexo-generator-searchdb --sava
+npm install -g cnpm -registry=https://registry.npm.taobao.org
 ```
+
+```cmd
+cnpm install hexo-deployer-git --save
+```
+
+> 别随便装插件，容易产生依赖问题，报错看着很难受
+
+> 用`gitbash`中的`cnpm`安装，用`npm`安装也会报错
+
+> 然而用`cnpm`安装以后迁移`hexo`检测不到安装的模块
+>
+> 最后还是删除此模块后又用`npm`安装解决的问题。
 
 <img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212650&authkey=%21ANiKrfTOh3bHFkY&width=1481&height=944" width="1481" height="" />
 
