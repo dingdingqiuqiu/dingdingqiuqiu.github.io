@@ -214,3 +214,4 @@ p10k configure
 
 [i3 安装配置](https://doc.houdunren.com/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87/3%20i3.html#%E5%9F%BA%E7%A1%80%E6%8E%A7%E5%88%B6)
 
+> `blueman`暂时没什么用,他给的配置文件不咋好用，不建议使用
