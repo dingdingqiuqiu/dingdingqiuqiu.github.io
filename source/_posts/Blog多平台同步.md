@@ -146,6 +146,12 @@ npm install
 npm install hexo-deployer-git 
 ```
 
+```zsh
+cnpm install -g hexo-cli    
+```
+
+> `-g`表示全局用户，这里其实应该用`npm`的，当时晚高峰，梯子效果不够好，就用了`cnpm`。
+
 > 开梯子对安装似乎有效果，三次安装只有梯子延迟低的时候装上了
 
 ```zsh
