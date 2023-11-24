@@ -38,7 +38,7 @@ categories:
 
 注：`vim`在执行`yank`后并不默认把内容送到系统剪切板`"+y`才是将内容送到系统剪切板。
 
-## vim寄存器
+**vim寄存器**
 
 无论是vim内部抑或外部的复制（[y]ank）、删除（[d]elete）、粘贴（[p]ut），在vim中都是借助registers（寄存器）实现的，vim共有9类寄存器：
 
