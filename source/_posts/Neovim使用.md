@@ -1,8 +1,14 @@
 ---
 title: Neovim使用
 date: 2023-11-23 23:05:50
-tags:
+tags: 
+- vim
+categories: 
+- 环境搭建
+- 开发环境
 ---
+本文是`vim/nvim`的使用及配置攻略。
+<!--more-->
 
 ## 基本操作
 

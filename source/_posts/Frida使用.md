@@ -1,9 +1,14 @@
 ---
 title: Frida使用
 date: 2023-11-18 22:19:17
-tags:
+tags: 
+- 安卓逆向
+categories: 
+- Reserve
+- Android
 ---
-
+本文主要讲解自动化逆向工具`Frida`的使用，长期更新，计划采用理论加实战。
+<!--more-->
 ### Frida使用
 
 c:\users\lenovo\appdata\local\pip\cache\wheels\fb\7a\50\0944b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a

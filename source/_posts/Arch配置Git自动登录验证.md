@@ -2,8 +2,15 @@
 title: Arch配置Git自动登录验证
 date: 2023-11-10 22:23:17
 tags: 
+- Git自动登录
+- Git基本使用
+categories:
+- 环境搭建
+- 开发环境
 ---
-
+本文主要实现了`Archlinux`环境下`git push`指令免密登录的配置
+介绍了`git`相关操作
+<!--more-->
 ### Arch配置Git自动登录验证
 
 参考文档：

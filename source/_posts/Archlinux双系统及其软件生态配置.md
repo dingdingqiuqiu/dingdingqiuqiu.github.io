@@ -1,8 +1,18 @@
 ---
 title: Archlinux双系统及其软件生态配置
 date: 2023-11-07 16:51:56
-tags:
+tags: 
+- 双系统安装
+- clash
+- pycharm
+- vim
+- zsh
+categories: 
+- 环境搭建
+- 开发环境
 ---
+本文主要记录了双系统安装的过程以及clash,pycharm,vim,zsh等软件相关安装配置
+<!--more-->
 ### 双系统安装
 
 照着下面这个up主装就行。

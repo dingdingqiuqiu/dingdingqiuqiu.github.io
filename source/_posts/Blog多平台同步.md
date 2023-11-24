@@ -1,10 +1,15 @@
 ---
 title: Blog多平台同步
 date: 2023-11-20 22:22:17
-tags:
-
+tags: 
+- 博客搭建
+- Git实现多平台博客同步
+categories: 
+- 环境搭建
+- 开发环境
 ---
-
+本文主要记录了博客搭建的过程以及如何利用`git`实现多平台博客同步
+<!--more-->
 ### 当前配置
 
 > 原理及操作详解： [先看这个和视频，整懂原理](https://blog.csdn.net/K1052176873/article/details/122879462)
@@ -20,6 +25,106 @@ tags:
 > `Arch`:新系统,已有`nodejs`环境。
 
 > `Github`：博客托管平台，`main`为主分支，计划以`master`分支作为部署文件。
+
+### 添加标签页和分类页
+
+参考文档：
+
+[NexT使用官方文档](https://theme-next.iissnan.com/theme-settings.html)
+
+[NexT标签分类页使用官方文档](https://hexo.io/zh-cn/docs/front-matter.html#%E5%88%86%E7%B1%BB%E5%92%8C%E6%A0%87%E7%AD%BE)
+
+在`next`主题的`_config.yml`配置文件中即可修改
+
+`menu`部分把`tags`和`categories`的注释取消掉
+
+```yaml
+menu:
+  home: / || home
+  #about: /about/ || user
+  tags: /tags/ || tags
+  categories: /categories/ || th
+  archives: /archives/ || archive
+  #schedule: /schedule/ || calendar
+  #sitemap: /sitemap.xml || sitemap
+  #commonweal: /404/ || heartbeat
+```
+
+在`hexo-site`页面新建`tag`页面和`categories`页面
+
+```
+hexo new page tags
+```
+
+```zsh
+hexo new page categories
+```
+
+```zsh
+cd your-hexo-site
+```
+
+```zsh
+cd source/tags
+```
+
+```zsh
+vim index.md
+```
+
+```zsh
+---
+title: tags
+date: 2023-11-24 16:50:27
+type: "tags"
+---
+```
+
+```zsh
+cd ../
+```
+
+```zsh
+cd categories
+```
+
+```zsh
+vim index.md
+```
+
+```zsh
+---
+title: categories
+date: 2023-11-24 16:52:48
+type: "categories"
+---
+```
+
+###  更改新建文章模板
+
+```zsh
+cd your-hexo-site
+```
+
+```zsh
+cd scaffolds   
+```
+
+```zsh
+vim post.md
+```
+
+```md
+---
+title: {{ title }}
+date: {{ date }}
+tags:
+categories:
+---
+
+
+<!--more-->
+```
 
 ### 同步原理
 
