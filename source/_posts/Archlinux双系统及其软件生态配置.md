@@ -7,6 +7,7 @@ tags:
 - pycharm
 - vim
 - zsh
+- wine
 categories: 
 - 环境搭建
 - 开发环境
@@ -234,3 +235,62 @@ p10k configure
 
 [Archwiki_Vim](https://wiki.archlinuxcn.org/wiki/Vim)
 
+#### `wine`下载配置
+
+>不推荐，很多软件都不稳定，有时候能打开，有时候不能。小问题一堆，强烈不推荐
+
+安装必要的包：
+
+```bash
+sudo pacman -S wine wine-mono winetricks zenity
+```
+
+保存并退出，重启系统
+
+进入桌面后运行：
+
+```bash
+winecfg
+```
+
+把操作系统改为`Windows 10`
+
+安装完后输入`vim ~/.bashrc`，往里面插入：
+
+```bash
+export WINEARCH="win32"
+```
+
+百度网盘里下载Windows下的字体文件到`~/.wine/drive_c/windows/Fonts`，然后运行：
+
+```bash
+winetricks
+```
+
+选择`Select the default wineprefix`（选择默认的wine容器），然后再选择`Run uninstaller`，单击`Install...`选择安装包安装程序
+
+> 一定要安装字体，不然打不开ida
+
+最后在终端输入`wine <exe>`运行你喜欢的程序吧！
+
+安装`python_for_windows`:下载后打开目录，运行
+
+```bash
+wineconsole
+```
+
+在终端执行安装命令安装`python`环境（必须装，不然无法载入反编译二进制文件）
+
+```bash
+./python-3.12.0-amd64.exe
+```
+
+```bash
+chmod +777 python安装位置在linux环境的映射
+```
+
+参考文档:
+
+ [[详解]ArchLinux下Wine的使用](https://blog.csdn.net/qq_45933858/article/details/124553135)
+
+[使用 Wine 运行 IDA Pro](https://www.csdzds.cn/posts/linux-wine/)
