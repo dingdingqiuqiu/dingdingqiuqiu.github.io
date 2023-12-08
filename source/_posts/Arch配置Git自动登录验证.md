@@ -222,9 +222,13 @@ git checkout -b master
 
 在某次`git push`后
 
-![Debug_gitpush](../../../../../OneDrive/图片/Blog/Arch配置Git自动登录验证/Debug_gitpush.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212824&authkey=%21ANiKrfTOh3bHFkY&width=796&height=199" width="796" height=" " />
 
 进入`.ssh`文件夹，新建`config`文件，输入以下内容即可
+
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212826&authkey=%21ANiKrfTOh3bHFkY&width=1213&height=762" width="1213" height="" />
+
+
 
 ```config
 Host github.com
