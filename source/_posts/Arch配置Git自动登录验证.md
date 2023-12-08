@@ -237,4 +237,8 @@ Port 443
 User git
 ```
 
+`Arch`也碰到了相同的问题，同样方法解决即可
+
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212827&authkey=%21ANiKrfTOh3bHFkY&width=1896&height=986" width="1896" height=" " />
+
 参考文档:[ssh -T git@github.com ssh: connect to host github.com port 22: Connection refused 会报错_this key is not known by any other names.-CSDN博客](https://blog.csdn.net/m0_62159662/article/details/125156695?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_utm_term~default-1-125156695-blog-127533568.235^v39^pc_relevant_default_base&spm=1001.2101.3001.4242.2&utm_relevant_index=4)
