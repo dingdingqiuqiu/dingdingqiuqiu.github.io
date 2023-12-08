@@ -218,3 +218,19 @@ git push -u origin main
 git checkout -b master
 ```
 
+#### Debug
+
+在某次`git push`后
+
+![Debug_gitpush](../../../../../OneDrive/图片/Blog/Arch配置Git自动登录验证/Debug_gitpush.png)
+
+进入`.ssh`文件夹，新建`config`文件，输入以下内容即可
+
+```config
+Host github.com
+Hostname ssh.github.com
+Port 443
+User git
+```
+
+参考文档:[ssh -T git@github.com ssh: connect to host github.com port 22: Connection refused 会报错_this key is not known by any other names.-CSDN博客](https://blog.csdn.net/m0_62159662/article/details/125156695?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_utm_term~default-1-125156695-blog-127533568.235^v39^pc_relevant_default_base&spm=1001.2101.3001.4242.2&utm_relevant_index=4)
