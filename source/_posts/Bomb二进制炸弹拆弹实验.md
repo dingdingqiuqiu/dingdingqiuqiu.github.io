@@ -11,6 +11,14 @@ categories:
 本文是对计算机系统基础第二次实验的复现，涉及`gdb`使用和汇编语言学习两个知识点。
 <!--more-->
 
+### 一些说明
+
+1.本文图片托管在`Onedrive`上，请自备梯子，否则图片无法正常显示
+
+2.感谢[二进制炸弹拆弹实验](https://blog.csdn.net/ailbj/article/details/134863333?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522170202139316800192229870%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=170202139316800192229870&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~times_rank-1-134863333-null-null.142^v96^pc_search_result_base2&utm_term=%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%82%B8%E5%BC%B9%E6%8B%86%E5%BC%B9%E5%AE%9E%E9%AA%8C&spm=1018.2226.3001.4187)对本文的引用
+
+3.推荐使用工具`IDA`可以更方便地解决问题，本文更偏向汇编分析，建议读者自行了解`IDA`的使用
+
 ### 一些准备
 
 一、下载
@@ -93,14 +101,6 @@ set disassembly-flavor att
 ```
 
 若想在普通用户下使用原版`gdb`，需要将第7-12行注释掉。
-
-### 一些说明
-
-1.本文图片托管在`Onedrive`上，请自备梯子，否则图片无法正常显示
-
-2.感谢[二进制炸弹拆弹实验](https://blog.csdn.net/ailbj/article/details/134863333?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522170202139316800192229870%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=170202139316800192229870&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~times_rank-1-134863333-null-null.142^v96^pc_search_result_base2&utm_term=%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%82%B8%E5%BC%B9%E6%8B%86%E5%BC%B9%E5%AE%9E%E9%AA%8C&spm=1018.2226.3001.4187)对本文的引用
-
-3.推荐使用工具`IDA`可以更方便地解决问题，本文更偏向汇编分析，建议读者自行了解`IDA`的使用
 
 ### phase_1
 
