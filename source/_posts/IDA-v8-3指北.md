@@ -38,13 +38,13 @@ categories:
 ida_keygen.exe -v 830 -u 用户名 -e 编一个邮箱 -t 3 -s 5169> ida.key
 ```
 
-![IDA_key](../../../../../OneDrive/图片/Blog/IDA-v8-3指北/IDA_key.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212830&authkey=%21ANiKrfTOh3bHFkY&width=1890&height=982" width="1890" height=" " />
 
 ### 快速启动
 
 可以将IDA所在的文件路径加入环境变量`Path`。
 
-![Path](../../../../../OneDrive/图片/Blog/IDA-v8-3指北/Path.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212832&authkey=%21ANiKrfTOh3bHFkY&width=729&height=208" width="729" height=" " />
 
 将本体路径`D:\1Reserve\IDA_Pro_v8.3\IDA Pro 8.3 (x86, x86_64)_BGSPA\IDA Pro 8.3 (x86, x86_64)`加入到`Path`即可。（双击`Path`即可编辑值），**不要**点新建，变量名和原`Path`相同会将原`Path`覆盖。此后，在`cmd`里直接输入`ida`或`ida64`即可打开软件。
 
@@ -55,7 +55,7 @@ ida_keygen.exe -v 830 -u 用户名 -e 编一个邮箱 -t 3 -s 5169> ida.key
 我的`python`版本是`python3.12.0`
 
 报错信息如下：
-![Erro_ipm](../../../../../OneDrive/图片/Blog/IDA-v8-3指北/Erro_ipm.png)y
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212834&authkey=%21ANiKrfTOh3bHFkY&width=689&height=143" width="689" height=" " />
 
 因为`imp `从 `Python 3.4` 之后弃用了，所以可以使用 `importlib` 代替，具体操作如下：
 
@@ -63,7 +63,7 @@ ida_keygen.exe -v 830 -u 用户名 -e 编一个邮箱 -t 3 -s 5169> ida.key
 
 首先，将第96行的`import imp`注释掉，增加第97行`import importlib`
 
-![re_import](../../../../../OneDrive/图片/Blog/IDA-v8-3指北/re_import.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212836&authkey=%21ANiKrfTOh3bHFkY&width=1593&height=575" width="1593" height=" " />
 
 其次，将`IDAPython_LoadProcMod`函数修改成下面这个样子
 
