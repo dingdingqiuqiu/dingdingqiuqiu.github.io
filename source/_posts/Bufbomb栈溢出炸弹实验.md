@@ -187,4 +187,217 @@ void __usercall __noreturn usage(const char *a1@<eax>)
 launcher(launcher_flag, arry[j] + ran_cookie);
 ```
 
+这是修改后的各个参数的名字，后面我们重点分析`launcher`函数即可。看下`launcher`函数的C风格的伪代码
+
+![launcher](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launcher.png)
+
+可以看到，`launcher_flag`实际上是开启`nitro`这一关的全局变量，`arry[j] + ran_cookie`随机数当作全局偏移量量出现。
+
+```c
+int __cdecl launcher(int a1, int a2) // 定义一个名为 launcher 的函数，它接受两个整数参数 a1 和 a2
+{
+  int v3; // 在栈上定义一个整数变量 v3 [esp+0h] [ebp-28h] BYREF
+
+  global_nitro = a1; // 将 a1 的值赋给全局变量 global_nitro
+  global_offset = a2; // 将 a2 的值赋给全局变量 global_offset
+
+  // 使用 mmap 函数尝试在内存中预留一块空间，大小为 0x100000 字节，权限为 7（即可读、可写、可执行），并将其映射到进程的地址空间
+  // 如果映射失败（即 mmap 的返回值不等于预期的地址 reserved），则向标准错误输出流 stderr 写入错误信息，并退出程序
+  if ( mmap(&reserved, 0x100000u, 7, 306, 0, 0) != &reserved )
+  {
+    fwrite("Internal error.  Couldn't use mmap. Try different value for START_ADDR\n", 1u, 0x47u, stderr);
+    exit(1);
+  }
+
+  stack_top = (int)&unk_55685FF8; // 将一个未知的内存地址赋给全局变量 stack_top
+  global_save_stack = (int)&v3; // 将 v3 的地址赋给全局变量 global_save_stack
+
+  launch(global_nitro, global_offset); // 调用名为 launch 的函数，参数为 global_nitro 和 global_offset
+
+  return munmap(&reserved, 0x100000u); // 使用 munmap 函数取消之前通过 mmap 函数预留的内存空间，并返回 munmap 的结果
+}
+```
+
+重点看下`mmap`分配的空间，应该注意到，`(int)&unk_55685FF8`实际上是`mmap()`函数分配的内存空间的`reserved`的最后一段。下面是程序头表（Program Header Table，PHT）的条目，它是在可执行和链接格式（ELF）文件中找到的。这个条目提供了加载（LOAD）段到内存中的必要信息。注意这里的 `_reserved` 物理地址这刚好是`0x5586000`,分配的权限为`6`（写和读），大小是`0x100000`。
+
+[mmap函数说明文档](https://www.ibm.com/docs/en/zos/2.4.0?topic=functions-mmap-map-pages-memor)
+
+![_reserved_info](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/_reserved_info.png)
+
+![bstackStart](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/bstackStart.png)
+
+![bstackEnd](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/bstackEnd.png)
+
+![Reserved_func](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/Reserved_func.png)
+
+有关信息与上图所示，重点是对一些变量的赋值和分配堆空间。重点函数是`launch`,看下C风格的伪代码。下面是入栈信息，可以看到参数并未放栈上，而是放在了`eax`和`edx`寄存器中了。
+
+![launch_asm](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launch_asm.png)
+
+看下函数本体。
+
+![launch1_asm](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launch1_asm.png)
+
+C伪代码
+
+![launch_C](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launch_C.png)
+
+```c
+unsigned int __usercall launch@<eax>(int global_nitro@<eax>, int global_offset@<edx>)
+{
+  void *v3; // esp，栈指针
+  int v5; // [esp+10h] [ebp-58h] BYREF，局部变量v5
+  unsigned int v6; // [esp+5Ch] [ebp-Ch]，局部变量v6
+  int savedregs; // [esp+68h] [ebp+0h] BYREF，保存寄存器的值
+
+  v6 = __readgsdword(0x14u); // 读取线程局部存储（Thread Local Storage，TLS）中的值
+  v3 = alloca((((unsigned __int16)&savedregs - 76) & 0x3FF0) + global_offset + 15); // 分配一块内存，大小取决于savedregs的地址、global_offset和15
+  memset(&v5, 244, ((unsigned __int16)&savedregs - 76) & 0x3FF0); // 将v5的内存区域设置为244
+  __printf_chk(1, "Type string:"); // 打印字符串"Type string:"
+  if ( global_nitro ) // 如果global_nitro为真
+    testn(); // 调用函数testn
+  else
+    test(); // 否则调用函数test
+  if ( !success ) // 如果success为假
+  {
+    puts("Better luck next time"); // 打印字符串"Better luck next time"
+    success = 0; // 将success设置为0
+  }
+  return __readgsdword(0x14u) ^ v6; // 返回TLS中的值与v6的异或结果
+}
+```
+
+进去`testn()`函数和`test()`函数看一下，大体可以分辨这两个函数为漏洞函数。`testn()`需要`-n`参数触发，`test()`函数不需要。大体知道这些就够了，具体的漏洞原理流程在每个部分具体说明。
+
+### Smoke
+
+可以看到，`Gets`函数最多能读取1024个字节，而数组大小仅仅为40个字节，因此，可以传入44个字节装满数组并覆盖`rbp`,4个字节覆盖返回地址，使得跳转到指定的返回地址，本题要求是跳转到`Smoke`函数，仅仅跳转过去就完成了目标。
+
+![Gets_func](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/Gets_func.png)
+
+原理主要是因为`leave`指令相当于
+
+```asm
+mov esp, ebp
+pop ebp
+```
+
+`ret`指令相当于
+
+```asm
+pop eip
+```
+
+> 注意：这里的`eip`是不能直接操作的，所以上述代码只是为了解释`ret`的功能，并不能直接在代码中使用。
+
+![返回点](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/返回点.png)
+
+返回点在如图所示的高亮部分。
+
+### Fizz
+
+本题还要求`cookie`要与栈上一个值相等。
+
 这是修改后的各个参数的名字，后面我们重点分析`launcher`函数即可。
+
+![launcher](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launcher-17027717801011.png)
+
+这段除了`launch`以外都是分配内存与变量赋值的操作，重点看下`launch`函数，逻辑也很简单，开`-n`参数执行`testn`，不开`-n`执行`test`函数
+
+![launch_C](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launch_C-17027721713153.png)
+
+### 核心原理
+
+`leave`指令
+
+```asm
+push esp,ebp
+pop  ebp
+```
+
+`ret`指令
+
+```asm
+pop eip
+```
+
+### Smoke
+
+> 函数在执行`getbuf`后不返回1，而是转向`Smoke`函数
+
+![test](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/test.png)
+
+容易知道，`Gets`函数最多能写入1024个字节，而`v1`仅仅开辟了40（0x28）个字节的空间。因此，输入可以用44个字节覆盖整个`v1`和`ebp`，再用4个字节覆盖返回地址，使函数跳转到`Smoke`执行。
+
+![getbuf](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/getbuf.png)
+
+![Gets](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/Gets.png)
+
+实操：生成`cookie`
+
+![makecookie](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/makecookie.png)
+
+二进制文件`Smkoe`
+
+![file_smoke](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/file_smoke.png)
+
+验证
+
+![smoke_res](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/smoke_res.png)
+
+### Fizz
+
+跳转思路与`Smoke`一致，不过这里还需要与栈上数据比较一下
+
+![fizz_C](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/fizz_C.png)
+
+那就在后面再加上几位`cookie`即可
+
+![file_fizz](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/file_fizz.png)
+
+执行结果
+
+![fizz_res](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/fizz_res.png)
+
+### Bang
+
+要求与全局变量进行比较，修改下全局变量
+
+![bang_c](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/bang_c.png)
+
+在跳转`bang`之前需要执行的汇编指令如下：
+
+```asm
+push 0x3962b26d,%eax
+mov  %eax,0x0804d100
+ret 
+```
+
+### Nitro
+
+通过第一阶段的基本逻辑分析容易知道：只有在执行`-n`程序的时候添加`-n`参数，该阶段才会被开启。
+
+![testn](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/testn.png)
+
+这里`testn`函数如果想正常返回，需要满足两个条件
+
+- 栈帧不被破坏
+- `getbufn`函数返回`cookie`
+
+我们现在来寻找漏洞点来注入我们的攻击指令。
+
+![getbufn](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/getbufn.png)
+
+我们前面分析了`Gets`函数的实现，容易知道，这里是存在栈溢出漏洞的。依照前面的思路，我们用520个字符填满`v1`数组，用4个字符覆盖`ebp`，用四个字符覆盖`getbufn`的返回地址。由前面的基本逻辑逆向，我们知道，该函数实际上需要执行5次，每次执行时的栈状态不一致，因此，我们选择使用`nop`指令来填充输入中除了攻击指令其他位置，以此保证只要返回地址跳到任意一个`nop`指令上，程序都会执行我们的攻击指令。
+
+以上的分析结束以后，是时候来生成攻击指令了。
+
+先写出汇编代码
+
+```asm
+lea 0x28(%ebp),%esp
+mov cookie,%eax
+push 返回地址
+ret
+```
+
