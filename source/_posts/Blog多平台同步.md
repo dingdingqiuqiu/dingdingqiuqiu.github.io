@@ -3,7 +3,7 @@ title: Blog多平台同步
 date: 2023-11-20 22:22:17
 tags: 
 - 博客搭建
-- Git实现多平台博客同步
+- Git
 categories: 
 - 环境搭建
 - 开发环境

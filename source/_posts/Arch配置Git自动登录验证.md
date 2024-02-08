@@ -2,8 +2,7 @@
 title: Arch配置Git自动登录验证
 date: 2023-11-10 22:23:17
 tags: 
-- Git自动登录
-- Git基本使用
+- Git
 categories:
 - 环境搭建
 - 开发环境

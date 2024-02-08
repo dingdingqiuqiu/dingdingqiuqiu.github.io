@@ -19,7 +19,7 @@ categories:
 
 `main`函数
 
-![bufbomb_IDA_1](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/bufbomb_IDA_1.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212861&authkey=%21ANiKrfTOh3bHFkY&width=812&height=668" width="812" height=" " />
 
 这里比较引人注目的是`signal`函数，先执行了三个该函数，又引入标准输入的文件描述符为`infile`,以下链接比较深入讲解了`signal`函数，读者可详细了解。
 
@@ -62,11 +62,11 @@ Caught signal 2, coming out...
 
 总之，这段利用`sign`函数来实现了一些违规输入的提示。包括段溢出，进程繁忙和错误指令。例如下面是段溢出错误的提示。
 
-![Seghandler](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/Seghandler.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212863&authkey=%21ANiKrfTOh3bHFkY&width=1489&height=660" width="1489" height="" />
 
 接下来，程序会去走一个循环。
 
-![loops](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/loops.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212865&authkey=%21ANiKrfTOh3bHFkY&width=1479&height=660" width="1479" height="" />
 
 [`getopt() `function in C to parse command line arguments](https://www.tutorialspoint.com/getopt-function-in-c-to-parse-command-line-arguments)
 
@@ -173,13 +173,13 @@ void __usercall __noreturn usage(const char *a1@<eax>)
 
 最后一段，要求必须有`userid`,即执行`bufbomb`程序的时候必须添加`-u`参数。
 
-![IDA_3](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/IDA_3.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212867&authkey=%21ANiKrfTOh3bHFkY&width=1100&height=802" width="1100" height=" " />
 
 后面初始化`bomb`炸弹，打印`Userid`和`Cookie`。重点看下下面这段的汇编，`cookie`放`eax`寄存器以后，放到栈顶，作为`seed`执行`_srandom`函数和`_random`函数，该函数的返回值与`0xFF0`按位与运算后将结果加上256，比较符合C伪代码，并将结果放到`esp+18`的内存地址，后面将`4`和`edi`里存的数据作为参数入栈，查看`edi(v3)`的引用信息，发现默认为1，在传入`-n`参数时修改为5。
 
-![IDA_asm](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/IDA_asm.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212869&authkey=%21ANiKrfTOh3bHFkY&width=862&height=677" width="862" height=" " />
 
-![val_v3](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/val_v3.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212871&authkey=%21ANiKrfTOh3bHFkY&width=1030&height=287" width="1030" height="" />
 
 使用`_calloc`函数分配好堆空间以后，把分配空间的内存地址放到`eax`寄存器中,并把堆空间中首元素置零，`ebx`寄存器赋1，跳转到`loc_80491BB`。后面分析下来基本和C伪代码保持一致。重点在于`-n`参数会把`v10(默认为0)`参数改为`1`,会把`v3（默认为1）`参数改为5，从而影响到分配到分配到的`v5`的大小，这里我将其改名为`arry`，为了便于理解，将其他参数也改名。
 
@@ -189,7 +189,7 @@ launcher(launcher_flag, arry[j] + ran_cookie);
 
 这是修改后的各个参数的名字，后面我们重点分析`launcher`函数即可。看下`launcher`函数的C风格的伪代码
 
-![launcher](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launcher.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" />
 
 可以看到，`launcher_flag`实际上是开启`nitro`这一关的全局变量，`arry[j] + ran_cookie`随机数当作全局偏移量量出现。
 
@@ -222,25 +222,25 @@ int __cdecl launcher(int a1, int a2) // 定义一个名为 launcher 的函数，
 
 [mmap函数说明文档](https://www.ibm.com/docs/en/zos/2.4.0?topic=functions-mmap-map-pages-memor)
 
-![_reserved_info](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/_reserved_info.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
 
-![bstackStart](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/bstackStart.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212878&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
 
-![bstackEnd](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/bstackEnd.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212879&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
 
-![Reserved_func](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/Reserved_func.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
 
 有关信息与上图所示，重点是对一些变量的赋值和分配堆空间。重点函数是`launch`,看下C风格的伪代码。下面是入栈信息，可以看到参数并未放栈上，而是放在了`eax`和`edx`寄存器中了。
 
-![launch_asm](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launch_asm.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212884&authkey=%21ANiKrfTOh3bHFkY&width=1540&height=871" width="1540" height="" />
 
 看下函数本体。
 
-![launch1_asm](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launch1_asm.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212885&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
 
 C伪代码
 
-![launch_C](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launch_C.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" />
 
 ```c
 unsigned int __usercall launch@<eax>(int global_nitro@<eax>, int global_offset@<edx>)
@@ -273,7 +273,7 @@ unsigned int __usercall launch@<eax>(int global_nitro@<eax>, int global_offset@<
 
 可以看到，`Gets`函数最多能读取1024个字节，而数组大小仅仅为40个字节，因此，可以传入44个字节装满数组并覆盖`rbp`,4个字节覆盖返回地址，使得跳转到指定的返回地址，本题要求是跳转到`Smoke`函数，仅仅跳转过去就完成了目标。
 
-![Gets_func](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/Gets_func.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212889&authkey=%21ANiKrfTOh3bHFkY&width=859&height=759" width="859" height="" />
 
 原理主要是因为`leave`指令相当于
 
@@ -290,7 +290,7 @@ pop eip
 
 > 注意：这里的`eip`是不能直接操作的，所以上述代码只是为了解释`ret`的功能，并不能直接在代码中使用。
 
-![返回点](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/返回点.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212891&authkey=%21ANiKrfTOh3bHFkY&width=1225&height=676" width="1225" height="" />
 
 返回点在如图所示的高亮部分。
 
@@ -300,11 +300,11 @@ pop eip
 
 这是修改后的各个参数的名字，后面我们重点分析`launcher`函数即可。
 
-![launcher](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launcher-17027717801011.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" />
 
 这段除了`launch`以外都是分配内存与变量赋值的操作，重点看下`launch`函数，逻辑也很简单，开`-n`参数执行`testn`，不开`-n`执行`test`函数
 
-![launch_C](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/launch_C-17027721713153.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" />
 
 ### 核心原理
 
@@ -325,45 +325,45 @@ pop eip
 
 > 函数在执行`getbuf`后不返回1，而是转向`Smoke`函数
 
-![test](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/test.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212896&authkey=%21ANiKrfTOh3bHFkY&width=824&height=344" width="824" height="" />
 
 容易知道，`Gets`函数最多能写入1024个字节，而`v1`仅仅开辟了40（0x28）个字节的空间。因此，输入可以用44个字节覆盖整个`v1`和`ebp`，再用4个字节覆盖返回地址，使函数跳转到`Smoke`执行。
 
-![getbuf](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/getbuf.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212898&authkey=%21ANiKrfTOh3bHFkY&width=735&height=189" width="735" height="" />
 
-![Gets](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/Gets.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212900&authkey=%21ANiKrfTOh3bHFkY&width=654&height=703" width="654" height="" />
 
 实操：生成`cookie`
 
-![makecookie](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/makecookie.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212902&authkey=%21ANiKrfTOh3bHFkY&width=556&height=101" width="556" height="" />
 
 二进制文件`Smkoe`
 
-![file_smoke](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/file_smoke.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212904&authkey=%21ANiKrfTOh3bHFkY&width=839&height=156" width="839" height="" />
 
 验证
 
-![smoke_res](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/smoke_res.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212906&authkey=%21ANiKrfTOh3bHFkY&width=553&height=206" width="553" height="" />
 
 ### Fizz
 
 跳转思路与`Smoke`一致，不过这里还需要与栈上数据比较一下
 
-![fizz_C](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/fizz_C.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212907&authkey=%21ANiKrfTOh3bHFkY&width=774&height=297" width="774" height="" />
 
 那就在后面再加上几位`cookie`即可
 
-![file_fizz](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/file_fizz.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212909&authkey=%21ANiKrfTOh3bHFkY&width=835&height=176" width="835" height="" />
 
 执行结果
 
-![fizz_res](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/fizz_res.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212911&authkey=%21ANiKrfTOh3bHFkY&width=633&height=216" width="633" height="" />
 
 ### Bang
 
 要求与全局变量进行比较，修改下全局变量
 
-![bang_c](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/bang_c.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212913&authkey=%21ANiKrfTOh3bHFkY&width=881&height=342" width="881" height="" />
 
 在跳转`bang`之前需要执行的汇编指令如下：
 
@@ -377,7 +377,7 @@ ret
 
 通过第一阶段的基本逻辑分析容易知道：只有在执行`-n`程序的时候添加`-n`参数，该阶段才会被开启。
 
-![testn](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/testn.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212922&authkey=%21ANiKrfTOh3bHFkY&width=917&height=421" width="917" height="" />
 
 这里`testn`函数如果想正常返回，需要满足两个条件
 
@@ -386,7 +386,7 @@ ret
 
 我们现在来寻找漏洞点来注入我们的攻击指令。
 
-![getbufn](../../../../../OneDrive/图片/Blog/Bufbomb栈溢出炸弹实验/getbufn.png)
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212924&authkey=%21ANiKrfTOh3bHFkY&width=693&height=208" width="693" height="" />
 
 我们前面分析了`Gets`函数的实现，容易知道，这里是存在栈溢出漏洞的。依照前面的思路，我们用520个字符填满`v1`数组，用4个字符覆盖`ebp`，用四个字符覆盖`getbufn`的返回地址。由前面的基本逻辑逆向，我们知道，该函数实际上需要执行5次，每次执行时的栈状态不一致，因此，我们选择使用`nop`指令来填充输入中除了攻击指令其他位置，以此保证只要返回地址跳到任意一个`nop`指令上，程序都会执行我们的攻击指令。
 
