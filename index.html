@@ -180,7 +180,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2024-03-07 19:18:30 / Modified: 20:32:20" itemprop="dateCreated datePublished" datetime="2024-03-07T19:18:30+08:00">2024-03-07</time>
+              <time title="Created: 2024-03-07 19:18:30 / Modified: 20:57:14" itemprop="dateCreated datePublished" datetime="2024-03-07T19:18:30+08:00">2024-03-07</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -207,27 +207,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-
-<p>参考文章：<a target="_blank" rel="noopener" href="https://xland.cyou/p/arch-linux-configuration-driver-and-software/">Arch Linux 配置 – 驱动和软件安装</a></p>
-<h3 id="显卡安装"><a href="#显卡安装" class="headerlink" title="显卡安装"></a>显卡安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S nvidia-open-dkms nvidia-settings lib32-nvidia-utils <span class="comment"># 必须安装</span></span><br></pre></td></tr></table></figure>
-
-<p>安装好驱动后，编辑<code>/etc/mkinitcpio.conf</code>，删去<code>HOOKS</code>那一项中得<code>kms</code>，阻止内核启动时加载<code>nouveau</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># HOOKS=(base udev autodetect modconf keyboard keymap kms consolefont block filesystems fsck)  # 更改前</span><br><span class="line">HOOKS=(base udev autodetect modconf keyboard keymap consolefont block filesystems fsck)  # 更改后</span><br></pre></td></tr></table></figure>
-
-<p>更改后重新生成<code>initramfs</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkinitcpio -P</span><br></pre></td></tr></table></figure>
-
-<p>重启电脑后，键入下列代码，回显如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">lspci -k | grep -A 2 -E &quot;(VGA|3D)&quot;</span><br><span class="line">01:00.0 VGA compatible controller: NVIDIA Corporation GA107BM [GeForce RTX 3050 Mobile] (rev a1)</span><br><span class="line">        Subsystem: Lenovo GA107BM [GeForce RTX 3050 Mobile]</span><br><span class="line">        Kernel driver in use: nvidia</span><br><span class="line">--</span><br><span class="line">06:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Cezanne [Radeon Vega Series / Radeon Vega Mobile Series] (rev c5)</span><br><span class="line">        Subsystem: Lenovo Cezanne [Radeon Vega Series / Radeon Vega Mobile Series]</span><br><span class="line">        Kernel driver in use: amdgpu</span><br></pre></td></tr></table></figure>
-
-<h3 id="核显和独显动态切换"><a href="#核显和独显动态切换" class="headerlink" title="核显和独显动态切换"></a>核显和独显动态切换</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -S optimus-manager optimus-manager-qt</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/environment</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__NV_PRIME_RENDER_OFFLOAD=1</span><br><span class="line">__GLX_VENDOR_LIBRARY_NAME=<span class="string">&quot;nvidia&quot;</span></span><br><span class="line">__VK_LAYER_NV_optimus=<span class="string">&quot;NVIDIA_only&quot;</span></span><br></pre></td></tr></table></figure>
-
-
+          <p>本文主要介绍了Archlinux下本地深度学习环境的搭建</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/07/Archlinux%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
