@@ -7,6 +7,8 @@ categories:
 - 开发环境
 ---
 
+本文主要介绍了Archlinux下本地深度学习环境的搭建
+
 <!--more-->
 
 参考文章：[Arch Linux 配置 -- 驱动和软件安装](https://xland.cyou/p/arch-linux-configuration-driver-and-software/)
