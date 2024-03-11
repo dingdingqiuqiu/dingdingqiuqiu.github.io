@@ -32,6 +32,32 @@ HOOKS=(base udev autodetect modconf keyboard keymap consolefont block filesystem
 sudo mkinitcpio -P
 ```
 
+更新时需要重新生成`mkinitcpio`，自动更新脚本配置如下
+
+```zsh
+vim /etc/pacman.d/hooks/nvidia.hook
+```
+
+```zsh
+[Trigger]
+Operation=Install
+Operation=Upgrade
+Operation=Remove
+Type=Package
+Target=nvidia-open-dkms
+#Target=linux
+# Change the linux part above and in the Exec line if a different kernel is used
+# 如果使用不同的内核，请更改上面的 linux 部分和 Exec 行中的内容
+
+[Action]
+Description=Update Nvidia module in initcpio
+Depends=mkinitcpio
+When=PostTransaction
+#NeedsTargets
+#Exec=/bin/sh -c 'while read -r trg; do case $trg in linux) exit 0; esac; done; /usr/bin/mkinitcpio -P'
+Exec=/usr/bin/mkinitcpio -P
+```
+
 重启电脑后，键入下列代码，回显如下
 
 ```zsh
