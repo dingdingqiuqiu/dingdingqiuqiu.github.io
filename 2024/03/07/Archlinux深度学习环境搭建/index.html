@@ -28,7 +28,7 @@
 <meta property="og:description" content="本文主要介绍了Archlinux下本地深度学习环境的搭建">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-03-07T11:18:30.000Z">
-<meta property="article:modified_time" content="2024-03-07T12:57:14.469Z">
+<meta property="article:modified_time" content="2024-03-11T02:34:14.210Z">
 <meta property="article:author" content="P4yl04d">
 <meta name="twitter:card" content="summary">
 
@@ -182,10 +182,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2024-03-07 19:18:30 / Modified: 20:57:14" itemprop="dateCreated datePublished" datetime="2024-03-07T19:18:30+08:00">2024-03-07</time>
+              <time title="Created: 2024-03-07 19:18:30" itemprop="dateCreated datePublished" datetime="2024-03-07T19:18:30+08:00">2024-03-07</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-03-11 10:34:14" itemprop="dateModified" datetime="2024-03-11T10:34:14+08:00">2024-03-11</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -222,6 +228,11 @@
 
 <p>更改后重新生成<code>initramfs</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkinitcpio -P</span><br></pre></td></tr></table></figure>
+
+<p>更新时需要重新生成<code>mkinitcpio</code>，自动更新脚本配置如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/pacman.d/hooks/nvidia.hook</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[Trigger]</span><br><span class="line">Operation=Install</span><br><span class="line">Operation=Upgrade</span><br><span class="line">Operation=Remove</span><br><span class="line">Type=Package</span><br><span class="line">Target=nvidia-open-dkms</span><br><span class="line">#Target=linux</span><br><span class="line"># Change the linux part above and in the Exec line if a different kernel is used</span><br><span class="line"># 如果使用不同的内核，请更改上面的 linux 部分和 Exec 行中的内容</span><br><span class="line"></span><br><span class="line">[Action]</span><br><span class="line">Description=Update Nvidia module in initcpio</span><br><span class="line">Depends=mkinitcpio</span><br><span class="line">When=PostTransaction</span><br><span class="line">#NeedsTargets</span><br><span class="line">#Exec=/bin/sh -c &#x27;while read -r trg; do case $trg in linux) exit 0; esac; done; /usr/bin/mkinitcpio -P&#x27;</span><br><span class="line">Exec=/usr/bin/mkinitcpio -P</span><br></pre></td></tr></table></figure>
 
 <p>重启电脑后，键入下列代码，回显如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">lspci -k | grep -A 2 -E &quot;(VGA|3D)&quot;</span><br><span class="line">01:00.0 VGA compatible controller: NVIDIA Corporation GA107BM [GeForce RTX 3050 Mobile] (rev a1)</span><br><span class="line">        Subsystem: Lenovo GA107BM [GeForce RTX 3050 Mobile]</span><br><span class="line">        Kernel driver in use: nvidia</span><br><span class="line">--</span><br><span class="line">06:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Cezanne [Radeon Vega Series / Radeon Vega Mobile Series] (rev c5)</span><br><span class="line">        Subsystem: Lenovo Cezanne [Radeon Vega Series / Radeon Vega Mobile Series]</span><br><span class="line">        Kernel driver in use: amdgpu</span><br></pre></td></tr></table></figure>
