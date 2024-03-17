@@ -127,10 +127,12 @@ CS61b/
 
 ```zsh
 git clone git@github.com:dingdingqiuqiu/CS61B-sp24.git
+# git clone git@github.com:dingdingqiuqiu/CS61B-sp21.git  
 ```
 
 ```zsh
 cd CS61B-sp24
+# cd CS61B-sp21  
 ```
 
 ```zsh
@@ -139,13 +141,25 @@ git branch -M main
 
 ```zsh
 git remote add skeleton https://github.com/Berkeley-CS61B/skeleton-sp24.git 
+# git remote add skeleton https://github.com/Berkeley-CS61B/skeleton-sp21.git
 ```
 
 ```zsh
 git pull skeleton main
+# git pull skeleton master
 ```
 
 课程实验库拉取成功
+
+> 后续发现sp21有开源的自动评分机器，又开了个sp21的仓库。
+>
+> 注释部分为sp21版
+>
+> 将普通用户赋权root组，又配置了下ssh普通用户的rsa密钥。
+>
+> gpasswd -a P4yl04d root   
+>
+> 赋权命令
 
 ### IntelliJ 设置
 
@@ -161,7 +175,30 @@ git pull skeleton main
 
 ### 安装Java
 
+> 略
 
+### 习题
+
+打开名为`Collatz.java`. 尝试运行它，您将看到打印出数字 5。
+
+该程序应该打印从给定数字开始的[Collatz 序列。](https://en.wikipedia.org/wiki/Collatz_conjecture)Collatz 序列定义如下：
+
+如果 n 是偶数，则下一个数字是 n/2。如果 n 是奇数，则下一个数字是 3n + 1。如果 n 是 1，则序列结束。
+
+例如，假设我们从 5 开始。由于 5 是奇数，所以下一个数字是 3x5 + 1 = 16。由于 16 是偶数，所以下一个数字是 8。由于 8 是偶数，所以下一个数字是 4。由于 4 是偶数下一个数字是 2。由于 2 是偶数，所以下一个数字是 1。此时我们就完成了。顺序是 5、16、8、4、2、1。
+
+您的第一个任务是编写一个方法，如下所示：`public static int nextNumber(int n)`返回下一个数字。例如`nextNumber(5)`应返回 16。此方法将由 Gradescope 自动评分器进行测试。确保提供该方法的描述作为注释。您的描述应包含在`/**`和中`*/`。包含的注释`/**`也`*/`称为“Javadoc 注释”或简称为“Javadoc”。如果这些注释需要额外的空间，则可以跨越多行，例如 Javadocs `nextNumber`。
+
+Javadoc 可能包含可选标签，例如`@param`. 除了 标签外，我们不要求您在 61B 中使用任何类似的标签`@source`。`@source`每当您在项目上获得重要帮助时，请使用该标签。`@source`硬件或实验室不需要该标签，但我们还是推荐它，因为引用来源是一个良好的学术和专业习惯。
+
+一些 Java 技巧：
+
+- 运算`%`符实现余数。例如， 的值`x % 4`将为 `0`、`1`、`2`或`3`。
+- 该`==`运算符比较两个值是否不相等。代码片段`if (n % 4 == 1)`读作“如果 n 除以 4 的余数等于 1”。
+
+编写完成后`nextNumber`，填写`main`方法，使其打印出从 开始的 Collatz 序列`n = 5`。例如，如果`n = 5`，您的程序应该打印`5 16 8 4 2 1`。如果1后面有一个额外的空格就可以了。
+
+有趣的事实：对于所有数字，Collatz 序列似乎都终止于 1。然而，到目前为止，没有人能够证明这对于所有可能的起始值都是正确的，但已检查了大约 2^68 以内的所有值。正如维基百科文章中所述，数学家杰弗里·拉加里亚斯指出，科拉茨猜想“是一个极其困难的问题，完全超出了当今数学的范围”。
 
 ## 作业
 
