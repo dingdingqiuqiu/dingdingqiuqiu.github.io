@@ -73,6 +73,12 @@ lspci -k | grep -A 2 -E "(VGA|3D)"
 
 ### 核显和独显动态切换
 
+> nvidia独显的话，基本只能用x11桌面
+>
+> optimus软件都打不开,目前在用独显模式，还需要把bios改成独显
+>
+> 不然桌面系统都进不去
+
 ```zsh
 yay -S optimus-manager optimus-manager-qt
 ```
@@ -85,5 +91,95 @@ sudo vim /etc/environment
 __NV_PRIME_RENDER_OFFLOAD=1
 __GLX_VENDOR_LIBRARY_NAME="nvidia"
 __VK_LAYER_NV_optimus="NVIDIA_only"
+```
+
+### cuda&&cudnn
+
+```zsh
+yay -S cuda
+```
+
+```
+yay -S cudnn
+```
+
+```zsh
+cd 
+vim .zshrc
+```
+
+```zsh
+#cuda-setting
+export PATH="/opt/cuda/bin:$PATH"
+export LD_LIBRARY_PATH="/opt/cuda/lib64:$LD_LIBRARY_PATH"
+export CUDA_HOME=$CUDA_HOME:/opt/cuda
+export CUDA_VISIBLE_DEVICES=0
+```
+
+```zsh
+reboot
+```
+
+测试cuda是否可用：
+
+**torch框架**
+
+```zsh
+test.py
+```
+
+```python
+import torch
+
+print('CUDA版本:', torch.version.cuda)
+print('Pytorch版本:', torch.__version__)
+print('显卡是否可用:', '可用' if torch.cuda.is_available() else '不可用')
+print('显卡数量:', torch.cuda.device_count())
+print('是否支持BF16数字格式:', '支持' if torch.cuda.is_bf16_supported() else '不支持')
+print('当前显卡型号:', torch.cuda.get_device_name())
+print('当前显卡的CUDA算力:', torch.cuda.get_device_capability())
+print('当前显卡的总显存:', torch.cuda.get_device_properties(0).total_memory / 1024 / 1024 / 1024, 'GB')
+print('是否支持TensorCore:', '支持' if torch.cuda.get_device_properties(0).major >= 7 else '不支持')
+print('当前显卡的显存使用率:', torch.cuda.memory_allocated(0) / torch.cuda.get_device_properties(0).total_memory * 100, '%')
+```
+
+```
+# 结果
+CUDA版本: 12.1
+Pytorch版本: 2.2.2+cu121
+显卡是否可用: 可用
+显卡数量: 1
+是否支持BF16数字格式: 支持
+当前显卡型号: NVIDIA GeForce RTX 3050 Laptop GPU
+当前显卡的CUDA算力: (8, 6)
+当前显卡的总显存: 3.58929443359375 GB
+是否支持TensorCore: 支持
+当前显卡的显存使用率: 0.0 %
+```
+
+**paddle框架**
+
+```
+test.py
+```
+
+```python
+import paddle
+import torch
+print('CUDA版本:', torch.version.cuda)
+torch.cuda.is_available()
+paddle.utils.run_check()
+```
+
+```
+# 结果
+CUDA版本: 12.1
+Running verify PaddlePaddle program ... 
+I0407 17:14:43.856997  8841 program_interpreter.cc:212] New Executor is Running.
+W0407 17:14:43.862674  8841 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.6, Driver API Version: 12.4, Runtime API Version: 11.8
+W0407 17:14:43.863399  8841 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
+I0407 17:14:44.297957  8841 interpreter_util.cc:624] Standalone Executor is Used.
+PaddlePaddle works well on 1 GPU.
+PaddlePaddle is installed successfully! Let's start deep learning with PaddlePaddle now.
 ```
 
