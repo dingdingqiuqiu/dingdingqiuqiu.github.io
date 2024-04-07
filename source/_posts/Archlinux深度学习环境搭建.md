@@ -116,9 +116,15 @@ export CUDA_HOME=$CUDA_HOME:/opt/cuda
 export CUDA_VISIBLE_DEVICES=0
 ```
 
+`export CUDA_VISIBLE_DEVICES=0`如果有四块显卡，改为`export CUDA_VISIBLE_DEVICES=0,1,2,3`
+
 ```zsh
 reboot
 ```
+
+> 如果不重启电脑，依然用不了，提示环境错误，版本不适配
+>
+> `CUDA initialization: CUDA unknown error - this may be due to an incorrectly set up environment`
 
 测试cuda是否可用：
 
@@ -181,5 +187,53 @@ W0407 17:14:43.863399  8841 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
 I0407 17:14:44.297957  8841 interpreter_util.cc:624] Standalone Executor is Used.
 PaddlePaddle works well on 1 GPU.
 PaddlePaddle is installed successfully! Let's start deep learning with PaddlePaddle now.
+```
+
+### python虚拟环境
+
+> 由于系统`python`包管理属于`pacman`,有很多`pip`包无法安装
+>
+> 所以我们通过`python`虚拟环境的方式来安装这些包	
+>
+> 虚拟环境管理有很多方式，包括`conda`等，`python -m venv`更轻量级，`conda`适合大型项目
+
+注意：
+
+- 想要使用`cuda&&cudnn`进行深度学习，务必启动虚拟环境
+
+  >这是因为全局环境中的`torch.__version__`为`2.2.2`
+  >
+  >而虚拟环境中的为`2.2.2+cu121`
+  >
+  >`cu121`表示 PyTorch 版本是专门针对 CUDA 12.1 编译的。
+  >
+  >这是由于我的`torch`是虚拟环境启动后通过`pip`安装的
+  >
+  >而系统上的是`pacman`安装的，版本不同
+
+- 虚拟环境启动后，`pip`安装的包都会存在于虚拟环境中
+
+#### 虚拟环境创建
+
+```zsh
+cd /home/P4yl04d/Documents/HENU_overview
+```
+
+```zsh
+python3 -m venv myenv
+```
+
+> 这里的 `myenv` 是你想要创建的虚拟环境的名称，你可以将其替换为你喜欢的任何名称。
+
+#### 虚拟环境激活
+
+```zsh
+source myenv/bin/activate
+```
+
+#### 退出虚拟环境
+
+```zsh
+deactivate
 ```
 
