@@ -28,7 +28,7 @@
 <meta property="og:description" content="本文主要介绍了Archlinux下本地深度学习环境的搭建">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-03-07T11:18:30.000Z">
-<meta property="article:modified_time" content="2024-03-11T02:34:14.210Z">
+<meta property="article:modified_time" content="2024-04-07T09:33:43.567Z">
 <meta property="article:author" content="P4yl04d">
 <meta name="twitter:card" content="summary">
 
@@ -190,7 +190,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-03-11 10:34:14" itemprop="dateModified" datetime="2024-03-11T10:34:14+08:00">2024-03-11</time>
+                <time title="Modified: 2024-04-07 17:33:43" itemprop="dateModified" datetime="2024-04-07T17:33:43+08:00">2024-04-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -237,11 +237,41 @@
 <p>重启电脑后，键入下列代码，回显如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">lspci -k | grep -A 2 -E &quot;(VGA|3D)&quot;</span><br><span class="line">01:00.0 VGA compatible controller: NVIDIA Corporation GA107BM [GeForce RTX 3050 Mobile] (rev a1)</span><br><span class="line">        Subsystem: Lenovo GA107BM [GeForce RTX 3050 Mobile]</span><br><span class="line">        Kernel driver in use: nvidia</span><br><span class="line">--</span><br><span class="line">06:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Cezanne [Radeon Vega Series / Radeon Vega Mobile Series] (rev c5)</span><br><span class="line">        Subsystem: Lenovo Cezanne [Radeon Vega Series / Radeon Vega Mobile Series]</span><br><span class="line">        Kernel driver in use: amdgpu</span><br></pre></td></tr></table></figure>
 
-<h3 id="核显和独显动态切换"><a href="#核显和独显动态切换" class="headerlink" title="核显和独显动态切换"></a>核显和独显动态切换</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -S optimus-manager optimus-manager-qt</span><br></pre></td></tr></table></figure>
+<h3 id="核显和独显动态切换"><a href="#核显和独显动态切换" class="headerlink" title="核显和独显动态切换"></a>核显和独显动态切换</h3><blockquote>
+<p>nvidia独显的话，基本只能用x11桌面</p>
+<p>optimus软件都打不开,目前在用独显模式，还需要把bios改成独显</p>
+<p>不然桌面系统都进不去</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -S optimus-manager optimus-manager-qt</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/environment</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__NV_PRIME_RENDER_OFFLOAD=1</span><br><span class="line">__GLX_VENDOR_LIBRARY_NAME=<span class="string">&quot;nvidia&quot;</span></span><br><span class="line">__VK_LAYER_NV_optimus=<span class="string">&quot;NVIDIA_only&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="cuda-cudnn"><a href="#cuda-cudnn" class="headerlink" title="cuda&amp;&amp;cudnn"></a>cuda&amp;&amp;cudnn</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -S cuda</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -S cudnn</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd </span><br><span class="line">vim .zshrc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#cuda-setting</span><br><span class="line">export PATH=&quot;/opt/cuda/bin:$PATH&quot;</span><br><span class="line">export LD_LIBRARY_PATH=&quot;/opt/cuda/lib64:$LD_LIBRARY_PATH&quot;</span><br><span class="line">export CUDA_HOME=$CUDA_HOME:/opt/cuda</span><br><span class="line">export CUDA_VISIBLE_DEVICES=0</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<p>测试cuda是否可用：</p>
+<p><strong>torch框架</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test.py</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;CUDA版本:&#x27;</span>, torch.version.cuda)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Pytorch版本:&#x27;</span>, torch.__version__)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;显卡是否可用:&#x27;</span>, <span class="string">&#x27;可用&#x27;</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">&#x27;不可用&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;显卡数量:&#x27;</span>, torch.cuda.device_count())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;是否支持BF16数字格式:&#x27;</span>, <span class="string">&#x27;支持&#x27;</span> <span class="keyword">if</span> torch.cuda.is_bf16_supported() <span class="keyword">else</span> <span class="string">&#x27;不支持&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡型号:&#x27;</span>, torch.cuda.get_device_name())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的CUDA算力:&#x27;</span>, torch.cuda.get_device_capability())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的总显存:&#x27;</span>, torch.cuda.get_device_properties(<span class="number">0</span>).total_memory / <span class="number">1024</span> / <span class="number">1024</span> / <span class="number">1024</span>, <span class="string">&#x27;GB&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;是否支持TensorCore:&#x27;</span>, <span class="string">&#x27;支持&#x27;</span> <span class="keyword">if</span> torch.cuda.get_device_properties(<span class="number">0</span>).major &gt;= <span class="number">7</span> <span class="keyword">else</span> <span class="string">&#x27;不支持&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的显存使用率:&#x27;</span>, torch.cuda.memory_allocated(<span class="number">0</span>) / torch.cuda.get_device_properties(<span class="number">0</span>).total_memory * <span class="number">100</span>, <span class="string">&#x27;%&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 结果</span><br><span class="line">CUDA版本: 12.1</span><br><span class="line">Pytorch版本: 2.2.2+cu121</span><br><span class="line">显卡是否可用: 可用</span><br><span class="line">显卡数量: 1</span><br><span class="line">是否支持BF16数字格式: 支持</span><br><span class="line">当前显卡型号: NVIDIA GeForce RTX 3050 Laptop GPU</span><br><span class="line">当前显卡的CUDA算力: (8, 6)</span><br><span class="line">当前显卡的总显存: 3.58929443359375 GB</span><br><span class="line">是否支持TensorCore: 支持</span><br><span class="line">当前显卡的显存使用率: 0.0 %</span><br></pre></td></tr></table></figure>
+
+<p><strong>paddle框架</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test.py</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> paddle</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;CUDA版本:&#x27;</span>, torch.version.cuda)</span><br><span class="line">torch.cuda.is_available()</span><br><span class="line">paddle.utils.run_check()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 结果</span><br><span class="line">CUDA版本: 12.1</span><br><span class="line">Running verify PaddlePaddle program ... </span><br><span class="line">I0407 17:14:43.856997  8841 program_interpreter.cc:212] New Executor is Running.</span><br><span class="line">W0407 17:14:43.862674  8841 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.6, Driver API Version: 12.4, Runtime API Version: 11.8</span><br><span class="line">W0407 17:14:43.863399  8841 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.</span><br><span class="line">I0407 17:14:44.297957  8841 interpreter_util.cc:624] Standalone Executor is Used.</span><br><span class="line">PaddlePaddle works well on 1 GPU.</span><br><span class="line">PaddlePaddle is installed successfully! Let&#x27;s start deep learning with PaddlePaddle now.</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -261,7 +291,10 @@
     <a href="/2023/12/15/Bufbomb%E6%A0%88%E6%BA%A2%E5%87%BA%E7%82%B8%E5%BC%B9%E5%AE%9E%E9%AA%8C/" rel="prev" title="Bufbomb栈溢出炸弹实验">
       <i class="fa fa-chevron-left"></i> Bufbomb栈溢出炸弹实验
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/03/14/CS61b%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97/" rel="next" title="CS61b食用指南">
+      CS61b食用指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -320,7 +353,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E5%8D%A1%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">显卡安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E6%98%BE%E5%92%8C%E7%8B%AC%E6%98%BE%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">核显和独显动态切换</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E5%8D%A1%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">显卡安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E6%98%BE%E5%92%8C%E7%8B%AC%E6%98%BE%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">核显和独显动态切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda-cudnn"><span class="nav-number">3.</span> <span class="nav-text">cuda&amp;&amp;cudnn</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -334,7 +367,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

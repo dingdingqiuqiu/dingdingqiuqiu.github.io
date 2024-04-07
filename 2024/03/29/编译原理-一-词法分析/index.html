@@ -20,27 +20,21 @@
     var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="本文是VPS搭建教程">
+  <meta name="description" content="本文介绍了正则表达式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="VPS搭建">
-<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2023/11/19/VPS%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:title" content="编译原理(一).词法分析">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/03/29/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E4%B8%80-%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="DDqiuqiu">
-<meta property="og:description" content="本文是VPS搭建教程">
+<meta property="og:description" content="本文介绍了正则表达式">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212622&authkey=%21ANiKrfTOh3bHFkY&width=1070&height=758">
-<meta property="og:image" content="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212627&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=980">
-<meta property="og:image" content="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212625&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924">
-<meta property="og:image" content="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212623&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924">
-<meta property="og:image" content="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212626&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924">
-<meta property="og:image" content="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212624&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924">
-<meta property="article:published_time" content="2023-11-19T08:35:50.000Z">
-<meta property="article:modified_time" content="2023-11-24T10:29:48.997Z">
+<meta property="og:image" content="https://dingdingqiuqiu.github.io.git/Pictures/Blog/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E4%B8%80-%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/image-20240329134743310.png">
+<meta property="article:published_time" content="2024-03-29T05:37:01.000Z">
+<meta property="article:modified_time" content="2024-03-29T13:25:29.399Z">
 <meta property="article:author" content="P4yl04d">
-<meta property="article:tag" content="VPS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212622&authkey=%21ANiKrfTOh3bHFkY&width=1070&height=758">
+<meta name="twitter:image" content="https://dingdingqiuqiu.github.io.git/Pictures/Blog/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E4%B8%80-%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/image-20240329134743310.png">
 
-<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2023/11/19/VPS%E6%90%AD%E5%BB%BA/">
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/03/29/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E4%B8%80-%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -53,7 +47,7 @@
   };
 </script>
 
-  <title>VPS搭建 | DDqiuqiu</title>
+  <title>编译原理(一).词法分析 | DDqiuqiu</title>
   
 
 
@@ -168,7 +162,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2023/11/19/VPS%E6%90%AD%E5%BB%BA/">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/03/29/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E4%B8%80-%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -181,7 +175,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          VPS搭建
+          编译原理(一).词法分析
         </h1>
 
         <div class="post-meta">
@@ -190,28 +184,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2023-11-19 16:35:50" itemprop="dateCreated datePublished" datetime="2023-11-19T16:35:50+08:00">2023-11-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-24 18:29:48" itemprop="dateModified" datetime="2023-11-24T18:29:48+08:00">2023-11-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">环境搭建</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a>
-                </span>
+              <time title="Created: 2024-03-29 13:37:01 / Modified: 21:25:29" itemprop="dateCreated datePublished" datetime="2024-03-29T13:37:01+08:00">2024-03-29</time>
             </span>
 
           
@@ -225,40 +200,78 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文是<code>VPS</code>搭建教程</p>
+        <p>本文介绍了正则表达式</p>
 <span id="more"></span>
-<h1 id="最近更新"><a href="#最近更新" class="headerlink" title="最近更新"></a>最近更新</h1><p><strong>最初放弃机场尝试自建节点是由于玩双人成行时EA平台上好友列表加载不出来，怀疑是机场节点问题，后面搭建到一半发现用全局直连开TUN模式可以解决这个问题，遂放弃，有必要的话再考虑自建吧，先写到这</strong></p>
-<blockquote>
-<p>一定要用<strong>DIRECT</strong>模式，其他节点好友列表均加载不出来，EA在线状态也显示不在线，具体原因未知</p>
+
+<p>github.com&#x2F;riscv&#x2F;riscv-gcc</p>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><blockquote>
+<p>正则表达式是语法</p>
 </blockquote>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212622&authkey=%21ANiKrfTOh3bHFkY&width=1070&height=758" width="1070" height="" />
-
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=g21MJc7SG_c&t=400s">【科学上网一键搭建系列一】新手如何免费开启VPS一站式入门教学，零基础必看视频，助你一学就会，快速上手，以后基操不再求人。</a></p>
 <blockquote>
-<p><code>Youtube</code>上的一则视频，侧重VPS的选择</p>
+<p> 正则语言是语义</p>
+<p>正则表达式定义了一个正则语言，为集合</p>
+<p>形如L(正则表达式)</p>
 </blockquote>
-<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=s90feRmdr9A&t=6s">最新零基础保姆级小白节点搭建教学-不良林</a></p>
+<p><img src="/../../../../Pictures/Blog/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E4%B8%80-%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/image-20240329134743310.png" alt="image-20240329134743310"></p>
+<p>eg.C语言标识符的正则表达式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">^[a-zA-Z_](a-zA-Z\d)*$</span><br></pre></td></tr></table></figure>
+
 <blockquote>
-<p><code>Youtube</code>上的一则视频，侧重具体搭建过程</p>
+<p><code>^</code>和<code>$</code>限定在一行中匹配</p>
+<p><code>[a-zA-Z_]</code>表示以下划线或大小写字母开头</p>
+<p><code>(a-zA-Z\d)*</code>表示开头跟着0个或多个字母或数字</p>
 </blockquote>
-<h3 id="VPS选择"><a href="#VPS选择" class="headerlink" title="VPS选择"></a>VPS选择</h3><p>1.<strong>VULTR</strong></p>
+<p>eg.C语言单行注释</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\/\/.</span><br></pre></td></tr></table></figure>
+
 <blockquote>
-<p>支持小时收费			更换IP免费			推荐美西机房</p>
+<p><code>\/</code>匹配<code>/</code>的字面值</p>
+<p><code>.</code>匹配除了换行外的所有</p>
+<p>无需加<code>^</code>匹配开头</p>
 </blockquote>
-<p>注册（这里我用的<code>github</code>邮箱，密码要大于十个字符（不必与<code>Github</code>密码一致**@github**））</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212627&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=980" width="1920" height="" />
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">0</span>; <span class="comment">//这里的注释并非从开头写的也有效</span></span><br></pre></td></tr></table></figure>
 
-<p>右上角<code>Deploy</code>选择<code>Deploy New Server</code>,进入以后,<code>Server</code>和<code>CPU</code>选最基础的即可</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212625&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" />
+<p>eg.C语言多行注释</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\/\*[\s\S]*?\*/\</span><br></pre></td></tr></table></figure>
 
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212623&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" />
+<blockquote>
+<p><code>\/\*\*\/</code>是多行注释的字面形式</p>
+<p><code>[\s\S]*?</code>的作用是匹配任意字符</p>
+<p><code>\s</code> 表示空白字符（包括空格、制表符、换行符等）</p>
+<p><code>\S</code> 则表示非空白字符。</p>
+<p><code>*</code>表示匹配一次或多次</p>
+<p><code>?</code>用来尽可能减少匹配次数，遇到第一个<code>*/</code>停止</p>
+</blockquote>
+<p>eg.三的倍数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0</span>|(<span class="number">1</span>(<span class="number">01</span>*<span class="number">0</span>)*<span class="number">1</span>))*</span><br></pre></td></tr></table></figure>
 
-<p>位置这里选择，纽约的比洛杉矶便宜一些，系统选择<code>CentOS7</code>即可，注意把自动备份关掉，省点钱可以。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212626&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" />
+<h3 id="Flex代码编写"><a href="#Flex代码编写" class="headerlink" title="Flex代码编写"></a>Flex代码编写</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line">    <span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stdio.h&quot;</span></span></span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212624&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" />
+<h2 id="手撸代码"><a href="#手撸代码" class="headerlink" title="手撸代码"></a>手撸代码</h2><h3 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h3><p><strong>实验要求：</strong></p>
+<p>1.合并空白符：把原始程序中相邻的空格、制表符、回车等空白符合并成一个空格，便于后续处理</p>
+<p>2.消除注释：消除原始程序中的注释内容；PL&#x2F;0语法中没有规定注释的格式，参照Pascal语言规定如下两种注释格式：</p>
+<ul>
+<li><p>单行注释：“&#x2F;&#x2F;”引导内容，与C++语言中单行注释一致。</p>
+</li>
+<li><p>多行注释：“(*”和“*)”之间内容，具体参见后面示例程序。</p>
+</li>
+</ul>
+<p><strong>合并实现思路</strong></p>
+<p>写一个<code>mergeWhitespace</code>函数，传入的参数为打开的文件描述符,仅仅对文件描述符打开的文件进行读取，读到缓冲区，再从缓冲区写到新文件，返回新文件的文件描述符，新文件命名为<code>filename.i</code>。有点类似C#网络应用编程的思路</p>
+<blockquote>
+<p>为了和词法分析程序的耦合型，换成了FILE*作为参数的fread函数和fopen函数</p>
+</blockquote>
+<p>代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if (currentChar == &#x27; &#x27; || currentChar == &#x27;\t&#x27; || currentChar == &#x27;\n&#x27; || currentChar == &#x27;\r&#x27;) &#123;</span><br><span class="line">                // 如果当前字符是空白符，检查下一个字符是否也是空白符</span><br><span class="line">                while (i + 1 &lt; bytesRead &amp;&amp; (buffer[i + 1] == &#x27; &#x27; || buffer[i + 1] == &#x27;\t&#x27; || buffer[i + 1] == &#x27;\n&#x27; || buffer[i + 1] == &#x27;\r&#x27;)) &#123;</span><br><span class="line">                    i++;  // 跳过相邻的空白符</span><br><span class="line">                &#125;</span><br><span class="line">                mergedBuffer[mergedIndex++] = &#x27; &#x27;;  // 合并为一个空格</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                mergedBuffer[mergedIndex++] = currentChar;  // 非空白符，直接复制</span><br></pre></td></tr></table></figure>
 
-<h3 id="搭建教学"><a href="#搭建教学" class="headerlink" title="搭建教学"></a>搭建教学</h3><h4 id="Finalshell下载"><a href="#Finalshell下载" class="headerlink" title="Finalshell下载"></a><code>Finalshell</code>下载</h4><p><a target="_blank" rel="noopener" href="http://www.hostbuf.com/downloads/finalshell_install.exe"><code>Finalshell</code>多平台下载地址</a></p>
+
+
+
+
+<h3 id="代码修改"><a href="#代码修改" class="headerlink" title="代码修改"></a>代码修改</h3><p>1.保留字提示改成关键字</p>
+<p>2.最后为什么输出<code>ERRO</code></p>
+<p>3.以命令行参数的形式传入参数</p>
+<p>4.各种输出显示仍然有点问题</p>
 
     </div>
 
@@ -267,9 +280,6 @@
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/VPS/" rel="tag"># VPS</a>
-          </div>
 
         
 
@@ -277,13 +287,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/11/18/Frida%E4%BD%BF%E7%94%A8/" rel="prev" title="Frida使用">
-      <i class="fa fa-chevron-left"></i> Frida使用
+    <a href="/2024/03/29/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="prev" title="编译原理">
+      <i class="fa fa-chevron-left"></i> 编译原理
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2023/11/20/Blog%E5%A4%9A%E5%B9%B3%E5%8F%B0%E5%90%8C%E6%AD%A5/" rel="next" title="Blog多平台同步">
-      Blog多平台同步 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -342,7 +349,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0"><span class="nav-number">1.</span> <span class="nav-text">最近更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">1.0.1.</span> <span class="nav-text">参考文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VPS%E9%80%89%E6%8B%A9"><span class="nav-number">1.0.2.</span> <span class="nav-text">VPS选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E6%95%99%E5%AD%A6"><span class="nav-number">1.0.3.</span> <span class="nav-text">搭建教学</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Finalshell%E4%B8%8B%E8%BD%BD"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">Finalshell下载</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flex%E4%BB%A3%E7%A0%81%E7%BC%96%E5%86%99"><span class="nav-number">2.</span> <span class="nav-text">Flex代码编写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E6%92%B8%E4%BB%A3%E7%A0%81"><span class="nav-number"></span> <span class="nav-text">手撸代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E4%BF%AE%E6%94%B9"><span class="nav-number">2.</span> <span class="nav-text">代码修改</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
