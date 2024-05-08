@@ -55,6 +55,595 @@ mkfs.fat -F32 /dev/EIF所在磁盘区域
 gpasswd -a P4yl04d root    
 ```
 
+#### 启动盘制作及分区
+
+`iso`镜像下载
+
+```
+https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/
+```
+
+启动盘制作工具下载
+
+
+```
+https://ventoy.net/cn/download.html
+```
+
+`ventoy`下载解压后，打开`Ventory2Disk`，设置分区类型为`GPT`(这里可供选择的有`MBR`和`GPT`,详细介绍在《鸟哥的linux私房菜》P131)
+
+> MBR: 早期的，最大2.2TB,开头扇区记录分区信息及开机启动项，且开机管理程序区块仅446Bytes,较小
+>
+> GPT: 新兴的，补充下，fdisk工具目前支持gpt分区的识别（Linux和Windows磁盘均使用的gpt），使用grub引导似乎也没啥问题
+>
+> 相关知识速览: https://segmentfault.com/a/1190000020850901
+
+分区文件系统类型为`exFAt`即可(后面反正要重新格式化，其实无所凋萎)，分区4kb对齐，簇大小默认。
+
+点击安装，即可格式化原USB,拖入下载的`iso`镜像文件,完成启动盘制作。
+
+使用windos里的磁盘管理工具可查看磁盘状态，未分配的都是可用的，删除卷，压缩卷均可腾出未分配空间
+
+启动前记得去`UEFI/BIOS`里关闭安全启动选项
+
+#### 启动盘启动
+
+插上USB,进入`UEFI/BIOS`里，选择`从USB启动`。
+
+页面一:选择要安装的镜像后回车(ventory支持多镜像启动盘)。
+
+页面二:选择`Boot in normal mode`（第一个选项），即grub引导方式安装。
+
+页面三:进入`grub`页面，选择`Archlinux install...`（第一个选项）即可。
+
+> 由于archlinux安装在命令行下，live环境中，所以我们后面更换主板找回grub时，不用像别的系统一样还要找`try un** without install`的选项。
+
+#### WIFI连接
+
+解锁`wifi`
+
+```bash
+ip link
+```
+
+```bash
+rfkill unblock wifi
+```
+
+使用`iwctl`连接（`wlan0`是我的网卡设备名，`Link`是我的`WIFI`名）
+
+```zsh
+iwctl
+```
+
+```bash
+device list
+```
+
+```bash
+station wlan0 scan
+```
+
+```bash
+station wlan0 get-networks
+```
+
+```bash
+station wlan0 connect Link
+```
+
+输入密码，ctrl+d退出`iwctl`后，检测连接
+
+```zsh
+ping baidu.com
+```
+
+#### 分区及安装系统
+
+更新系统时间
+
+```bash
+timedatectl
+```
+
+查看分区（图片这里是分好后的效果）
+
+```bash
+fdisk -l
+```
+
+![./磁盘分区.jpg)
+
+如图`/dev/nvme0n1`开头是`windows`下的，不用动;我们所有操作都在第二块固态上，即`/dev/nvme1n1`开头
+
+进入操作页面
+
+```bash
+cfdisk dev/nvme1n1
+```
+
+可以看到都是未分配的，我们在上方选中`Free space`,下方选中`New`，输入文件大小，创建四个分区，分别留作efi分区，根分区，home分区，swap分区，大小建议为`0.3G`，`随便`，`随便`，`内存*2G`
+
+然后分别在上方选中四个分区，下方选中`Type`,分区类型为分别为`EFI System`,`Linux filename `,`Linux home`,`Linux swap`。
+
+执行分区类型写入，分别在上方选中四个分区，下方选中`Write`，分别对四个分区写入。
+
+写入后，下方选中`Quit`退出即可。
+
+再次执行`fdisk -l`，检查分区情况，没问题就可以继续了，后面我们进行格式化分区。
+
+格式化`EFI分区`(位置在`/dev/nvme1n1p2`)
+
+```
+mkfs.fat -F 32 /dev/nvme1n1p2
+```
+
+> 创建了一个FAT32文件系统，等价命令为`mkfs.vfat /dev/nvme1n1p2`
+
+格式化`根分区`(位置在`/dev/nvme1n1p3`)
+
+```bash
+mkfs.ext4 /dev/nvme1n1p3
+```
+
+格式化`home分区`(位置在`/dev/nvme1n1p4`)
+
+```zsh
+mkfs.ext4 /dev/nvme1n1p4
+```
+
+格式化`swap分区`(位置在`/dev/nvme1n1p5`)
+
+```zsh
+mkswap /dev/nvme1n1p5
+```
+
+挂载分区(一定要先挂载根分区)
+
+挂载根分区（位置在`/dev/nvme1n1p3`)
+
+```
+mount /dev/nvme1n1p3 /mnt
+```
+
+挂载home分区（位置在`/dev/nvme1n1p4`）
+
+```
+mount --mkdir /dev/nvme1n1p4 /mnt/home
+```
+
+挂载efi分区(位置在`/dev/nvme1n1p2`)
+
+```
+mount --mkdir /dev/nvme1n1p2 /mnt/efi
+```
+
+挂载交换分区（位置在`/dev/nvme1n1p5`）
+
+```
+swapon /dev/nvme1n1p5
+```
+
+配置`pacman`国内源
+
+```
+nano /etc/pacman.d/mirrorlist
+```
+
+第一行添加
+
+```
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch
+```
+
+保存退出，刷新缓存
+
+```
+pacman -Syyu
+```
+
+重新安装密钥
+
+```
+pacman -S archlinux-keyring
+```
+
+安装基本操作系统
+
+```
+pacstrap /mnt base base-devel linux-zen linux-zen-headers linux-firmware networkmanager grub os-prober efibootmgr ntfs-3g amd-ucode bluez bluez-utils nano
+```
+
+> base：基础系统
+>
+> base-devel: 工具包
+>
+> linux-zen: 高性能内核
+>
+> linux-zen-headers: 高性能内核头文件
+>
+> linux-firmware: linux固件
+>
+> networkmanager: 网络
+>
+> grub: 引导
+>
+> os-prober: 多系统检测
+>
+> efibootmgr: efi启动项管理
+>
+> ntfs-3g: ntfs可读写
+>
+> amd-ucode: cpu编码，如果是cpu为intel的，那就intel-ucode
+>
+> bluez bluez-utils: 蓝牙
+>
+> nano: 文本编辑器
+
+一路回车安装即可。
+
+创建fstab（自动挂载配置文件）
+
+```
+genfstab -U /mnt >> /mnt/etc/fstab
+```
+
+`arch-chroot`进入系统
+
+```
+arch-chroot /mnt
+```
+
+设置时区
+
+```
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+```
+
+设置硬件时间
+
+```bash
+hwclock --systohc
+```
+
+本地化
+
+编辑`/etc/locale.gen`
+
+```
+nano /etc/locale.gen
+```
+
+删除`en_US.UTF-8 UTF-8`和`zh_CN.UTF-8 UTF-8`前的`#`
+
+生成`locale`
+
+```
+locale-gen
+```
+
+编辑`/etc/locale.conf`
+
+```
+nano /etc/locale.conf
+```
+
+添加
+
+```
+LANG=en_US.UTF-8
+```
+
+保存退出
+
+设置主机名
+
+编辑`/etc/hostname`
+
+```
+nano /etc/hosthome
+```
+
+就叫`Arch`吧
+
+```
+Arch
+```
+
+设置`root`密码
+
+```
+passwd
+```
+
+输两次密码即可
+
+创建普通用户`P4yl04d`
+
+```
+useradd -m -G wheel P4yl04d
+```
+
+为普通用户创建密码
+
+```
+passwd P4yl04d
+```
+
+编辑`/etc/sudoers`赋予用户`root`权限
+
+```
+nano /etc/sudoers
+```
+
+删除`%wheel ALL=(ALL:ALL) ALL`前的`#`
+
+启动服务
+
+网络服务
+
+```
+systemctl enable NetworkManager 
+```
+
+蓝牙服务
+
+```
+systemctl enable bluetooth
+```
+
+编辑`grub`，启用多系统检测
+
+```
+nano /etc/default/grub
+```
+
+去掉`GRUB_DISABLE_OS_PROBER=false`前的`#`
+
+安装`grub`服务
+
+```
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=grub
+```
+
+更新`grub`引导
+
+```
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+#### 安装桌面环境`KDE`
+
+基本组件
+
+```
+pacman -S xorg plasma plasma-wayland-session
+```
+
+开机自启动显示管理
+
+```
+systemctl enable sddm 
+```
+
+其他必要的东西
+
+```
+pacman -S konsole dophin ark kate
+```
+
+> konsole: 终端
+>
+> dophin: 文件管理器
+>
+> ark: 解压缩软件
+>
+> kate: 文本编辑器
+
+退出系统，重启电脑即可进入`Archlinux`桌面环境工作
+
+```
+exit
+```
+
+```
+reboot
+```
+
+重启后在`grub`引导中并未看到`Windows`选项，正常现象
+
+我们进入`Arch`,重新更新下，下次就有了
+
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+从回显信息我们可以看到，`grub`找到了`windows`的启动项。
+
+#### 本地化-中文
+
+中文字体
+
+```
+sudo pacman -S adobe-source-han-sans-cn-fonts
+```
+
+去设置-> `Regional Settings`->`Region & Language`->`Change Language`->`简体中文`->`Apply`->`Restart now`->`OK`
+
+#### 配置国内源下载必要应用
+
+```
+sudo nano /etc/pacman.conf
+```
+
+开启32位库
+
+改
+
+```
+#[mulitlib]
+#Include = /etc/pacman.d/mirrorlist
+```
+
+为
+
+```
+[mulitlib]
+Include = /etc/pacman.d/mirrorlist
+
+[archlinuxcn]
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+```
+
+保存退出后刷新
+
+```
+sudo pacman -Syy
+```
+
+导入cn源密钥
+
+```
+sudo pacman -S archlinuxcn-keyring
+```
+
+安装后端程序使得应用商店刷新出软件
+
+```
+sudo pacman -S archlinux-appstream-data packagekit-qt5 fwupd
+```
+
+安装`AUR`助手`yay`
+
+```
+sudo pacman -S yay
+```
+
+刷新
+
+```
+yay -Syy
+```
+
+安装中文输入法`Fcitx5`(Wiki上有)
+
+```
+sudo pacman -S fcitx5-im
+```
+
+```
+sudo pacman -S fcitx5-chinese-addons fcitx5-rime
+```
+
+编辑`environment`
+
+```
+sudo nano /etc/environment
+```
+
+添加
+
+```
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+SDL_IM_MODULE=fcitx
+INPUT_METHOD=fcitx
+GLFW_IM_MODULE=ibus
+```
+
+不想添加`environment`也可以
+
+```
+yay -S fcitx5-input-support
+```
+
+重启后就可以在设置里找到拼音输入法了，至此，安装完成。
+
+#### ERRO:主板更换后找回grub
+
+**问题描述**
+
+打开电脑后自动进入`Windows`系统，痛失`grub`引导
+
+进入`UEFI/BIOS`里，启动方式那里只有`windows mangemer`了，原本的`grub`选项丢失了。
+
+> windows mangemer在windows磁盘下的efi里，grub在linux磁盘下的efi里。
+
+**解决方案**
+
+进入安装时的live环境，连接wifi(即前文中的[`启动盘制作及分区`,`WIFI连接部分`])。
+
+挂载分区(一定要先挂载根分区)
+
+挂载根分区（位置在`/dev/nvme1n1p3`)
+
+```
+mount /dev/nvme1n1p3 /mnt
+```
+
+挂载home分区（位置在`/dev/nvme1n1p4`）
+
+```
+mount --mkdir /dev/nvme1n1p4 /mnt/home
+```
+
+挂载efi分区(位置在`/dev/nvme1n1p2`)
+
+```
+mount --mkdir /dev/nvme1n1p2 /mnt/efi
+```
+
+挂载交换分区（位置在`/dev/nvme1n1p5`）
+
+```
+swapon /dev/nvme1n1p5
+```
+
+`arch-chroot`进入系统
+
+```
+arch-chroot /mnt
+```
+
+重新安装`grub`服务
+
+```
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=grub
+```
+
+更新`grub`引导
+
+```
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+退出系统，重启电脑即可进入`Archlinux`桌面环境工作
+
+```
+exit
+```
+
+```
+reboot
+```
+
+重启后在`grub`引导中并未看到`Windows`选项，正常现象
+
+我们进入`Arch`,重新更新下，下次就有了
+
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+从回显信息我们可以看到，`grub`找到了`windows`的启动项。
+
+再次重启，验证结果，可以看到`grub`已经被我们成功修复。
+
+```
+reboot
+```
+
 ### 软件生态配置
 
 #### 纯软件
