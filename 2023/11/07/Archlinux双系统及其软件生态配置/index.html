@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212660&authkey=%21ANiKrfTOh3bHFkY&width=1750&height=846">
 <meta property="og:image" content="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212658&authkey=%21ANiKrfTOh3bHFkY&width=1232&height=764">
 <meta property="article:published_time" content="2023-11-07T08:51:56.000Z">
-<meta property="article:modified_time" content="2024-03-29T12:13:16.736Z">
+<meta property="article:modified_time" content="2024-05-08T17:12:49.298Z">
 <meta property="article:author" content="P4yl04d">
 <meta property="article:tag" content="双系统安装">
 <meta property="article:tag" content="clash">
@@ -201,7 +201,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-03-29 20:13:16" itemprop="dateModified" datetime="2024-03-29T20:13:16+08:00">2024-03-29</time>
+                <time title="Modified: 2024-05-09 01:12:49" itemprop="dateModified" datetime="2024-05-09T01:12:49+08:00">2024-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -250,6 +250,299 @@
 </blockquote>
 <p>3.对自用用户赋权root组，不然权限好低，一点也不方便</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpasswd -a P4yl04d root    </span><br></pre></td></tr></table></figure>
+
+<h4 id="启动盘制作及分区"><a href="#启动盘制作及分区" class="headerlink" title="启动盘制作及分区"></a>启动盘制作及分区</h4><p><code>iso</code>镜像下载</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/</span><br></pre></td></tr></table></figure>
+
+<p>启动盘制作工具下载</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://ventoy.net/cn/download.html</span><br></pre></td></tr></table></figure>
+
+<p><code>ventoy</code>下载解压后，打开<code>Ventory2Disk</code>，设置分区类型为<code>GPT</code>(这里可供选择的有<code>MBR</code>和<code>GPT</code>,详细介绍在《鸟哥的linux私房菜》P131)</p>
+<blockquote>
+<p>MBR: 早期的，最大2.2TB,开头扇区记录分区信息及开机启动项，且开机管理程序区块仅446Bytes,较小</p>
+<p>GPT: 新兴的，补充下，fdisk工具目前支持gpt分区的识别（Linux和Windows磁盘均使用的gpt），使用grub引导似乎也没啥问题</p>
+<p>相关知识速览: <a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000020850901">https://segmentfault.com/a/1190000020850901</a></p>
+</blockquote>
+<p>分区文件系统类型为<code>exFAt</code>即可(后面反正要重新格式化，其实无所凋萎)，分区4kb对齐，簇大小默认。</p>
+<p>点击安装，即可格式化原USB,拖入下载的<code>iso</code>镜像文件,完成启动盘制作。</p>
+<p>使用windos里的磁盘管理工具可查看磁盘状态，未分配的都是可用的，删除卷，压缩卷均可腾出未分配空间</p>
+<p>启动前记得去<code>UEFI/BIOS</code>里关闭安全启动选项</p>
+<h4 id="启动盘启动"><a href="#启动盘启动" class="headerlink" title="启动盘启动"></a>启动盘启动</h4><p>插上USB,进入<code>UEFI/BIOS</code>里，选择<code>从USB启动</code>。</p>
+<p>页面一:选择要安装的镜像后回车(ventory支持多镜像启动盘)。</p>
+<p>页面二:选择<code>Boot in normal mode</code>（第一个选项），即grub引导方式安装。</p>
+<p>页面三:进入<code>grub</code>页面，选择<code>Archlinux install...</code>（第一个选项）即可。</p>
+<blockquote>
+<p>由于archlinux安装在命令行下，live环境中，所以我们后面更换主板找回grub时，不用像别的系统一样还要找<code>try un** without install</code>的选项。</p>
+</blockquote>
+<h4 id="WIFI连接"><a href="#WIFI连接" class="headerlink" title="WIFI连接"></a>WIFI连接</h4><p>解锁<code>wifi</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip <span class="built_in">link</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rfkill unblock wifi</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>iwctl</code>连接（<code>wlan0</code>是我的网卡设备名，<code>Link</code>是我的<code>WIFI</code>名）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iwctl</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">device list</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">station wlan0 scan</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">station wlan0 get-networks</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">station wlan0 connect Link</span><br></pre></td></tr></table></figure>
+
+<p>输入密码，ctrl+d退出<code>iwctl</code>后，检测连接</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping baidu.com</span><br></pre></td></tr></table></figure>
+
+<h4 id="分区及安装系统"><a href="#分区及安装系统" class="headerlink" title="分区及安装系统"></a>分区及安装系统</h4><p>更新系统时间</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">timedatectl</span><br></pre></td></tr></table></figure>
+
+<p>查看分区（图片这里是分好后的效果）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fdisk -l</span><br></pre></td></tr></table></figure>
+
+<p>![.&#x2F;磁盘分区.jpg)</p>
+<p>如图<code>/dev/nvme0n1</code>开头是<code>windows</code>下的，不用动;我们所有操作都在第二块固态上，即<code>/dev/nvme1n1</code>开头</p>
+<p>进入操作页面</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cfdisk dev/nvme1n1</span><br></pre></td></tr></table></figure>
+
+<p>可以看到都是未分配的，我们在上方选中<code>Free space</code>,下方选中<code>New</code>，输入文件大小，创建四个分区，分别留作efi分区，根分区，home分区，swap分区，大小建议为<code>0.3G</code>，<code>随便</code>，<code>随便</code>，<code>内存*2G</code></p>
+<p>然后分别在上方选中四个分区，下方选中<code>Type</code>,分区类型为分别为<code>EFI System</code>,<code>Linux filename </code>,<code>Linux home</code>,<code>Linux swap</code>。</p>
+<p>执行分区类型写入，分别在上方选中四个分区，下方选中<code>Write</code>，分别对四个分区写入。</p>
+<p>写入后，下方选中<code>Quit</code>退出即可。</p>
+<p>再次执行<code>fdisk -l</code>，检查分区情况，没问题就可以继续了，后面我们进行格式化分区。</p>
+<p>格式化<code>EFI分区</code>(位置在<code>/dev/nvme1n1p2</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.fat -F 32 /dev/nvme1n1p2</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>创建了一个FAT32文件系统，等价命令为<code>mkfs.vfat /dev/nvme1n1p2</code></p>
+</blockquote>
+<p>格式化<code>根分区</code>(位置在<code>/dev/nvme1n1p3</code>)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.ext4 /dev/nvme1n1p3</span><br></pre></td></tr></table></figure>
+
+<p>格式化<code>home分区</code>(位置在<code>/dev/nvme1n1p4</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.ext4 /dev/nvme1n1p4</span><br></pre></td></tr></table></figure>
+
+<p>格式化<code>swap分区</code>(位置在<code>/dev/nvme1n1p5</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkswap /dev/nvme1n1p5</span><br></pre></td></tr></table></figure>
+
+<p>挂载分区(一定要先挂载根分区)</p>
+<p>挂载根分区（位置在<code>/dev/nvme1n1p3</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/nvme1n1p3 /mnt</span><br></pre></td></tr></table></figure>
+
+<p>挂载home分区（位置在<code>/dev/nvme1n1p4</code>）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount --mkdir /dev/nvme1n1p4 /mnt/home</span><br></pre></td></tr></table></figure>
+
+<p>挂载efi分区(位置在<code>/dev/nvme1n1p2</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount --mkdir /dev/nvme1n1p2 /mnt/efi</span><br></pre></td></tr></table></figure>
+
+<p>挂载交换分区（位置在<code>/dev/nvme1n1p5</code>）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">swapon /dev/nvme1n1p5</span><br></pre></td></tr></table></figure>
+
+<p>配置<code>pacman</code>国内源</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/pacman.d/mirrorlist</span><br></pre></td></tr></table></figure>
+
+<p>第一行添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch</span><br></pre></td></tr></table></figure>
+
+<p>保存退出，刷新缓存</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -Syyu</span><br></pre></td></tr></table></figure>
+
+<p>重新安装密钥</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S archlinux-keyring</span><br></pre></td></tr></table></figure>
+
+<p>安装基本操作系统</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacstrap /mnt base base-devel linux-zen linux-zen-headers linux-firmware networkmanager grub os-prober efibootmgr ntfs-3g amd-ucode bluez bluez-utils nano</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>base：基础系统</p>
+<p>base-devel: 工具包</p>
+<p>linux-zen: 高性能内核</p>
+<p>linux-zen-headers: 高性能内核头文件</p>
+<p>linux-firmware: linux固件</p>
+<p>networkmanager: 网络</p>
+<p>grub: 引导</p>
+<p>os-prober: 多系统检测</p>
+<p>efibootmgr: efi启动项管理</p>
+<p>ntfs-3g: ntfs可读写</p>
+<p>amd-ucode: cpu编码，如果是cpu为intel的，那就intel-ucode</p>
+<p>bluez bluez-utils: 蓝牙</p>
+<p>nano: 文本编辑器</p>
+</blockquote>
+<p>一路回车安装即可。</p>
+<p>创建fstab（自动挂载配置文件）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</span><br></pre></td></tr></table></figure>
+
+<p><code>arch-chroot</code>进入系统</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arch-chroot /mnt</span><br></pre></td></tr></table></figure>
+
+<p>设置时区</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span><br></pre></td></tr></table></figure>
+
+<p>设置硬件时间</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hwclock --systohc</span><br></pre></td></tr></table></figure>
+
+<p>本地化</p>
+<p>编辑<code>/etc/locale.gen</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/locale.gen</span><br></pre></td></tr></table></figure>
+
+<p>删除<code>en_US.UTF-8 UTF-8</code>和<code>zh_CN.UTF-8 UTF-8</code>前的<code>#</code></p>
+<p>生成<code>locale</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">locale-gen</span><br></pre></td></tr></table></figure>
+
+<p>编辑<code>/etc/locale.conf</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/locale.conf</span><br></pre></td></tr></table></figure>
+
+<p>添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LANG=en_US.UTF-8</span><br></pre></td></tr></table></figure>
+
+<p>保存退出</p>
+<p>设置主机名</p>
+<p>编辑<code>/etc/hostname</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/hosthome</span><br></pre></td></tr></table></figure>
+
+<p>就叫<code>Arch</code>吧</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arch</span><br></pre></td></tr></table></figure>
+
+<p>设置<code>root</code>密码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd</span><br></pre></td></tr></table></figure>
+
+<p>输两次密码即可</p>
+<p>创建普通用户<code>P4yl04d</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useradd -m -G wheel P4yl04d</span><br></pre></td></tr></table></figure>
+
+<p>为普通用户创建密码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd P4yl04d</span><br></pre></td></tr></table></figure>
+
+<p>编辑<code>/etc/sudoers</code>赋予用户<code>root</code>权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/sudoers</span><br></pre></td></tr></table></figure>
+
+<p>删除<code>%wheel ALL=(ALL:ALL) ALL</code>前的<code>#</code></p>
+<p>启动服务</p>
+<p>网络服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable NetworkManager </span><br></pre></td></tr></table></figure>
+
+<p>蓝牙服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable bluetooth</span><br></pre></td></tr></table></figure>
+
+<p>编辑<code>grub</code>，启用多系统检测</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/default/grub</span><br></pre></td></tr></table></figure>
+
+<p>去掉<code>GRUB_DISABLE_OS_PROBER=false</code>前的<code>#</code></p>
+<p>安装<code>grub</code>服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=grub</span><br></pre></td></tr></table></figure>
+
+<p>更新<code>grub</code>引导</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grub-mkconfig -o /boot/grub/grub.cfg</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装桌面环境KDE"><a href="#安装桌面环境KDE" class="headerlink" title="安装桌面环境KDE"></a>安装桌面环境<code>KDE</code></h4><p>基本组件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S xorg plasma plasma-wayland-session</span><br></pre></td></tr></table></figure>
+
+<p>开机自启动显示管理</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable sddm </span><br></pre></td></tr></table></figure>
+
+<p>其他必要的东西</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S konsole dophin ark kate</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>konsole: 终端</p>
+<p>dophin: 文件管理器</p>
+<p>ark: 解压缩软件</p>
+<p>kate: 文本编辑器</p>
+</blockquote>
+<p>退出系统，重启电脑即可进入<code>Archlinux</code>桌面环境工作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<p>重启后在<code>grub</code>引导中并未看到<code>Windows</code>选项，正常现象</p>
+<p>我们进入<code>Arch</code>,重新更新下，下次就有了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo grub-mkconfig -o /boot/grub/grub.cfg</span><br></pre></td></tr></table></figure>
+
+<p>从回显信息我们可以看到，<code>grub</code>找到了<code>windows</code>的启动项。</p>
+<h4 id="本地化-中文"><a href="#本地化-中文" class="headerlink" title="本地化-中文"></a>本地化-中文</h4><p>中文字体</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S adobe-source-han-sans-cn-fonts</span><br></pre></td></tr></table></figure>
+
+<p>去设置-&gt; <code>Regional Settings</code>-&gt;<code>Region &amp; Language</code>-&gt;<code>Change Language</code>-&gt;<code>简体中文</code>-&gt;<code>Apply</code>-&gt;<code>Restart now</code>-&gt;<code>OK</code></p>
+<h4 id="配置国内源下载必要应用"><a href="#配置国内源下载必要应用" class="headerlink" title="配置国内源下载必要应用"></a>配置国内源下载必要应用</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nano /etc/pacman.conf</span><br></pre></td></tr></table></figure>
+
+<p>开启32位库</p>
+<p>改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#[mulitlib]</span><br><span class="line">#Include = /etc/pacman.d/mirrorlist</span><br></pre></td></tr></table></figure>
+
+<p>为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[mulitlib]</span><br><span class="line">Include = /etc/pacman.d/mirrorlist</span><br><span class="line"></span><br><span class="line">[archlinuxcn]</span><br><span class="line">Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch</span><br></pre></td></tr></table></figure>
+
+<p>保存退出后刷新</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -Syy</span><br></pre></td></tr></table></figure>
+
+<p>导入cn源密钥</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S archlinuxcn-keyring</span><br></pre></td></tr></table></figure>
+
+<p>安装后端程序使得应用商店刷新出软件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S archlinux-appstream-data packagekit-qt5 fwupd</span><br></pre></td></tr></table></figure>
+
+<p>安装<code>AUR</code>助手<code>yay</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S yay</span><br></pre></td></tr></table></figure>
+
+<p>刷新</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -Syy</span><br></pre></td></tr></table></figure>
+
+<p>安装中文输入法<code>Fcitx5</code>(Wiki上有)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S fcitx5-im</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S fcitx5-chinese-addons fcitx5-rime</span><br></pre></td></tr></table></figure>
+
+<p>编辑<code>environment</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nano /etc/environment</span><br></pre></td></tr></table></figure>
+
+<p>添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">GTK_IM_MODULE=fcitx</span><br><span class="line">QT_IM_MODULE=fcitx</span><br><span class="line">XMODIFIERS=@im=fcitx</span><br><span class="line">SDL_IM_MODULE=fcitx</span><br><span class="line">INPUT_METHOD=fcitx</span><br><span class="line">GLFW_IM_MODULE=ibus</span><br></pre></td></tr></table></figure>
+
+<p>不想添加<code>environment</code>也可以</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -S fcitx5-input-support</span><br></pre></td></tr></table></figure>
+
+<p>重启后就可以在设置里找到拼音输入法了，至此，安装完成。</p>
+<h4 id="ERRO-主板更换后找回grub"><a href="#ERRO-主板更换后找回grub" class="headerlink" title="ERRO:主板更换后找回grub"></a>ERRO:主板更换后找回grub</h4><p><strong>问题描述</strong></p>
+<p>打开电脑后自动进入<code>Windows</code>系统，痛失<code>grub</code>引导</p>
+<p>进入<code>UEFI/BIOS</code>里，启动方式那里只有<code>windows mangemer</code>了，原本的<code>grub</code>选项丢失了。</p>
+<blockquote>
+<p>windows mangemer在windows磁盘下的efi里，grub在linux磁盘下的efi里。</p>
+</blockquote>
+<p><strong>解决方案</strong></p>
+<p>进入安装时的live环境，连接wifi(即前文中的[<code>启动盘制作及分区</code>,<code>WIFI连接部分</code>])。</p>
+<p>挂载分区(一定要先挂载根分区)</p>
+<p>挂载根分区（位置在<code>/dev/nvme1n1p3</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/nvme1n1p3 /mnt</span><br></pre></td></tr></table></figure>
+
+<p>挂载home分区（位置在<code>/dev/nvme1n1p4</code>）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount --mkdir /dev/nvme1n1p4 /mnt/home</span><br></pre></td></tr></table></figure>
+
+<p>挂载efi分区(位置在<code>/dev/nvme1n1p2</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount --mkdir /dev/nvme1n1p2 /mnt/efi</span><br></pre></td></tr></table></figure>
+
+<p>挂载交换分区（位置在<code>/dev/nvme1n1p5</code>）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">swapon /dev/nvme1n1p5</span><br></pre></td></tr></table></figure>
+
+<p><code>arch-chroot</code>进入系统</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arch-chroot /mnt</span><br></pre></td></tr></table></figure>
+
+<p>重新安装<code>grub</code>服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=grub</span><br></pre></td></tr></table></figure>
+
+<p>更新<code>grub</code>引导</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grub-mkconfig -o /boot/grub/grub.cfg</span><br></pre></td></tr></table></figure>
+
+<p>退出系统，重启电脑即可进入<code>Archlinux</code>桌面环境工作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<p>重启后在<code>grub</code>引导中并未看到<code>Windows</code>选项，正常现象</p>
+<p>我们进入<code>Arch</code>,重新更新下，下次就有了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo grub-mkconfig -o /boot/grub/grub.cfg</span><br></pre></td></tr></table></figure>
+
+<p>从回显信息我们可以看到，<code>grub</code>找到了<code>windows</code>的启动项。</p>
+<p>再次重启，验证结果，可以看到<code>grub</code>已经被我们成功修复。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
 
 <h3 id="软件生态配置"><a href="#软件生态配置" class="headerlink" title="软件生态配置"></a>软件生态配置</h3><h4 id="纯软件"><a href="#纯软件" class="headerlink" title="纯软件"></a>纯软件</h4><p><code>Archlinux</code>中下载软件推荐上<a target="_blank" rel="noopener" href="https://wiki.archlinux.org/">Archwiki</a>（输入软件名即可，内有中文社区，点<code>AUR</code>中也可）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S 软件包名（官方版）</span><br></pre></td></tr></table></figure>
@@ -462,7 +755,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">双系统安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%94%9F%E6%80%81%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">软件生态配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%AF%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">纯软件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Zsh%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">Zsh配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.2.1.</span> <span class="nav-text">插件下载</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.2.</span> <span class="nav-text">文件配置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#wine%E4%B8%8B%E8%BD%BD%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">wine下载配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WPS"><span class="nav-number">3.</span> <span class="nav-text">WPS</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">双系统安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%98%E5%88%B6%E4%BD%9C%E5%8F%8A%E5%88%86%E5%8C%BA"><span class="nav-number">1.1.</span> <span class="nav-text">启动盘制作及分区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%98%E5%90%AF%E5%8A%A8"><span class="nav-number">1.2.</span> <span class="nav-text">启动盘启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WIFI%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.3.</span> <span class="nav-text">WIFI连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E5%8F%8A%E5%AE%89%E8%A3%85%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.4.</span> <span class="nav-text">分区及安装系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83KDE"><span class="nav-number">1.5.</span> <span class="nav-text">安装桌面环境KDE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%8C%96-%E4%B8%AD%E6%96%87"><span class="nav-number">1.6.</span> <span class="nav-text">本地化-中文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%9B%BD%E5%86%85%E6%BA%90%E4%B8%8B%E8%BD%BD%E5%BF%85%E8%A6%81%E5%BA%94%E7%94%A8"><span class="nav-number">1.7.</span> <span class="nav-text">配置国内源下载必要应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ERRO-%E4%B8%BB%E6%9D%BF%E6%9B%B4%E6%8D%A2%E5%90%8E%E6%89%BE%E5%9B%9Egrub"><span class="nav-number">1.8.</span> <span class="nav-text">ERRO:主板更换后找回grub</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%94%9F%E6%80%81%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">软件生态配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%AF%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">纯软件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Zsh%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">Zsh配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.2.1.</span> <span class="nav-text">插件下载</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.2.</span> <span class="nav-text">文件配置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#wine%E4%B8%8B%E8%BD%BD%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">wine下载配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WPS"><span class="nav-number">3.</span> <span class="nav-text">WPS</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
