@@ -320,3 +320,9 @@ NERDTree是一个非常实用的Vim插件，它提供了一种方便的方式来
 - `?`：切换是否显示Quick Help
 
 参考文档：[常用 NERDTree 快捷键](https://www.cnblogs.com/qiumingcheng/p/6275510.html)
+
+删除开头数字及空格
+```
+:%s/^[0-9 ]\+//
+```
+
