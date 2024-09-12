@@ -10,6 +10,12 @@ categories:
 本文是`vim/nvim`的使用及配置攻略。
 <!--more-->
 
+### 2024.9.13更新
+
+> `neovim`配置文件在`~/.config/nvim`中，感觉现在`neovim`更对胃口，我的`nvim/vim`配置：
+>
+> https://github.com/dingdingqiuqiu/vimrc
+
 ## 基本操作
 
 ### 普通模式
