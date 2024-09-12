@@ -95,6 +95,28 @@ __VK_LAYER_NV_optimus="NVIDIA_only"
 
 ### cuda&&cudnn
 
+> 考虑到tensorflow需要对应版本的cuda和cudnn推荐google搜索官网版本下载
+>
+> 查询网站：
+>
+> https://tensorflow.google.cn/install/source
+>
+> 我的版本：
+>
+> cuda 12.4
+>
+> cudnn  8.9.7.29
+>
+> tensorflow 12.7
+>
+> 兼容性不太行，但可以用，有点警告，pytorch可以完全兼容
+>
+> 警告修复：
+> https://github.com/tensorflow/tensorflow/issues/62075
+>
+> 中文翻译：
+> https://dingdingqiuqiu.github.io/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/#more
+
 ```zsh
 yay -S cuda
 ```
@@ -237,3 +259,8 @@ source myenv/bin/activate
 deactivate
 ```
 
+### tensorflow安装
+
+以下查询版本对应，务必下载对应版本的cuda和cudnn
+
+https://tensorflow.google.cn/install/source
