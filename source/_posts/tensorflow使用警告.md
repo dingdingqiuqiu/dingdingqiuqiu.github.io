@@ -10,6 +10,8 @@ categories:
 
 <!--more-->
 
+原回答：https://stackoverflow.com/questions/77338229/tensorflow-2-14-0-with-cuda-not-registering-cuda
+
 ### 本机环境
 
 <img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwPYiq30zod2xxZG?embed=1&width=958&height=614" width="958" height="" />
