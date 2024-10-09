@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="针对第一周的内容做了具体总结归纳。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS61b食用指南(WEEK1)">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/03/14/CS61b%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97-WEEK1/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="针对第一周的内容做了具体总结归纳。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://sp24.datastructur.es/labs/lab01/img/terminal_directory.png">
+<meta property="og:image" content="https://sp24.datastructur.es/labs/lab01/img/plugin_setup2.png">
+<meta property="og:image" content="https://sp24.datastructur.es/labs/lab01/img/plugin_setup3.png">
+<meta property="article:published_time" content="2024-03-14T14:21:08.000Z">
+<meta property="article:modified_time" content="2024-04-08T01:51:34.622Z">
+<meta property="article:author" content="P4yl04d">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sp24.datastructur.es/labs/lab01/img/terminal_directory.png">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/03/14/CS61b%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97-WEEK1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>CS61b食用指南(WEEK1) | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/03/14/CS61b%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97-WEEK1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CS61b食用指南(WEEK1)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-03-14 22:21:08" itemprop="dateCreated datePublished" datetime="2024-03-14T22:21:08+08:00">2024-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-04-08 09:51:34" itemprop="dateModified" datetime="2024-04-08T09:51:34+08:00">2024-04-08</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>针对第一周的内容做了具体总结归纳。</p>
+<span id="more"></span>
+
+<h2 id="课程"><a href="#课程" class="headerlink" title="课程"></a>课程</h2><h2 id="实验01-设置"><a href="#实验01-设置" class="headerlink" title="实验01-设置"></a>实验01-设置</h2><h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><blockquote>
+<p> git的自动登录和简单使用在原先的文章中已经有所涉及:</p>
+<p><a target="_blank" rel="noopener" href="https://dingdingqiuqiu.github.io/tags/Git/">点此跳转</a></p>
+</blockquote>
+<p>但是，CS61b专门提供了一篇<code>git</code>深度指南。必要时可以做一次汉化实践，先当指南看着。</p>
+<p><a target="_blank" rel="noopener" href="https://sp24.datastructur.es/resources/guides/git/">CS61b官方git指南</a></p>
+<p>这里先就此复习下<strong>远程存储库</strong>部分(实际上是CS61b当时的要求)</p>
+<ul>
+<li><code>git clone [remote-repo-URL]</code>：在本地计算机上创建指定存储库的副本。还创建一个工作目录，其中的文件排列方式与下载存储库中的最新快照完全相同。还记录用于后续网络数据传输的远程存储库的 URL，并为其赋予特殊的远程存储库名称“origin”。</li>
+<li><code>git remote add [remote-repo-name] [remote-repo-URL]</code>：记录网络数据传输的新位置。</li>
+<li><code>git remote -v</code>：列出网络数据传输的所有位置。</li>
+<li><code>git pull [remote-repo-name] main</code>：获取文件的最新副本，如 中所示<code>remote-repo-name</code>。</li>
+<li><code>git push [remote-repo-name] main</code>：将文件的最新副本上传到<code>remote-repo-name</code>。</li>
+</ul>
+<p>对于本课程的大部分时间，您只有两个远程存储库：</p>
+<p><code>origin</code>，它是用于保存和提交您的个人工作的远程存储库</p>
+<p><code>sculpture</code>，它是您将从中接收框架代码的远程存储库。</p>
+<p>这里<code>git</code>初始配置贴一个没见过（使用过）的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global pull.rebase false</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>pull.rebase</code> 是一个配置项，它决定了 <code>git pull</code> 命令的行为。如果设置为 <code>true</code>，那么在执行 <code>git pull</code> 命令时，Git 会使用 <code>rebase</code> 而不是 <code>merge</code> 来合并远程仓库的新提交。<code>rebase</code> 会把你本地的提交放到远程仓库的新提交之后，这样可以得到一个线性的提交历史，使得历史更加清晰。</p>
+</blockquote>
+<h3 id="这块不懂，建议写篇博客专门实践下。"><a href="#这块不懂，建议写篇博客专门实践下。" class="headerlink" title="这块不懂，建议写篇博客专门实践下。"></a>这块不懂，建议写篇博客专门实践下。</h3><p><strong>举例说明</strong></p>
+<p>假设你正在开发一个项目，并且你有一个名为 <code>feature</code> 的分支，你正在这个分支上工作。同时，你的同事在 <code>master</code> 分支上也做了一些改动，并且他们已经将这些改动推送到了远程仓库。</p>
+<p>现在，你想要获取 <code>master</code> 分支上的最新改动。你有两种方式可以做到这一点：<code>merge</code> 和 <code>rebase</code>。如果你执行 <code>git pull</code> 命令，Git 默认会使用 <code>merge</code> 来合并远程仓库的新提交。</p>
+<p>这就是 <code>git config --global pull.rebase false</code> 这个命令的作用。它会设置 Git 的 <code>pull</code> 命令在合并远程仓库的新提交时，使用 <code>merge</code> 而不是 <code>rebase</code>。</p>
+<p>例如，你的提交历史可能会像下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A - B - C (master)</span><br><span class="line">     \</span><br><span class="line">      D - E (feature)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>当你在 <code>feature</code> 分支上执行 <code>git pull origin master</code> 后，如果你的 <code>pull.rebase</code> 配置项被设置为 <code>false</code>，那么你的提交历史会变成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A - B - C - F (master)</span><br><span class="line">     \       /</span><br><span class="line">      D - E (feature)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这里的 <code>F</code> 就是一个新的 “合并提交”，它包含了 <code>master</code> 分支和 <code>feature</code> 分支的所有改动。</p>
+<p>如果你的 <code>pull.rebase</code> 配置项被设置为 <code>true</code>，那么在执行 <code>git pull origin master</code> 后，你的提交历史会变成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A - B - C (master)</span><br><span class="line">         \</span><br><span class="line">          D&#x27; - E&#x27; (feature)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这里的 <code>D&#39;</code> 和 <code>E&#39;</code> 是 <code>D</code> 和 <code>E</code> 的重新应用。它们的改动和 <code>D</code> 和 <code>E</code> 是一样的，但它们是全新的提交，因为它们的父提交是 <code>C</code>，而不是 <code>B</code>。</p>
+<p>所以，<code>git config --global pull.rebase false</code> 这个命令的意思就是在全局范围内，设置 <code>git pull</code> 命令在合并远程仓库的新提交时，使用 <code>merge</code> 而不是 <code>rebase</code>。这是 Git 的默认行为，如果你没有特别的需求，一般不需要执行这个命令。</p>
+<h3 id="Git-存储库和-Java-库"><a href="#Git-存储库和-Java-库" class="headerlink" title="Git 存储库和 Java 库"></a>Git 存储库和 Java 库</h3><h3 id="Java-库"><a href="#Java-库" class="headerlink" title="Java 库"></a>Java 库</h3><p>就像在 Python 中一样，我们有时想使用其他人编写的库。Java 依赖项管理有点混乱，因此我们提供了一个 git 存储库，其中包含我们将在本课程中使用的所有依赖项。再次确保您的终端已打开。</p>
+<p>导航到您要存储库的文件夹。对于本实验，我们假设您将所有内容放置在名为<strong>cs61b</strong>的文件夹中。如果您愿意，可以选择不同的名称。<code>cs61b</code>导航到您想要的位置、创建目录并进入该目录后（<code>cd cs61b</code>在本例中），它可能看起来像这样：</p>
+<p><img src="https://sp24.datastructur.es/labs/lab01/img/terminal_directory.png" alt="终端目录"></p>
+<p>进入文件夹后，运行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Berkeley-CS61B/library-sp24</span><br></pre></td></tr></table></figure>
+
+<p>下面是 的目录结构<code>library-sp24</code>。使用查看文件夹内部 <code>ls library-sp24</code>并确保您看到<code>.jar</code>下面列出的文件。还有很多，但我们只列出前几个。如果您使用操作系统的文件资源管理器，该<code>jar</code>部分可能不会显示在文件名中，但这没关系。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">library-sp24</span><br><span class="line">├── algs4.jar</span><br><span class="line">├── animated-gif-lib-1.4.jar</span><br><span class="line">├── antlr4-runtime-4.11.1.jar</span><br><span class="line">├── apiguardian-api-1.1.2.jar</span><br><span class="line">└── ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="个人储存库"><a href="#个人储存库" class="headerlink" title="个人储存库"></a>个人储存库</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CS61b/</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:dingdingqiuqiu/CS61B-sp24.git</span><br><span class="line"># git clone git@github.com:dingdingqiuqiu/CS61B-sp21.git  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd CS61B-sp24</span><br><span class="line"># cd CS61B-sp21  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -M main  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote add skeleton https://github.com/Berkeley-CS61B/skeleton-sp24.git </span><br><span class="line"># git remote add skeleton https://github.com/Berkeley-CS61B/skeleton-sp21.git</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git pull skeleton main</span><br><span class="line"># git pull skeleton master</span><br></pre></td></tr></table></figure>
+
+<p>课程实验库拉取成功</p>
+<blockquote>
+<p>后续发现sp21有开源的自动评分机器，又开了个sp21的仓库。</p>
+<p>注释部分为sp21版</p>
+<p>将普通用户赋权root组，又配置了下ssh普通用户的rsa密钥。</p>
+<p>gpasswd -a P4yl04d root   </p>
+<p>赋权命令</p>
+</blockquote>
+<h3 id="IntelliJ-设置"><a href="#IntelliJ-设置" class="headerlink" title="IntelliJ 设置"></a>IntelliJ 设置</h3><p>查看<a target="_blank" rel="noopener" href="https://sp24.datastructur.es/resources/guides/intellij/wtfs/">IntelliJ WTFS 指南</a>以获取一些常见问题的解决方案。</p>
+<p>安装CS61b插件</p>
+<p><img src="https://sp24.datastructur.es/labs/lab01/img/plugin_setup2.png" alt="搜索 CS 61B"></p>
+<p>现在，搜索“Java Visualizer”，然后单击绿色的<strong>安装</strong>按钮来安装该插件。</p>
+<p><img src="https://sp24.datastructur.es/labs/lab01/img/plugin_setup3.png" alt="搜索 Java 可视化工具"></p>
+<h3 id="安装Java"><a href="#安装Java" class="headerlink" title="安装Java"></a>安装Java</h3><blockquote>
+<p>略</p>
+</blockquote>
+<h3 id="习题"><a href="#习题" class="headerlink" title="习题"></a>习题</h3><p>打开名为<code>Collatz.java</code>. 尝试运行它，您将看到打印出数字 5。</p>
+<p>该程序应该打印从给定数字开始的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Collatz_conjecture">Collatz 序列。</a>Collatz 序列定义如下：</p>
+<p>如果 n 是偶数，则下一个数字是 n/2。如果 n 是奇数，则下一个数字是 3n + 1。如果 n 是 1，则序列结束。</p>
+<p>例如，假设我们从 5 开始。由于 5 是奇数，所以下一个数字是 3x5 + 1 = 16。由于 16 是偶数，所以下一个数字是 8。由于 8 是偶数，所以下一个数字是 4。由于 4 是偶数下一个数字是 2。由于 2 是偶数，所以下一个数字是 1。此时我们就完成了。顺序是 5、16、8、4、2、1。</p>
+<p>您的第一个任务是编写一个方法，如下所示：<code>public static int nextNumber(int n)</code>返回下一个数字。例如<code>nextNumber(5)</code>应返回 16。此方法将由 Gradescope 自动评分器进行测试。确保提供该方法的描述作为注释。您的描述应包含在<code>/**</code>和中<code>*/</code>。包含的注释<code>/**</code>也<code>*/</code>称为“Javadoc 注释”或简称为“Javadoc”。如果这些注释需要额外的空间，则可以跨越多行，例如 Javadocs <code>nextNumber</code>。</p>
+<p>Javadoc 可能包含可选标签，例如<code>@param</code>. 除了 标签外，我们不要求您在 61B 中使用任何类似的标签<code>@source</code>。<code>@source</code>每当您在项目上获得重要帮助时，请使用该标签。<code>@source</code>硬件或实验室不需要该标签，但我们还是推荐它，因为引用来源是一个良好的学术和专业习惯。</p>
+<p>一些 Java 技巧：</p>
+<ul>
+<li>运算<code>%</code>符实现余数。例如， 的值<code>x % 4</code>将为 <code>0</code>、<code>1</code>、<code>2</code>或<code>3</code>。</li>
+<li>该<code>==</code>运算符比较两个值是否不相等。代码片段<code>if (n % 4 == 1)</code>读作“如果 n 除以 4 的余数等于 1”。</li>
+</ul>
+<p>编写完成后<code>nextNumber</code>，填写<code>main</code>方法，使其打印出从 开始的 Collatz 序列<code>n = 5</code>。例如，如果<code>n = 5</code>，您的程序应该打印<code>5 16 8 4 2 1</code>。如果1后面有一个额外的空格就可以了。</p>
+<p>有趣的事实：对于所有数字，Collatz 序列似乎都终止于 1。然而，到目前为止，没有人能够证明这对于所有可能的起始值都是正确的，但已检查了大约 2^68 以内的所有值。正如维基百科文章中所述，数学家杰弗里·拉加里亚斯指出，科拉茨猜想“是一个极其困难的问题，完全超出了当今数学的范围”。</p>
+<h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/03/14/CS61b%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97/" rel="prev" title="CS61b食用指南">
+      <i class="fa fa-chevron-left"></i> CS61b食用指南
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/03/17/CPP%E6%8B%BE%E9%81%97-%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/" rel="next" title="CPP拾遗-输入输出">
+      CPP拾遗-输入输出 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BE%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">课程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C01-%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">实验01-设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85git"><span class="nav-number">2.1.</span> <span class="nav-text">安装git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%99%E5%9D%97%E4%B8%8D%E6%87%82%EF%BC%8C%E5%BB%BA%E8%AE%AE%E5%86%99%E7%AF%87%E5%8D%9A%E5%AE%A2%E4%B8%93%E9%97%A8%E5%AE%9E%E8%B7%B5%E4%B8%8B%E3%80%82"><span class="nav-number">2.2.</span> <span class="nav-text">这块不懂，建议写篇博客专门实践下。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-%E5%AD%98%E5%82%A8%E5%BA%93%E5%92%8C-Java-%E5%BA%93"><span class="nav-number">2.3.</span> <span class="nav-text">Git 存储库和 Java 库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-%E5%BA%93"><span class="nav-number">2.4.</span> <span class="nav-text">Java 库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E5%82%A8%E5%AD%98%E5%BA%93"><span class="nav-number">2.5.</span> <span class="nav-text">个人储存库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IntelliJ-%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.6.</span> <span class="nav-text">IntelliJ 设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Java"><span class="nav-number">2.7.</span> <span class="nav-text">安装Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%A0%E9%A2%98"><span class="nav-number">2.8.</span> <span class="nav-text">习题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">3.</span> <span class="nav-text">作业</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

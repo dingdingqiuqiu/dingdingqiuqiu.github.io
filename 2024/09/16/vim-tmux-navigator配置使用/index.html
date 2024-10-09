@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文主要是对vim-tmux-navigator插件项目主页的汉化，主要为了练习英文能力。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vim-tmux-navigator配置使用">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/09/16/vim-tmux-navigator%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="本文主要是对vim-tmux-navigator插件项目主页的汉化，主要为了练习英文能力。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-15T18:25:31.000Z">
+<meta property="article:modified_time" content="2024-09-27T06:13:26.302Z">
+<meta property="article:author" content="P4yl04d">
+<meta property="article:tag" content="vim,tmux，English">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/09/16/vim-tmux-navigator%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>vim-tmux-navigator配置使用 | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/09/16/vim-tmux-navigator%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vim-tmux-navigator配置使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-09-16 02:25:31" itemprop="dateCreated datePublished" datetime="2024-09-16T02:25:31+08:00">2024-09-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-09-27 14:13:26" itemprop="dateModified" datetime="2024-09-27T14:13:26+08:00">2024-09-27</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文主要是对<code>vim-tmux-navigator</code>插件项目主页的汉化，主要为了练习英文能力。</p>
+<span id="more"></span>
+<p>原文链接：<br><a target="_blank" rel="noopener" href="https://github.com/christoomey/vim-tmux-navigator">vim-tmux-navigator插件github原文</a></p>
+<h1 id="Vim-Tmux-Navigator"><a href="#Vim-Tmux-Navigator" class="headerlink" title="Vim Tmux Navigator"></a>Vim Tmux Navigator</h1><p>navigator航海家</p>
+<p>This plugin is a repackaging of Mislav Marohnić’s tmux-navigator configuration described in this gist. When combined with a set of tmux key bindings, the plugin will allow you to navigate seamlessly between vim and tmux splits using a consistent set of hotkeys.</p>
+<p>combined 联合<br>a set of 一组<br>bindings 绑定<br>seam接缝 seamless无缝的<br>consistent 一致的</p>
+<p>这个插件是概要中描述的Mislav Marohnić的tmux-navigator配置的重打包。当与一组tmux键绑定结合使用时，该插件将允许您使用一组一致的热键在vim和tmux分割之间无缝导航。</p>
+<p>NOTE: This requires tmux v1.8 or higher.</p>
+<p>注意:这个插件需要tmux版本在v1.8以上</p>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>This plugin provides the following mappings which allow you to move between Vim panes and tmux splits seamlessly.<br>这个插件提供以下按键映射，允许你在vim的panes（窗格）和tmux的splits（分割）间无缝切换</p>
+<p><ctrl-h> =&gt; Left<br><ctrl-j> =&gt; Down<br><ctrl-k> =&gt; Up<br><ctrl-l> =&gt; Right<br>&lt;ctrl-\&gt; =&gt; Previous split（前一个分割）</p>
+<p>Note - you don’t need to use your tmux prefix key sequence before using the mappings.<br>prefix前缀<br>注意，在使用这个映射之前你无需使用tmux的前缀键序列</p>
+<p>If you want to use alternate key mappings, see the configuration section below.<br>如果你想使用可选的映射，看下面的配置那一段</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h3><p>If you don’t have a preferred installation method, I recommend using Vundle. Assuming you have Vundle installed and configured, the following steps will install the plugin:<br>如果你没有一个特别偏爱的安装方式，我推荐你使用Vundle。假定你已经安装了Vundle并且已经配置好了，下面这些步骤可以安装这个插件</p>
+<p>Add the following line to your ~/.vimrc file</p>
+<p>添加下面这些行到你的vimrc文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plugin &#x27;christoomey/vim-tmux-navigator&#x27;</span><br></pre></td></tr></table></figure>
+<p>然后运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PluginInstall</span><br></pre></td></tr></table></figure>
+<p>If you are using Vim 8+, you don’t need any plugin manager. Simply clone this repository inside <del>/.vim/pack/plugin/start/ directory and restart Vim.<br>如果你使用Vim8＋，你不需要任何插件管理器.只需要克隆这个仓库到`</del>/.vim/pack/plugin/start`目录然后重启Vim即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:christoomey/vim-tmux-navigator.git ~/.vim/pack/plugins/start/vim-tmux-navigator</span><br></pre></td></tr></table></figure>
+<h3 id="Lazy-nvim"><a href="#Lazy-nvim" class="headerlink" title="Lazy.nvim"></a>Lazy.nvim</h3><p>If you are using lazy.nvim. Add the following plugin to your configuration.<br>如果你使用lazy.nvim.添加下面的插件到你的配置中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;christoomey/vim-tmux-navigator&quot;,</span><br><span class="line">  cmd = &#123;</span><br><span class="line">    &quot;TmuxNavigateLeft&quot;,</span><br><span class="line">    &quot;TmuxNavigateDown&quot;,</span><br><span class="line">    &quot;TmuxNavigateUp&quot;,</span><br><span class="line">    &quot;TmuxNavigateRight&quot;,</span><br><span class="line">    &quot;TmuxNavigatePrevious&quot;,</span><br><span class="line">  &#125;,</span><br><span class="line">  keys = &#123;</span><br><span class="line">    &#123; &quot;&lt;c-h&gt;&quot;, &quot;&lt;cmd&gt;&lt;C-U&gt;TmuxNavigateLeft&lt;cr&gt;&quot; &#125;,</span><br><span class="line">    &#123; &quot;&lt;c-j&gt;&quot;, &quot;&lt;cmd&gt;&lt;C-U&gt;TmuxNavigateDown&lt;cr&gt;&quot; &#125;,</span><br><span class="line">    &#123; &quot;&lt;c-k&gt;&quot;, &quot;&lt;cmd&gt;&lt;C-U&gt;TmuxNavigateUp&lt;cr&gt;&quot; &#125;,</span><br><span class="line">    &#123; &quot;&lt;c-l&gt;&quot;, &quot;&lt;cmd&gt;&lt;C-U&gt;TmuxNavigateRight&lt;cr&gt;&quot; &#125;,</span><br><span class="line">    &#123; &quot;&lt;c-\\&gt;&quot;, &quot;&lt;cmd&gt;&lt;C-U&gt;TmuxNavigatePrevious&lt;cr&gt;&quot; &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Then, restart Neovim and lazy.nvim will automatically install the plugin and configure the keybindings.<br>然后，重启Neovim，lazy.nvim会自动安装这个插件并且配置键位绑定</p>
+<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><p>To configure the tmux side of this customization there are two options:</p>
+<p>customization 定制</p>
+<p>配置该定制的tmux端有两个选择:</p>
+<h3 id="Add-a-snippet"><a href="#Add-a-snippet" class="headerlink" title="Add a snippet"></a>Add a snippet</h3><p>snippet 片段</p>
+<p>Add the following to your <del>/.tmux.conf file:<br>添加下面这些到你的`</del>/.tmux.conf`文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># Smart pane switching with awareness of Vim splits.</span><br><span class="line"># See: https://github.com/christoomey/vim-tmux-navigator</span><br><span class="line">is_vim=&quot;ps -o state= -o comm= -t &#x27;#&#123;pane_tty&#125;&#x27; \</span><br><span class="line">    | grep -iqE &#x27;^[^TXZ ]+ +(\\S+\\/)?g?(view|l?n?vim?x?|fzf)(diff)?$&#x27;&quot;</span><br><span class="line">bind-key -n &#x27;C-h&#x27; if-shell &quot;$is_vim&quot; &#x27;send-keys C-h&#x27;  &#x27;select-pane -L&#x27;</span><br><span class="line">bind-key -n &#x27;C-j&#x27; if-shell &quot;$is_vim&quot; &#x27;send-keys C-j&#x27;  &#x27;select-pane -D&#x27;</span><br><span class="line">bind-key -n &#x27;C-k&#x27; if-shell &quot;$is_vim&quot; &#x27;send-keys C-k&#x27;  &#x27;select-pane -U&#x27;</span><br><span class="line">bind-key -n &#x27;C-l&#x27; if-shell &quot;$is_vim&quot; &#x27;send-keys C-l&#x27;  &#x27;select-pane -R&#x27;</span><br><span class="line">tmux_version=&#x27;$(tmux -V | sed -En &quot;s/^tmux ([0-9]+(.[0-9]+)?).*/\1/p&quot;)&#x27;</span><br><span class="line">if-shell -b &#x27;[ &quot;$(echo &quot;$tmux_version &lt; 3.0&quot; | bc)&quot; = 1 ]&#x27; \</span><br><span class="line">    &quot;bind-key -n &#x27;C-\\&#x27; if-shell \&quot;$is_vim\&quot; &#x27;send-keys C-\\&#x27;  &#x27;select-pane -l&#x27;&quot;</span><br><span class="line">if-shell -b &#x27;[ &quot;$(echo &quot;$tmux_version &gt;= 3.0&quot; | bc)&quot; = 1 ]&#x27; \</span><br><span class="line">    &quot;bind-key -n &#x27;C-\\&#x27; if-shell \&quot;$is_vim\&quot; &#x27;send-keys C-\\\\&#x27;  &#x27;select-pane -l&#x27;&quot;</span><br><span class="line"></span><br><span class="line">bind-key -T copy-mode-vi &#x27;C-h&#x27; select-pane -L</span><br><span class="line">bind-key -T copy-mode-vi &#x27;C-j&#x27; select-pane -D</span><br><span class="line">bind-key -T copy-mode-vi &#x27;C-k&#x27; select-pane -U</span><br><span class="line">bind-key -T copy-mode-vi &#x27;C-l&#x27; select-pane -R</span><br><span class="line">bind-key -T copy-mode-vi &#x27;C-\&#x27; select-pane -l</span><br></pre></td></tr></table></figure>
+<h3 id="TPM"><a href="#TPM" class="headerlink" title="TPM"></a>TPM</h3><blockquote>
+<p>感觉不如第一种直接在<code>~/.tmux.config</code>里添加</p>
+</blockquote>
+<p>If you prefer, you can use the Tmux Plugin Manager (TPM) instead of copying the snippet. When using TPM, add the following lines to your <del>/.tmux.conf:<br>如果你更喜欢，你可以使用Tmux插件管理器（TPM）代替复制这个片段。当你使用TPM时，添加下面这几行到你的`</del>/.tmux.conf`</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set -g @plugin &#x27;christoomey/vim-tmux-navigator&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>To set a different key-binding, use the plugin configuration settings (remember to update your vim config accordingly). Multiple key bindings are possible, use a space to separate.</p>
+<p>为了设置不同的键位绑定，使用插件的配置设置（因此记得更新你的vim配置)。使用空格分割可以实现多个键位绑定。</p>
+<p>不要忘记运行<code>tmp</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run &#x27;~/.tmux/plugins/tpm/tpm&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>Thanks to Christopher Sexton who provided the updated tmux configuration in <a target="_blank" rel="noopener" href="http://www.codeography.com/2013/06/19/navigating-vim-and-tmux-splits">this blog post</a>.</p>
+<p>感谢Christopher Sexton在<a target="_blank" rel="noopener" href="http://www.codeography.com/2013/06/19/navigating-vim-and-tmux-splits">这篇博客</a>里提供的更新过的tmux配置。</p>
+<p><strong>翻译至此，已经足够形成个人完整配置</strong></p>
+<p><strong>如果想定制键位，看原文的Configuration部分</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vim-tmux%EF%BC%8CEnglish/" rel="tag"># vim,tmux，English</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/09/15/Neovim%E4%B8%8ETmux%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%AE%BE%E7%BD%AE/" rel="prev" title="Neovim与Tmux快捷键设置">
+      <i class="fa fa-chevron-left"></i> Neovim与Tmux快捷键设置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/09/17/ML-lab3%E5%AF%B9%E6%95%B0%E5%87%A0%E7%8E%87%E5%9B%9E%E5%BD%92/" rel="next" title="ML-lab3对数几率回归">
+      ML-lab3对数几率回归 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Vim-Tmux-Navigator"><span class="nav-number">1.</span> <span class="nav-text">Vim Tmux Navigator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%B3%95"><span class="nav-number">1.0.1.</span> <span class="nav-text">用法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Vim"><span class="nav-number">1.1.1.</span> <span class="nav-text">Vim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lazy-nvim"><span class="nav-number">1.1.2.</span> <span class="nav-text">Lazy.nvim</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tmux"><span class="nav-number">1.2.</span> <span class="nav-text">tmux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Add-a-snippet"><span class="nav-number">1.2.1.</span> <span class="nav-text">Add a snippet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TPM"><span class="nav-number">1.2.2.</span> <span class="nav-text">TPM</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文主要讲解自动化逆向工具Frida的使用，长期更新，计划采用理论加实战。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Frida使用">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2023/11/18/Frida%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="本文主要讲解自动化逆向工具Frida的使用，长期更新，计划采用理论加实战。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-11-18T14:19:17.000Z">
+<meta property="article:modified_time" content="2023-11-24T02:45:21.854Z">
+<meta property="article:author" content="P4yl04d">
+<meta property="article:tag" content="安卓逆向">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2023/11/18/Frida%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Frida使用 | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2023/11/18/Frida%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Frida使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-11-18 22:19:17" itemprop="dateCreated datePublished" datetime="2023-11-18T22:19:17+08:00">2023-11-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-11-24 10:45:21" itemprop="dateModified" datetime="2023-11-24T10:45:21+08:00">2023-11-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Reserve/" itemprop="url" rel="index"><span itemprop="name">Reserve</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Reserve/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文主要讲解自动化逆向工具<code>Frida</code>的使用，长期更新，计划采用理论加实战。</p>
+<span id="more"></span>
+<h3 id="Frida使用"><a href="#Frida使用" class="headerlink" title="Frida使用"></a>Frida使用</h3><p>c:\users\lenovo\appdata\local\pip\cache\wheels\fb\7a\50\0944b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\lenovo\Desktop&gt; pip install frida-tools</span><br><span class="line">Collecting frida-tools</span><br><span class="line">  Downloading frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>.tar.gz (<span class="number">200</span> kB)</span><br><span class="line">     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">200</span>.<span class="number">5</span>/<span class="number">200</span>.<span class="number">5</span> kB <span class="number">158</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">  Installing build dependencies ... done</span><br><span class="line">  Getting requirements to build wheel ... done</span><br><span class="line">  Preparing metadata (pyproject.toml) ... done</span><br><span class="line">Collecting colorama&lt;<span class="number">1</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">0</span>.<span class="number">2</span>.<span class="number">7</span> (from frida-tools)</span><br><span class="line">  Downloading colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span>-py2.py3-none-any.whl (<span class="number">25</span> kB)</span><br><span class="line">Collecting frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> from https://files.pythonhosted.org/packages/<span class="number">53</span>/ab/<span class="number">8351</span>fd5bb7c6879e3c47c8f7d23be757d43b0585660ded476d9c9e0f1d89/frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata</span><br><span class="line">  Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata (<span class="number">2</span>.<span class="number">1</span> kB)</span><br><span class="line">Collecting prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> from https://files.pythonhosted.org/packages/<span class="number">1</span>f/<span class="number">9</span>d/be9b01085bbd67a71c4b6aa02518fade8104e7a2224e5de5e947811d7176/prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata (<span class="number">6</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> from https://files.pythonhosted.org/packages/<span class="number">43</span>/<span class="number">88</span>/<span class="number">29</span>adf0b44ba6ac85045e63734ae0997d3c58d8b1a91c914d240828d0d73d/Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata (<span class="number">2</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting wcwidth (from prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span>-&gt;frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> wcwidth from https://files.pythonhosted.org/packages/<span class="built_in">cd</span>/af/fb045bb3d3daedf28e1bedd771674f73de9e06664a48b1579e14d4120158/wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata</span><br><span class="line">  Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata (<span class="number">14</span> kB)</span><br><span class="line">Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl (<span class="number">32</span>.<span class="number">6</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">32</span>.<span class="number">6</span>/<span class="number">32</span>.<span class="number">6</span> MB <span class="number">218</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl (<span class="number">385</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">385</span>.<span class="number">5</span>/<span class="number">385</span>.<span class="number">5</span> kB <span class="number">300</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl (<span class="number">1</span>.<span class="number">2</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">1</span>.<span class="number">2</span>/<span class="number">1</span>.<span class="number">2</span> MB <span class="number">217</span>.<span class="number">3</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl (<span class="number">105</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">105</span>.<span class="number">2</span>/<span class="number">105</span>.<span class="number">2</span> kB <span class="number">1</span>.<span class="number">2</span> MB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Building wheels <span class="keyword">for</span> collected packages: frida-tools</span><br><span class="line">  Building wheel <span class="keyword">for</span> frida-tools (pyproject.toml) ... done</span><br><span class="line">  Created wheel <span class="keyword">for</span> frida-tools: filename=frida_tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>-py3-none-any.whl size=<span class="number">209506</span> sha256=<span class="number">4</span>a80e4fa6d17f8c097e0b880f90cab15b4f2565be290ec3afbbb81168413eb95</span><br><span class="line">  Stored <span class="keyword">in</span> directory: c:\users\lenovo\appdata\local\pip\cache\wheels\fb\<span class="number">7</span>a\<span class="number">50</span>\<span class="number">0944</span>b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</span><br><span class="line">Successfully built frida-tools</span><br><span class="line">Installing collected packages: wcwidth, pygments, prompt-toolkit, frida, colorama, frida-tools</span><br><span class="line">Successfully installed colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span> frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span> frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span> prompt-toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span> pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span> wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span></span><br><span class="line"></span><br><span class="line">[notice] A new release of pip is available: <span class="number">23</span>.<span class="number">2</span>.<span class="number">1</span> -&gt; <span class="number">23</span>.<span class="number">3</span>.<span class="number">1</span></span><br><span class="line">[notice] To update, run: python.exe -m pip install --upgrade pip</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91/" rel="tag"># 安卓逆向</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80NJU/" rel="prev" title="计算机系统基础NJU">
+      <i class="fa fa-chevron-left"></i> 计算机系统基础NJU
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/19/VPS%E6%90%AD%E5%BB%BA/" rel="next" title="VPS搭建">
+      VPS搭建 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Frida%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">Frida使用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

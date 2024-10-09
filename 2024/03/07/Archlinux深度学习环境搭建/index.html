@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文主要介绍了Archlinux下本地深度学习环境的搭建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Archlinux深度学习环境搭建">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/03/07/Archlinux%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="本文主要介绍了Archlinux下本地深度学习环境的搭建">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-03-07T11:18:30.000Z">
+<meta property="article:modified_time" content="2024-09-12T15:56:19.029Z">
+<meta property="article:author" content="P4yl04d">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/03/07/Archlinux%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Archlinux深度学习环境搭建 | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/03/07/Archlinux%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Archlinux深度学习环境搭建
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-03-07 19:18:30" itemprop="dateCreated datePublished" datetime="2024-03-07T19:18:30+08:00">2024-03-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-09-12 23:56:19" itemprop="dateModified" datetime="2024-09-12T23:56:19+08:00">2024-09-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">环境搭建</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文主要介绍了Archlinux下本地深度学习环境的搭建</p>
+<span id="more"></span>
+
+<p>参考文章：<a target="_blank" rel="noopener" href="https://xland.cyou/p/arch-linux-configuration-driver-and-software/">Arch Linux 配置 – 驱动和软件安装</a></p>
+<h3 id="显卡安装"><a href="#显卡安装" class="headerlink" title="显卡安装"></a>显卡安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S nvidia-open-dkms nvidia-settings lib32-nvidia-utils <span class="comment"># 必须安装</span></span><br></pre></td></tr></table></figure>
+
+<p>安装好驱动后，编辑<code>/etc/mkinitcpio.conf</code>，删去<code>HOOKS</code>那一项中得<code>kms</code>，阻止内核启动时加载<code>nouveau</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># HOOKS=(base udev autodetect modconf keyboard keymap kms consolefont block filesystems fsck)  # 更改前</span><br><span class="line">HOOKS=(base udev autodetect modconf keyboard keymap consolefont block filesystems fsck)  # 更改后</span><br></pre></td></tr></table></figure>
+
+<p>更改后重新生成<code>initramfs</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkinitcpio -P</span><br></pre></td></tr></table></figure>
+
+<p>更新时需要重新生成<code>mkinitcpio</code>，自动更新脚本配置如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/pacman.d/hooks/nvidia.hook</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[Trigger]</span><br><span class="line">Operation=Install</span><br><span class="line">Operation=Upgrade</span><br><span class="line">Operation=Remove</span><br><span class="line">Type=Package</span><br><span class="line">Target=nvidia-open-dkms</span><br><span class="line">#Target=linux</span><br><span class="line"># Change the linux part above and in the Exec line if a different kernel is used</span><br><span class="line"># 如果使用不同的内核，请更改上面的 linux 部分和 Exec 行中的内容</span><br><span class="line"></span><br><span class="line">[Action]</span><br><span class="line">Description=Update Nvidia module in initcpio</span><br><span class="line">Depends=mkinitcpio</span><br><span class="line">When=PostTransaction</span><br><span class="line">#NeedsTargets</span><br><span class="line">#Exec=/bin/sh -c &#x27;while read -r trg; do case $trg in linux) exit 0; esac; done; /usr/bin/mkinitcpio -P&#x27;</span><br><span class="line">Exec=/usr/bin/mkinitcpio -P</span><br></pre></td></tr></table></figure>
+
+<p>重启电脑后，键入下列代码，回显如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">lspci -k | grep -A 2 -E &quot;(VGA|3D)&quot;</span><br><span class="line">01:00.0 VGA compatible controller: NVIDIA Corporation GA107BM [GeForce RTX 3050 Mobile] (rev a1)</span><br><span class="line">        Subsystem: Lenovo GA107BM [GeForce RTX 3050 Mobile]</span><br><span class="line">        Kernel driver in use: nvidia</span><br><span class="line">--</span><br><span class="line">06:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Cezanne [Radeon Vega Series / Radeon Vega Mobile Series] (rev c5)</span><br><span class="line">        Subsystem: Lenovo Cezanne [Radeon Vega Series / Radeon Vega Mobile Series]</span><br><span class="line">        Kernel driver in use: amdgpu</span><br></pre></td></tr></table></figure>
+
+<h3 id="核显和独显动态切换"><a href="#核显和独显动态切换" class="headerlink" title="核显和独显动态切换"></a>核显和独显动态切换</h3><blockquote>
+<p>nvidia独显的话，基本只能用x11桌面</p>
+<p>optimus软件都打不开,目前在用独显模式，还需要把bios改成独显</p>
+<p>不然桌面系统都进不去</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -S optimus-manager optimus-manager-qt</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/environment</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__NV_PRIME_RENDER_OFFLOAD=1</span><br><span class="line">__GLX_VENDOR_LIBRARY_NAME=<span class="string">&quot;nvidia&quot;</span></span><br><span class="line">__VK_LAYER_NV_optimus=<span class="string">&quot;NVIDIA_only&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="cuda-amp-amp-cudnn"><a href="#cuda-amp-amp-cudnn" class="headerlink" title="cuda&amp;&amp;cudnn"></a>cuda&amp;&amp;cudnn</h3><blockquote>
+<p>考虑到tensorflow需要对应版本的cuda和cudnn推荐google搜索官网版本下载</p>
+<p>查询网站：</p>
+<p><a target="_blank" rel="noopener" href="https://tensorflow.google.cn/install/source">https://tensorflow.google.cn/install/source</a></p>
+<p>我的版本：</p>
+<p>cuda 12.4</p>
+<p>cudnn  8.9.7.29</p>
+<p>tensorflow 12.7</p>
+<p>兼容性不太行，但可以用，有点警告，pytorch可以完全兼容</p>
+<p>警告修复：<br><a target="_blank" rel="noopener" href="https://github.com/tensorflow/tensorflow/issues/62075">https://github.com/tensorflow/tensorflow/issues/62075</a></p>
+<p>中文翻译：<br><a target="_blank" rel="noopener" href="https://dingdingqiuqiu.github.io/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/#more">https://dingdingqiuqiu.github.io/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/#more</a></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -S cuda</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yay -S cudnn</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd </span><br><span class="line">vim .zshrc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#cuda-setting</span><br><span class="line">export PATH=&quot;/opt/cuda/bin:$PATH&quot;</span><br><span class="line">export LD_LIBRARY_PATH=&quot;/opt/cuda/lib64:$LD_LIBRARY_PATH&quot;</span><br><span class="line">export CUDA_HOME=$CUDA_HOME:/opt/cuda</span><br><span class="line">export CUDA_VISIBLE_DEVICES=0</span><br></pre></td></tr></table></figure>
+
+<p><code>export CUDA_VISIBLE_DEVICES=0</code>如果有四块显卡，改为<code>export CUDA_VISIBLE_DEVICES=0,1,2,3</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果不重启电脑，依然用不了，提示环境错误，版本不适配</p>
+<p><code>CUDA initialization: CUDA unknown error - this may be due to an incorrectly set up environment</code></p>
+</blockquote>
+<p>测试cuda是否可用：</p>
+<p><strong>torch框架</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test.py</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;CUDA版本:&#x27;</span>, torch.version.cuda)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Pytorch版本:&#x27;</span>, torch.__version__)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;显卡是否可用:&#x27;</span>, <span class="string">&#x27;可用&#x27;</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">&#x27;不可用&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;显卡数量:&#x27;</span>, torch.cuda.device_count())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;是否支持BF16数字格式:&#x27;</span>, <span class="string">&#x27;支持&#x27;</span> <span class="keyword">if</span> torch.cuda.is_bf16_supported() <span class="keyword">else</span> <span class="string">&#x27;不支持&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡型号:&#x27;</span>, torch.cuda.get_device_name())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的CUDA算力:&#x27;</span>, torch.cuda.get_device_capability())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的总显存:&#x27;</span>, torch.cuda.get_device_properties(<span class="number">0</span>).total_memory / <span class="number">1024</span> / <span class="number">1024</span> / <span class="number">1024</span>, <span class="string">&#x27;GB&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;是否支持TensorCore:&#x27;</span>, <span class="string">&#x27;支持&#x27;</span> <span class="keyword">if</span> torch.cuda.get_device_properties(<span class="number">0</span>).major &gt;= <span class="number">7</span> <span class="keyword">else</span> <span class="string">&#x27;不支持&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的显存使用率:&#x27;</span>, torch.cuda.memory_allocated(<span class="number">0</span>) / torch.cuda.get_device_properties(<span class="number">0</span>).total_memory * <span class="number">100</span>, <span class="string">&#x27;%&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 结果</span><br><span class="line">CUDA版本: 12.1</span><br><span class="line">Pytorch版本: 2.2.2+cu121</span><br><span class="line">显卡是否可用: 可用</span><br><span class="line">显卡数量: 1</span><br><span class="line">是否支持BF16数字格式: 支持</span><br><span class="line">当前显卡型号: NVIDIA GeForce RTX 3050 Laptop GPU</span><br><span class="line">当前显卡的CUDA算力: (8, 6)</span><br><span class="line">当前显卡的总显存: 3.58929443359375 GB</span><br><span class="line">是否支持TensorCore: 支持</span><br><span class="line">当前显卡的显存使用率: 0.0 %</span><br></pre></td></tr></table></figure>
+
+<p><strong>paddle框架</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test.py</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> paddle</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;CUDA版本:&#x27;</span>, torch.version.cuda)</span><br><span class="line">torch.cuda.is_available()</span><br><span class="line">paddle.utils.run_check()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 结果</span><br><span class="line">CUDA版本: 12.1</span><br><span class="line">Running verify PaddlePaddle program ... </span><br><span class="line">I0407 17:14:43.856997  8841 program_interpreter.cc:212] New Executor is Running.</span><br><span class="line">W0407 17:14:43.862674  8841 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.6, Driver API Version: 12.4, Runtime API Version: 11.8</span><br><span class="line">W0407 17:14:43.863399  8841 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.</span><br><span class="line">I0407 17:14:44.297957  8841 interpreter_util.cc:624] Standalone Executor is Used.</span><br><span class="line">PaddlePaddle works well on 1 GPU.</span><br><span class="line">PaddlePaddle is installed successfully! Let&#x27;s start deep learning with PaddlePaddle now.</span><br></pre></td></tr></table></figure>
+
+<h3 id="python虚拟环境"><a href="#python虚拟环境" class="headerlink" title="python虚拟环境"></a>python虚拟环境</h3><blockquote>
+<p>由于系统<code>python</code>包管理属于<code>pacman</code>,有很多<code>pip</code>包无法安装</p>
+<p>所以我们通过<code>python</code>虚拟环境的方式来安装这些包    </p>
+<p>虚拟环境管理有很多方式，包括<code>conda</code>等，<code>python -m venv</code>更轻量级，<code>conda</code>适合大型项目</p>
+</blockquote>
+<p>注意：</p>
+<ul>
+<li><p>想要使用<code>cuda&amp;&amp;cudnn</code>进行深度学习，务必启动虚拟环境</p>
+<blockquote>
+<p>这是因为全局环境中的<code>torch.__version__</code>为<code>2.2.2</code></p>
+<p>而虚拟环境中的为<code>2.2.2+cu121</code></p>
+<p><code>cu121</code>表示 PyTorch 版本是专门针对 CUDA 12.1 编译的。</p>
+<p>这是由于我的<code>torch</code>是虚拟环境启动后通过<code>pip</code>安装的</p>
+<p>而系统上的是<code>pacman</code>安装的，版本不同</p>
+</blockquote>
+</li>
+<li><p>虚拟环境启动后，<code>pip</code>安装的包都会存在于虚拟环境中</p>
+</li>
+</ul>
+<h4 id="虚拟环境创建"><a href="#虚拟环境创建" class="headerlink" title="虚拟环境创建"></a>虚拟环境创建</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /home/P4yl04d/Documents/HENU_overview</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -m venv myenv</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里的 <code>myenv</code> 是你想要创建的虚拟环境的名称，你可以将其替换为你喜欢的任何名称。</p>
+</blockquote>
+<h4 id="虚拟环境激活"><a href="#虚拟环境激活" class="headerlink" title="虚拟环境激活"></a>虚拟环境激活</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source myenv/bin/activate</span><br></pre></td></tr></table></figure>
+
+<h4 id="退出虚拟环境"><a href="#退出虚拟环境" class="headerlink" title="退出虚拟环境"></a>退出虚拟环境</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deactivate</span><br></pre></td></tr></table></figure>
+
+<h3 id="tensorflow安装"><a href="#tensorflow安装" class="headerlink" title="tensorflow安装"></a>tensorflow安装</h3><p>以下查询版本对应，务必下载对应版本的cuda和cudnn</p>
+<p><a target="_blank" rel="noopener" href="https://tensorflow.google.cn/install/source">https://tensorflow.google.cn/install/source</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/15/Bufbomb%E6%A0%88%E6%BA%A2%E5%87%BA%E7%82%B8%E5%BC%B9%E5%AE%9E%E9%AA%8C/" rel="prev" title="Bufbomb栈溢出炸弹实验">
+      <i class="fa fa-chevron-left"></i> Bufbomb栈溢出炸弹实验
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/03/14/CS61b%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97/" rel="next" title="CS61b食用指南">
+      CS61b食用指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E5%8D%A1%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">显卡安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E6%98%BE%E5%92%8C%E7%8B%AC%E6%98%BE%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">核显和独显动态切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda-amp-amp-cudnn"><span class="nav-number">3.</span> <span class="nav-text">cuda&amp;&amp;cudnn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">4.</span> <span class="nav-text">python虚拟环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA"><span class="nav-number">4.1.</span> <span class="nav-text">虚拟环境创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E6%BF%80%E6%B4%BB"><span class="nav-number">4.2.</span> <span class="nav-text">虚拟环境激活</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">4.3.</span> <span class="nav-text">退出虚拟环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorflow%E5%AE%89%E8%A3%85"><span class="nav-number">5.</span> <span class="nav-text">tensorflow安装</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

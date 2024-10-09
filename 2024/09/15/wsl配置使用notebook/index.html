@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一直使用linux终端比较习惯，这里展示wsl优雅启动notebook,以及基本使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wsl配置使用notebook">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/09/15/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="一直使用linux终端比较习惯，这里展示wsl优雅启动notebook,以及基本使用">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://dingdingqiuqiu.github.io.git/OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915031943805.png">
+<meta property="og:image" content="https://dingdingqiuqiu.github.io.git/OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915032115478.png">
+<meta property="og:image" content="https://dingdingqiuqiu.github.io.git/OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915032441851.png">
+<meta property="og:image" content="https://dingdingqiuqiu.github.io.git/OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915033346360.png">
+<meta property="og:image" content="https://dingdingqiuqiu.github.io.git/OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915034040605.png">
+<meta property="og:image" content="https://1drv.ms/i/s!Ai4kpDYGStT7mxLYiq30zod2xxZG?embed=1&width=1919&height=1018">
+<meta property="article:published_time" content="2024-09-14T18:40:40.000Z">
+<meta property="article:modified_time" content="2024-09-28T15:09:37.086Z">
+<meta property="article:author" content="P4yl04d">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dingdingqiuqiu.github.io.git/OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915031943805.png">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/09/15/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>wsl配置使用notebook | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/09/15/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          wsl配置使用notebook
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-09-15 02:40:40" itemprop="dateCreated datePublished" datetime="2024-09-15T02:40:40+08:00">2024-09-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-09-28 23:09:37" itemprop="dateModified" datetime="2024-09-28T23:09:37+08:00">2024-09-28</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一直使用linux终端比较习惯，这里展示wsl优雅启动notebook,以及基本使用</p>
+<span id="more"></span>
+
+<h3 id="jupyter配置"><a href="#jupyter配置" class="headerlink" title="jupyter配置"></a>jupyter配置</h3><h4 id="生成默认配置文件"><a href="#生成默认配置文件" class="headerlink" title="生成默认配置文件"></a>生成默认配置文件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook --generate-config</span><br></pre></td></tr></table></figure>
+
+<p>会在用户目录下生成<code>.jupyter</code>文件夹，其中<code>jupyter_notebook_config.py</code>就是配置文件。</p>
+<h4 id="生成密钥"><a href="#生成密钥" class="headerlink" title="生成密钥"></a>生成密钥</h4><p>终端输入<code>ipython</code>进入命令行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ipython</span><br></pre></td></tr></table></figure>
+
+<p>输入密码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from jupyter_server.auth import passwd</span><br><span class="line">passwd()</span><br></pre></td></tr></table></figure>
+
+<p>or直接在shell</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter server password</span><br></pre></td></tr></table></figure>
+
+<p>如果采用方式1，直接在命令行打印了密钥，如果采用了方式二，会提示密钥写在了何处，我们查看并复制，下一步配置自动登录时会用到</p>
+<p><img src="../../../../../OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915031943805.png" alt="image-20240915031943805"></p>
+<p><img src="../../../../../OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915032115478.png" alt="image-20240915032115478"></p>
+<h4 id="配置文件修改"><a href="#配置文件修改" class="headerlink" title="配置文件修改"></a>配置文件修改</h4><p>默认自动登录，打开第一步生成的配置文件，把hash写入，仅手动登录一次后即可实现自动登录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.jupyter/jupyter_notebook_config.py </span><br></pre></td></tr></table></figure>
+
+<p>修改下面<code>c.ServerApp.password</code>的值为上面的密钥即可。</p>
+<p><img src="../../../../../OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915032441851.png" alt="image-20240915032441851"></p>
+<p>编辑默认生成的配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.jupyter/jupyter_notebook_config.py</span><br></pre></td></tr></table></figure>
+
+<p>对下面这行解注释即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.NotebookApp.open_browser = False     	#不自动打开浏览器</span><br></pre></td></tr></table></figure>
+
+<h3 id="jupyter使用"><a href="#jupyter使用" class="headerlink" title="jupyter使用"></a>jupyter使用</h3><h4 id="nohup方式"><a href="#nohup方式" class="headerlink" title="nohup方式"></a>nohup方式</h4><p>我们用下面这行命令打开<code>notebook</code>没有额外输出，终端可以继续干别的事情</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup jupyter notebook&amp;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../../OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915033346360.png" alt="image-20240915033346360"></p>
+<p>该命令返回的一个pid,我们可以使用<code>kill</code>命令来杀死它，注意这里我们实际上是将输出写入了当前目录下的<code>nohup.out</code>,如果太大，记得删除。我们想要停止该进程可以使用<code>kill -9 pid</code>停止。</p>
+<p><img src="../../../../../OneDrive/%E5%9B%BE%E7%89%87/Blog/wsl%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8notebook/image-20240915034040605.png" alt="image-20240915034040605"></p>
+<p>另一种方式是使用<code>tumx</code>启动<code>notebook</code></p>
+<h4 id="tmux方式"><a href="#tmux方式" class="headerlink" title="tmux方式"></a><code>tmux</code>方式</h4><blockquote>
+<p>会介绍的这些已经可以很优雅得使用nootbook了</p>
+<p>实际上tmux相当好用，还有别的有趣功能</p>
+</blockquote>
+<p>安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install tmux</span><br></pre></td></tr></table></figure>
+
+<p>进入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tmux</span><br></pre></td></tr></table></figure>
+
+<p>之后在终端上下左右切分切换即可。如下图所示。上方窗口在下方<code>notebook</code>启动后依旧可以执行其他命令。</p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mxLYiq30zod2xxZG?embed=1&width=1919&height=1018" width="1919" height=" " />
+
+<p>由于<code>tmux</code>快捷键设置较为阴间，我们配合neovim的窗口快捷键切换出一篇blog介绍统一方便的快捷键设置。可跳转至下面这篇文章:</p>
+<p><a target="_blank" rel="noopener" href="https://dingdingqiuqiu.github.io/2024/09/15/Neovim%E4%B8%8ETmux%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%AE%BE%E7%BD%AE/#more">Neovim与Tmux快捷键设置[myblog]</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/09/15/linux%E7%8E%AF%E5%A2%83%E4%B8%ADmatplotlib%E7%94%BB%E5%9B%BE%E7%BC%BA%E5%B0%91%E5%AD%97%E4%BD%93/" rel="prev" title="linux环境中matplotlib画图缺少字体">
+      <i class="fa fa-chevron-left"></i> linux环境中matplotlib画图缺少字体
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/09/15/Neovim%E4%B8%8ETmux%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%AE%BE%E7%BD%AE/" rel="next" title="Neovim与Tmux快捷键设置">
+      Neovim与Tmux快捷键设置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#jupyter%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">jupyter配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">生成默认配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5"><span class="nav-number">1.2.</span> <span class="nav-text">生成密钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BF%AE%E6%94%B9"><span class="nav-number">1.3.</span> <span class="nav-text">配置文件修改</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jupyter%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">jupyter使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nohup%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">nohup方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tmux%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">tmux方式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

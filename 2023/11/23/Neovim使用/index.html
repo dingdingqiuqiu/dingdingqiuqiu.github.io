@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文是vim&#x2F;nvim的使用及配置攻略。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Neovim使用">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2023/11/23/Neovim%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="本文是vim&#x2F;nvim的使用及配置攻略。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-11-23T15:05:50.000Z">
+<meta property="article:modified_time" content="2024-09-12T16:33:56.314Z">
+<meta property="article:author" content="P4yl04d">
+<meta property="article:tag" content="vim">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2023/11/23/Neovim%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Neovim使用 | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2023/11/23/Neovim%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Neovim使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-11-23 23:05:50" itemprop="dateCreated datePublished" datetime="2023-11-23T23:05:50+08:00">2023-11-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-09-13 00:33:56" itemprop="dateModified" datetime="2024-09-13T00:33:56+08:00">2024-09-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">环境搭建</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文是<code>vim/nvim</code>的使用及配置攻略。</p>
+<span id="more"></span>
+
+<h3 id="2024-9-13更新"><a href="#2024-9-13更新" class="headerlink" title="2024.9.13更新"></a>2024.9.13更新</h3><blockquote>
+<p><code>neovim</code>配置文件在<code>~/.config/nvim</code>中，感觉现在<code>neovim</code>更对胃口，我的<code>nvim/vim</code>配置：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dingdingqiuqiu/vimrc">https://github.com/dingdingqiuqiu/vimrc</a></p>
+</blockquote>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><h3 id="普通模式"><a href="#普通模式" class="headerlink" title="普通模式"></a>普通模式</h3><blockquote>
+<p>默认打开文件进入普通模式,多用于浏览文件和粘贴复制</p>
+</blockquote>
+<p><code>hjkl</code>用来移动光标</p>
+<p><code>4k</code>向下跳4行</p>
+<p><code>w</code>跳转到下一个单词的开头</p>
+<p><code>b</code>跳转到前一个单词的开头</p>
+<p><code>gg</code>回到文档最上方</p>
+<p><code>G</code>回到文档最下方</p>
+<p><code>Ctrl u</code>向上翻页</p>
+<p><code>Ctrl d</code>向下翻页</p>
+<p><code>fx</code>将光标移动到离你最近的‘x’位置</p>
+<p><code>y</code>复制</p>
+<p>注：<code>vim</code>在执行<code>yank</code>后并不默认把内容送到系统剪切板<code>&quot;+y</code>才是将内容送到系统剪切板。</p>
+<p><strong>vim寄存器</strong></p>
+<p>无论是vim内部抑或外部的复制（[y]ank）、删除（[d]elete）、粘贴（[p]ut），在vim中都是借助registers（寄存器）实现的，vim共有9类寄存器：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>标识</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>无名（unnamed）寄存器</td>
+<td>“”</td>
+<td>缓存最后一次操作内容；</td>
+</tr>
+<tr>
+<td>数字（numbered）寄存器</td>
+<td>“0 - “9</td>
+<td>缓存最近操作内容，复制与删除有别；</td>
+</tr>
+<tr>
+<td>行内删除（small delete）寄存器</td>
+<td>“-</td>
+<td>缓存行内删除内容；</td>
+</tr>
+<tr>
+<td>具名（named）寄存器</td>
+<td>“a - “z或”A - “Z</td>
+<td>指定时可用；</td>
+</tr>
+<tr>
+<td>只读（read-only）寄存器</td>
+<td>“:, “., “%, “#</td>
+<td>分别缓存最近命令、最近插入文本、当前文件名、当前交替文件名；</td>
+</tr>
+<tr>
+<td>表达式（expression）寄存器</td>
+<td>“=</td>
+<td>只读，用于执行表达式命令；</td>
+</tr>
+<tr>
+<td>选择及拖拽（selection and drop）寄存器</td>
+<td>“*, “+, “~</td>
+<td>存取GUI选择文本，可用于与外部应用交互，使用前提为系统剪切板（clipboard）可用；</td>
+</tr>
+<tr>
+<td>黑洞（black hole）寄存器</td>
+<td>“_</td>
+<td>不缓存操作内容（干净删除）；</td>
+</tr>
+<tr>
+<td>模式寄存器（last search pattern）</td>
+<td>“/</td>
+<td>缓存最近的搜索模式。</td>
+</tr>
+</tbody></table>
+<p>上面的说明为简要概述，并不完全准确，详细说明须参考手册：:help copy-move</p>
+<p>使用下面这条命令查看<code>vim</code>是否能写入<code>clipbloard</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim --version|grep clipboard</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">### 回显，这里`+`表示支持</span><br><span class="line">+clipboard         +keymap            +printer           +vertsplit</span><br><span class="line">+ex_extra          +mouse_netterm     +syntax            +xterm_clipboard</span><br></pre></td></tr></table></figure>
+
+<p>可能是装了<a target="_blank" rel="noopener" href="https://archlinux.org/packages/?name=wl-clipboard">wl-clipboard</a>,我记得<code>kali</code>里是不支持的。</p>
+<blockquote>
+<p>具体参见这篇：<a target="_blank" rel="noopener" href="https://wiki.archlinuxcn.org/wiki/Neovim">Archwiki_Neovim</a></p>
+</blockquote>
+<blockquote>
+<p><code>yaw</code>—&gt; yank all word</p>
+<p><code>y4j</code>—&gt; yank 下面四行内容</p>
+<p><code>yfr</code>—&gt; yank 到r为止的内容</p>
+</blockquote>
+<p>参考文档：<a target="_blank" rel="noopener" href="http://xstarcd.github.io/wiki/vim/vimcopy.html">vim复制粘贴（与系统剪切板相关内容）</a></p>
+<p><code>p</code>粘贴</p>
+<blockquote>
+<p>类似的，<code>&quot;+p</code>是将系统剪切板内容剪切出来</p>
+</blockquote>
+<p><code>d</code>删除</p>
+<blockquote>
+<p><code>dj</code>—-&gt; delete 当前行和下一行内容</p>
+<p><code>d8j</code>—-&gt; delete 下八行内容</p>
+</blockquote>
+<p><code>u</code>撤销</p>
+<h3 id="命令行模式"><a href="#命令行模式" class="headerlink" title="命令行模式"></a>命令行模式</h3><blockquote>
+<p>普通模式输入<code>:</code>进入命令行模式</p>
+</blockquote>
+<h3 id="编辑模式"><a href="#编辑模式" class="headerlink" title="编辑模式"></a>编辑模式</h3><blockquote>
+<p>普通模式输入<strong>i</strong>，当前光标的前一个开始输入</p>
+</blockquote>
+<blockquote>
+<p>普通模式输入<strong>a</strong>,当前光标的后一个开始输入</p>
+</blockquote>
+<blockquote>
+<p>普通模式输入<strong>A</strong>,当前行的开头开始输入</p>
+</blockquote>
+<blockquote>
+<p> 普通模式输入<strong>I</strong>,当前行结尾开始输入</p>
+</blockquote>
+<blockquote>
+<p><code>caw</code>删除这个单词，并进入输入模式</p>
+<p><code>cc</code>删除该行，并进入输入模式</p>
+<p><code>c4j</code>删除下四行，并进入输入模式</p>
+</blockquote>
+<h3 id="可视化模式"><a href="#可视化模式" class="headerlink" title="可视化模式"></a>可视化模式</h3><blockquote>
+<p>普通模式输入<code>v</code>进入可视模式</p>
+</blockquote>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><h4 id="vim-plug下载"><a href="#vim-plug下载" class="headerlink" title="vim-plug下载"></a>vim-plug下载</h4><p>商店：<a target="_blank" rel="noopener" href="https://vimawesome.com">vimawesome</a></p>
+<p>推荐使用<code>VimPlug</code>管理插件</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/junegunn/vim-plug">vim-plug安装配置（github项目地址）</a></p>
+<p>我们这里使用<code>Vim-plug</code>管理插件,先下载<code>vim-plug</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -fLo ~/.vim/autoload/plug.vim --create-dirs \</span><br><span class="line">    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</span><br></pre></td></tr></table></figure>
+
+<h4 id="vim插件下载"><a href="#vim插件下载" class="headerlink" title="vim插件下载"></a>vim插件下载</h4><p><a target="_blank" rel="noopener" href="https://wiki.archlinuxcn.org/wiki/Vim">Archwiki-Vim</a></p>
+<p><a target="_blank" rel="noopener" href="https://wiki.archlinuxcn.org/wiki/Neovim">Archwiki-Nvim</a></p>
+<blockquote>
+<p>vim全局配置文件：<code>/etc/vimrc</code></p>
+<p>vim插件下载到：<code>~/.vim/autoload</code></p>
+<p>nvim全局配置文件：<code>/etc/xdg/nvim/sysinit.vim</code></p>
+<p>nvim插件下载到：<code>~/.local/share/nvim/site/autoload/</code></p>
+</blockquote>
+<p>将<code>/etc/vimrc</code>配置<code>cp</code>到<code>/etc/xdg/nvim/sysinit.vim</code>后，需要把插件也从<code>~/.vim/autoload</code>文件夹<code>cp</code>到<code>~/.local/share/nvim/site/autoload/</code>。本文主要讲解<code>vim</code>的插件配置，<code>nvim</code>配置可自行迁移。</p>
+<blockquote>
+<p>nvim迁移后属于能用，但每次使用都有警告的存在，所以还是推荐<code>vim</code></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">## neovim配置时，官网给的这条命令跑不起来，加`--insecurity`参数也不行</span><br><span class="line">## 多方面考虑，还是推荐vim</span><br><span class="line">sh -c &#x27;curl -fLo &quot;$&#123;XDG_DATA_HOME:-$HOME/.local/share&#125;&quot;/nvim/site/autoload/plug.vim --create-dirs \</span><br><span class="line">       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/vimrc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">call plug#begin()</span><br><span class="line">Plug &#x27;scrooloose/nerdtree&#x27;</span><br><span class="line">call plug#end()</span><br></pre></td></tr></table></figure>
+
+<p>开始安装</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">source</span> %</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:PlugInstall</span><br></pre></td></tr></table></figure>
+
+<p>再次进入，输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:NERDTree</span><br></pre></td></tr></table></figure>
+
+<p>即可看到文件目录</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot; All system-wide defaults are set in $VIMRUNTIME/archlinux.vim (usually just</span></span><br><span class="line"><span class="string">&quot;</span> /usr/share/vim/vimfiles/archlinux.vim) and sourced by the call to <span class="punctuation">:</span>runtime</span><br><span class="line"><span class="string">&quot; you can find below.  If you wish to change any of those settings, you should</span></span><br><span class="line"><span class="string">&quot;</span> do it in this file (/etc/vimrc)<span class="punctuation">,</span> since archlinux.vim will be overwritten</span><br><span class="line"><span class="string">&quot; everytime an upgrade of the vim packages is performed.  It is recommended to</span></span><br><span class="line"><span class="string">&quot;</span> make changes after sourcing archlinux.vim since it alters the value of the</span><br><span class="line"><span class="string">&quot; &#x27;compatible&#x27; option.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;</span> This line should not be removed as it ensures that various options are</span><br><span class="line"><span class="string">&quot; properly set to work with the Vim-related packages.</span></span><br><span class="line"><span class="string">runtime! archlinux.vim</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;</span> If you prefer the old-style vim functionalty<span class="punctuation">,</span> add &#x27;runtime! vimrc_example.vim&#x27;</span><br><span class="line"><span class="string">&quot; Or better yet, read /usr/share/vim/vim80/vimrc_example.vim or the vim manual</span></span><br><span class="line"><span class="string">&quot;</span> and configure vim to your own liking!</span><br><span class="line"></span><br><span class="line"><span class="string">&quot; do not load defaults if ~/.vimrc is missing</span></span><br><span class="line"><span class="string">&quot;</span>let skip_defaults_vim=<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;基本设置&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">filetype on	<span class="string">&quot;开启文件类型侦测</span></span><br><span class="line"><span class="string">filetype indent on	&quot;</span>适应不同语言的缩进</span><br><span class="line">syntax enable	<span class="string">&quot;开启语法高亮功能</span></span><br><span class="line"><span class="string">syntax on 	&quot;</span>允许使用用户配色</span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;快捷键设置&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;</span></span><br><span class="line"><span class="string">map &lt;F3&gt; :NERDTreeToggle&lt;CR&gt;    </span></span><br><span class="line"><span class="string">inoremap jk &lt;Esc&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span>显示设置<span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;</span></span><br><span class="line"><span class="string">set laststatus=2        	&quot;</span>总是显示状态栏</span><br><span class="line">set ruler               	<span class="string">&quot;显示光标位置</span></span><br><span class="line"><span class="string">set number              	&quot;</span>显示行号</span><br><span class="line">set cursorline          	<span class="string">&quot;高亮显示当前行</span></span><br><span class="line"><span class="string">set cursorcolumn            &quot;</span>高亮显示当前列</span><br><span class="line">set hlsearch                <span class="string">&quot; 高亮搜索结果</span></span><br><span class="line"><span class="string">exec &quot;</span>nohlsearch<span class="string">&quot;</span></span><br><span class="line"><span class="string">set incsearch               &quot;</span>边输边高亮</span><br><span class="line">set ignorecase              <span class="string">&quot;搜索时忽略大小写</span></span><br><span class="line"><span class="string">set smartcase</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">set relativenumber          &quot;</span>其他行显示相对行号</span><br><span class="line"><span class="string">&quot;set scrolloff=5            &quot;</span>垂直滚动时光标距底部位置</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;编码设置&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">set fileencodings=utf<span class="number">-8</span><span class="punctuation">,</span>gb2312<span class="punctuation">,</span>gbk<span class="punctuation">,</span>gb18030<span class="punctuation">,</span>cp936    <span class="string">&quot; 检测文件编码,将fileencoding设置为最终编码</span></span><br><span class="line"><span class="string">set fileencoding=utf-8                              &quot;</span> 保存时的文件编码</span><br><span class="line">set termencoding=utf<span class="number">-8</span>                              <span class="string">&quot; 终端的输出字符编码</span></span><br><span class="line"><span class="string">set encoding=utf-8                                  &quot;</span> VIM打开文件使用的内部编码</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;编辑设置&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">set expandtab   	<span class="string">&quot;扩展制表符为空格</span></span><br><span class="line"><span class="string">set tabstop=4   	&quot;</span>制表符占空格数</span><br><span class="line">set softtabstop=<span class="number">4</span>	<span class="string">&quot;将连续数量的空格视为一个制表符</span></span><br><span class="line"><span class="string">set shiftwidth=4	&quot;</span>自动缩进所使用的空格数</span><br><span class="line"><span class="string">&quot;set textwidth=79	&quot;</span>编辑器每行字符数</span><br><span class="line">set wrap            <span class="string">&quot;设置自动折行</span></span><br><span class="line"><span class="string">set linebreak       &quot;</span>防止单词内部折行</span><br><span class="line">set wrapmargin=<span class="number">5</span>      <span class="string">&quot;指定折行处与右边缘空格数</span></span><br><span class="line"><span class="string">set autoindent  	&quot;</span>打开自动缩进</span><br><span class="line">set wildmenu    	<span class="string">&quot;vim命令自动补全</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">call plug#begin(&#x27;~/.vim/plugged&#x27;)</span></span><br><span class="line"><span class="string">&quot;</span>需要配置的插件都放在begin和end之间</span><br><span class="line"></span><br><span class="line">Plug &#x27;scrooloose/nerdcommenter&#x27; <span class="string">&quot;多行注释</span></span><br><span class="line"><span class="string">Plug &#x27;jiangmiao/auto-pairs&#x27;     &quot;</span>括号、引号自动补全</span><br><span class="line">Plug &#x27;scrooloose/nerdtree&#x27; 	<span class="string">&quot;树形目录</span></span><br><span class="line"><span class="string">Plug &#x27;Yggdroot/indentLine&#x27;      &quot;</span>自动缩进插件</span><br><span class="line">Plug &#x27;vim-airline/vim-airline&#x27;  <span class="string">&quot;状态栏主题</span></span><br><span class="line"><span class="string">Plug &#x27;vim-scripts/Solarized&#x27;    &quot;</span>主题</span><br><span class="line">Plug &#x27;honza/vim-snippets&#x27;       <span class="string">&quot;代码片段补全</span></span><br><span class="line"><span class="string">Plug &#x27;SirVer/ultisnips&#x27;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;</span>Plug &#x27;mhinz/vim-startify&#x27;         <span class="string">&quot;vim开始界面最近文件</span></span><br><span class="line"><span class="string">&quot;</span>Plug &#x27;connorholyday/vim-snazzy&#x27;   <span class="string">&quot;主题方案</span></span><br><span class="line"><span class="string">&quot;</span>Plug &#x27;tpope/vim-commentary&#x27;       <span class="string">&quot;代码注释</span></span><br><span class="line"><span class="string">&quot;</span>Plug &#x27;ryanoasis/vim-devicons&#x27;     <span class="string">&quot;文件图标</span></span><br><span class="line"><span class="string">&quot;</span>Plug &#x27;Lokaltog/vim-powerline&#x27;     <span class="string">&quot;状态栏主题</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">call plug#end()</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="插件使用"><a href="#插件使用" class="headerlink" title="插件使用"></a>插件使用</h4><h5 id="NERDTree"><a href="#NERDTree" class="headerlink" title="NERDTree"></a><code>NERDTree</code></h5><p>NERDTree是一个非常实用的Vim插件，它提供了一种方便的方式来浏览文件系统并打开文件。以下是一些常用的NERDTree快捷键：</p>
+<ul>
+<li><code>ctrl + w + h</code>：光标focus左侧树形目录</li>
+<li><code>ctrl + w + l</code>：光标focus右侧文件显示窗口</li>
+<li><code>ctrl + w + w</code>：光标自动在左右侧窗口切换</li>
+<li><code>ctrl + w + r</code>：移动当前窗口的布局位置</li>
+<li><code>o</code>：在已有窗口中打开文件、目录或书签，并跳到该窗口</li>
+<li><code>go</code>：在已有窗口中打开文件、目录或书签，但不跳到该窗口</li>
+<li><code>t</code>：在新Tab中打开选中文件/书签，并跳到新Tab</li>
+<li><code>T</code>：在新Tab中打开选中文件/书签，但不跳到新Tab</li>
+<li><code>i</code>：split一个新窗口打开选中文件，并跳到该窗口</li>
+<li><code>gi</code>：split一个新窗口打开选中文件，但不跳到该窗口</li>
+<li><code>s</code>：vsplit一个新窗口打开选中文件，并跳到该窗口</li>
+<li><code>gs</code>：vsplit一个新窗口打开选中文件，但不跳到该窗口</li>
+<li><code>!</code>：执行当前文件</li>
+<li><code>O</code>：递归打开选中结点下的所有目录</li>
+<li><code>x</code>：合拢选中结点的父目录</li>
+<li><code>X</code>：递归合拢选中结点下的所有目录</li>
+<li><code>e</code>：Edit the current dif</li>
+<li><code>D</code>：删除当前书签</li>
+<li><code>P</code>：跳到根结点</li>
+<li><code>p</code>：跳到父结点</li>
+<li><code>K</code>：跳到当前目录下同级的第一个结点</li>
+<li><code>J</code>：跳到当前目录下同级的最后一个结点</li>
+<li><code>k</code>：跳到当前目录下同级的前一个结点</li>
+<li><code>j</code>：跳到当前目录下同级的后一个结点</li>
+<li><code>C</code>：将选中目录或选中文件的父目录设为根结点</li>
+<li><code>u</code>：将当前根结点的父目录设为根目录，并变成合拢原根结点</li>
+<li><code>U</code>：将当前根结点的父目录设为根目录，但保持展开原根结点</li>
+<li><code>r</code>：递归刷新选中目录</li>
+<li><code>R</code>：递归刷新根结点</li>
+<li><code>m</code>：显示文件系统菜单</li>
+<li><code>cd</code>：将CWD设为选中目录</li>
+<li><code>I</code>：切换是否显示隐藏文件</li>
+<li><code>f</code>：切换是否使用文件过滤器</li>
+<li><code>F</code>：切换是否显示文件</li>
+<li><code>B</code>：切换是否显示书签</li>
+<li><code>q</code>：关闭NerdTree窗口</li>
+<li><code>?</code>：切换是否显示Quick Help</li>
+</ul>
+<p>参考文档：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/qiumingcheng/p/6275510.html">常用 NERDTree 快捷键</a></p>
+<p>删除开头数字及空格</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:%s/^[0-9 ]\+//</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vim/" rel="tag"># vim</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/21/Bomb%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%82%B8%E5%BC%B9%E6%8B%86%E5%BC%B9%E5%AE%9E%E9%AA%8C/" rel="prev" title="Bomb二进制炸弹拆弹实验">
+      <i class="fa fa-chevron-left"></i> Bomb二进制炸弹拆弹实验
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/28/LC005/" rel="next" title="LC005">
+      LC005 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2024-9-13%E6%9B%B4%E6%96%B0"><span class="nav-number">1.</span> <span class="nav-text">2024.9.13更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number"></span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">普通模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">命令行模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%BE%91%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">编辑模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">可视化模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vim-plug%E4%B8%8B%E8%BD%BD"><span class="nav-number">5.1.</span> <span class="nav-text">vim-plug下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vim%E6%8F%92%E4%BB%B6%E4%B8%8B%E8%BD%BD"><span class="nav-number">5.2.</span> <span class="nav-text">vim插件下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E4%BD%BF%E7%94%A8"><span class="nav-number">5.3.</span> <span class="nav-text">插件使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#NERDTree"><span class="nav-number">5.3.1.</span> <span class="nav-text">NERDTree</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

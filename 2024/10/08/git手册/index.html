@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="结合他人blog或视频以及自己平时使用git的一些经验写成的一篇实用向git手册。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git手册">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/10/08/git%E6%89%8B%E5%86%8C/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="结合他人blog或视频以及自己平时使用git的一些经验写成的一篇实用向git手册。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://1drv.ms/i/s!Ai4kpDYGStT7m1XYiq30zod2xxZG?embed=1&width=1274&height=817">
+<meta property="og:image" content="https://1drv.ms/i/s!Ai4kpDYGStT7m1bYiq30zod2xxZG?embed=1&width=1920&height=1032">
+<meta property="og:image" content="https://1drv.ms/i/s!Ai4kpDYGStT7m1fYiq30zod2xxZG?embed=1&width=1920&height=1032">
+<meta property="og:image" content="https://1drv.ms/i/s!Ai4kpDYGStT7m1jYiq30zod2xxZG?embed=1&width=1920&height=1032">
+<meta property="article:published_time" content="2024-10-08T06:20:10.000Z">
+<meta property="article:modified_time" content="2024-10-08T13:17:02.150Z">
+<meta property="article:author" content="P4yl04d">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://1drv.ms/i/s!Ai4kpDYGStT7m1XYiq30zod2xxZG?embed=1&width=1274&height=817">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/10/08/git%E6%89%8B%E5%86%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>git手册 | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/10/08/git%E6%89%8B%E5%86%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          git手册
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2024-10-08 14:20:10 / Modified: 21:17:02" itemprop="dateCreated datePublished" datetime="2024-10-08T14:20:10+08:00">2024-10-08</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>结合他人blog或视频以及自己平时使用git的一些经验写成的一篇实用向git手册。</p>
+<span id="more"></span>
+
+<p>参考视频：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Sp421o7U4">十分钟速通git核心指令</a></p>
+<blockquote>
+<p>博主分支部分有些错误，在本文已修正。</p>
+</blockquote>
+<p>基础环境配置参见：<a target="_blank" rel="noopener" href="https://dingdingqiuqiu.github.io/2023/11/10/Arch%E9%85%8D%E7%BD%AEGit%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81/#more">Arch配置Git自动登录验证</a></p>
+<h3 id="拉取远程仓库并合并"><a href="#拉取远程仓库并合并" class="headerlink" title="拉取远程仓库并合并"></a>拉取远程仓库并合并</h3><blockquote>
+<p>git fetch,git merge,git pull</p>
+</blockquote>
+<p><code>git fetch</code>命令拉取远程仓库最新代码，<code>git merge</code>执行合并。<code>git pull</code>拉取并自动合并。注意，<code>git merge</code>时可能会有<code>merge conflict</code>。为了避免合并时的冲突，可以先<code>git fetch</code>再<code>git merge</code>合并，这样根据IDE的报错修改特定冲突部分。</p>
+<h3 id="状态查询"><a href="#状态查询" class="headerlink" title="状态查询"></a>状态查询</h3><blockquote>
+<p>git log,git status</p>
+</blockquote>
+<p><code>git log</code>用来查看所有提交，<code>git status</code>用来查看本地文件夹的状态，<code>git diff</code>用来对比不同分支/提交的文件差异。</p>
+<h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><blockquote>
+<p>git branch</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b new_branch</span><br></pre></td></tr></table></figure>
+
+<p>通过以上命令在本地新建分支<code>new_branch</code>，该分支中文件在当前分支的基础上进行，同时自动进入<code>new_branch</code>分支。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -vv</span><br></pre></td></tr></table></figure>
+
+<p>查看本地所有branch以及其与远程branch的绑定</p>
+<p>进行一定开发后add,commit………然后：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -u origin new_branch</span><br></pre></td></tr></table></figure>
+
+<p>将本地<code>new_branch</code>分支推送到远程<code>new_branch</code>，此时在远程新建了<code>new_branch</code>分支，并使用<code>-u</code>参数记住了该本地分支下次<code>git push/git pull</code>时需要推送/拉取的远程分支。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git switch main</span><br></pre></td></tr></table></figure>
+
+<p>本地切换到main分支。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin new_branch</span><br></pre></td></tr></table></figure>
+
+<p>拉取远程的<code>new_branch</code>分支。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git merge origin/new_branch</span><br></pre></td></tr></table></figure>
+
+<p>合并本地<code>main</code>分支和远程<code>new_branch</code>分支</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin</span><br></pre></td></tr></table></figure>
+
+<p>将本地<code>main</code>分支的修改推送到远程仓库</p>
+<h3 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h3><blockquote>
+<p>git的文件冲突解决方式比较智能，有时会因为错误的合并策略导致再次合并时不能重新合并，这是因为已经检测到合并过了，此时对要并入的文件略微添加注释即可重新合并。这是因为合并时会根据文件内容，合并历史，文件历史综合考虑合并策略。</p>
+</blockquote>
+<p>合并时提示有冲突可以使用<code>mergetool</code>解决冲突。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git mergetool filename</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>若不加文件名，自动打开冲突文件</p>
+</blockquote>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1XYiq30zod2xxZG?embed=1&width=1274&height=817" width="1274" height=" " />
+
+<p>vimdiff使用</p>
+<p>配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git config --global merge.tool vimdiff</span><br><span class="line">git config --global merge.conflictstyle diff3</span><br><span class="line">git config --global mergetool.prompt false</span><br><span class="line"><span class="meta prompt_"> </span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">让git mergetool不再生成备份文件(*.orig)</span>  </span><br><span class="line">git config --global mergetool.keepBackup false</span><br></pre></td></tr></table></figure>
+
+<p>键入以下命令启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git mergetool</span><br></pre></td></tr></table></figure>
+
+<p>上面三个窗口分别是本地文件(LOCAL)，共同上游（BASE），远程文件(REMOTE)。下面的窗口为MERGED窗口(即合并后的窗口/有冲突的窗口)</p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1bYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " />
+
+<p>光标标移动到MERGED窗口，以下命令可以获取上面窗口的内容(也可根据个人需求自行修改MERGED窗口内容)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">:diffget REMOTE # 获取REMOTE的修改到MERGED文件, 忽略大小写</span><br><span class="line">:diffg REMOTE # 获取REMOTE的修改到MERGED文件, 忽略大小写</span><br><span class="line">:diffg BASE # get from base</span><br><span class="line">:diffg LOCAL # get from local</span><br></pre></td></tr></table></figure>
+
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1fYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " />
+
+<p>上面这张图片键入命令无效，要求有一条白线(没有白线可以换成输入模式输入点内容自动白线)，如下：</p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1jYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " />
+
+
+<p>还有一些其他命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">]c      # nect difference</span><br><span class="line">[c      # previous difference</span><br><span class="line">zo      # open folded text</span><br><span class="line">zc      # close folded text</span><br><span class="line">zr      # open all folds</span><br><span class="line">zm      # close all folds</span><br><span class="line">:diffupdate     # re-scan the file for difference</span><br><span class="line">do      # diff obtain</span><br><span class="line">dp      # diff put</span><br></pre></td></tr></table></figure>
+
+<p>解决冲突完成后<code>git comit</code>提交即可。</p>
+<h3 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h3><blockquote>
+<p>项目复制</p>
+</blockquote>
+<p>在<code>github</code>上<code>fork</code>别人的远程仓库之后，相当于你自己新建了一个自己的远程仓库，只不过内容都是别人的远程仓库里的内容。你可以对自己<code>fork</code>到的仓库进行任意操作。例如，<code>git clone</code>到本地后，进行若干修改/提交，<code>git push</code>到的远程仓库为你的远程仓库。如果想让代码合并到原作者的远程仓库，需要向原作者申请<code>Pull requests</code>，原作者同意后即可合并到原作者的远程仓库。这即为开源项目的贡献流程。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/10/08/%E7%94%B5%E8%84%91%E6%98%AF%E6%80%8E%E4%B9%88%E5%BC%80%E6%9C%BA%E7%9A%84(x86)/" rel="prev" title="电脑是怎么开机的(x86)">
+      <i class="fa fa-chevron-left"></i> 电脑是怎么开机的(x86)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E5%8F%96%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E5%B9%B6%E5%90%88%E5%B9%B6"><span class="nav-number">1.</span> <span class="nav-text">拉取远程仓库并合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.</span> <span class="nav-text">状态查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%94%AF"><span class="nav-number">3.</span> <span class="nav-text">分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%86%B2%E7%AA%81"><span class="nav-number">4.</span> <span class="nav-text">解决冲突</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fork"><span class="nav-number">5.</span> <span class="nav-text">fork</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
