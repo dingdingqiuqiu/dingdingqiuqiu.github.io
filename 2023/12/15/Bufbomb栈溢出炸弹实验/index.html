@@ -244,11 +244,11 @@
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Book/" itemprop="url" rel="index"><span itemprop="name">Book</span></a>
+                  <a href="/categories/Pwn/StackOverflow/" itemprop="url" rel="index"><span itemprop="name">StackOverflow</span></a>
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Pwn/StackOverflow/" itemprop="url" rel="index"><span itemprop="name">StackOverflow</span></a>
+                  <a href="/categories/Book/" itemprop="url" rel="index"><span itemprop="name">Book</span></a>
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -269,27 +269,20 @@
       
         <p>本文是对计算机系统基础第三次实验的复现，以此为基础讲解栈溢出的相关知识。</p>
 <span id="more"></span>
-
 <h3 id="基本逻辑逆向"><a href="#基本逻辑逆向" class="headerlink" title="基本逻辑逆向"></a>基本逻辑逆向</h3><p><code>main</code>函数</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212861&authkey=%21ANiKrfTOh3bHFkY&width=812&height=668" width="812" height=" " />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212861&authkey=%21ANiKrfTOh3bHFkY&width=812&height=668" width="812" height=" " /></p>
 <p>这里比较引人注目的是<code>signal</code>函数，先执行了三个该函数，又引入标准输入的文件描述符为<code>infile</code>,以下链接比较深入讲解了<code>signal</code>函数，读者可详细了解。</p>
 <p><a target="_blank" rel="noopener" href="https://www.tutorialspoint.com/c_standard_library/c_function_signal.htm">C library function - signal()</a></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">sighandler</span><span class="params">(<span class="type">int</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span> <span class="params">()</span> &#123;</span><br><span class="line">   signal(SIGINT, sighandler);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Going to sleep for a second...\n&quot;</span>);</span><br><span class="line">      sleep(<span class="number">1</span>); </span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">sighandler</span><span class="params">(<span class="type">int</span> signum)</span> &#123;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;Caught signal %d, coming out...\n&quot;</span>, signum);</span><br><span class="line">   <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>以下是一个可能的输出</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Caught signal <span class="number">2</span>, coming out...</span><br></pre></td></tr></table></figure>
-
 <p>总之，这段利用<code>sign</code>函数来实现了一些违规输入的提示。包括段溢出，进程繁忙和错误指令。例如下面是段溢出错误的提示。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212863&authkey=%21ANiKrfTOh3bHFkY&width=1489&height=660" width="1489" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212863&authkey=%21ANiKrfTOh3bHFkY&width=1489&height=660" width="1489" height="" /></p>
 <p>接下来，程序会去走一个循环。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212865&authkey=%21ANiKrfTOh3bHFkY&width=1479&height=660" width="1479" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212865&authkey=%21ANiKrfTOh3bHFkY&width=1479&height=660" width="1479" height="" /></p>
 <p><a target="_blank" rel="noopener" href="https://www.tutorialspoint.com/getopt-function-in-c-to-parse-command-line-arguments"><code>getopt()</code>function in C to parse command line arguments</a></p>
 <p><code>getopt()</code>函数原型：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getopt(<span class="type">int</span> argc, <span class="type">char</span> *<span class="type">const</span> argv[], <span class="type">const</span> <span class="type">char</span> *optstring)</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li><p>如果选项带有一个值，那么该值将由<code>optarg</code> 指向</p>
 </li>
@@ -299,136 +292,95 @@
 </li>
 <li><p>有时某些选项需要一些值，如果选项存在但值不存在，那么它也会返回“？”。</p>
 </li>
-<li><p>我们可以使用 ‘:’ 作为 <code>optstring</code> 的第一个字符，这样，如果没有给出值，它将返回 ‘:’ 而不是 ‘?’。</p>
-</li>
+<li>我们可以使用 ‘:’ 作为 <code>optstring</code> 的第一个字符，这样，如果没有给出值，它将返回 ‘:’ 而不是 ‘?’。</li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">main(<span class="type">int</span> argc, <span class="type">char</span> *argv[]) &#123;</span><br><span class="line">   <span class="type">int</span> option;</span><br><span class="line">   <span class="comment">// put &#x27;:&#x27; at the starting of the string so compiler can distinguish between &#x27;?&#x27; and &#x27;:&#x27;</span></span><br><span class="line">   <span class="keyword">while</span>((option = getopt(argc, argv, <span class="string">&quot;:if:lrx&quot;</span>)) != <span class="number">-1</span>)&#123; <span class="comment">//get option from the getopt() method</span></span><br><span class="line">      <span class="keyword">switch</span>(option)&#123;</span><br><span class="line">         <span class="comment">//For option i, r, l, print that these are options</span></span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;i&#x27;</span>:</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span>:</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;r&#x27;</span>:</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Given Option: %c\n&quot;</span>, option);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;f&#x27;</span>: <span class="comment">//here f is used for some file name</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Given File: %s\n&quot;</span>, optarg);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;:&#x27;</span>:</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;option needs a value\n&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;?&#x27;</span>: <span class="comment">//used for some unknown options</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;unknown option: %c\n&quot;</span>, optopt);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">for</span>(; optind &lt; argc; optind++)&#123; <span class="comment">//when some extra arguments are passed</span></span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Given extra arguments: %s\n&quot;</span>, argv[optind]);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>以下是输出</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Given Option: i</span><br><span class="line">Given File: test_file.c</span><br><span class="line">Given Option: l</span><br><span class="line">Given Option: r</span><br><span class="line">Given extra arguments: hello</span><br></pre></td></tr></table></figure>
-
 <p>因此，很容易为这段循环设置下面这段注释</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> ( <span class="number">1</span> ) <span class="comment">// 无限循环</span></span><br><span class="line">  &#123;</span><br><span class="line">    v4 = getopt(argc, (<span class="type">char</span> *<span class="type">const</span> *)argv, <span class="string">&quot;gsnhu:&quot;</span>); <span class="comment">// 解析命令行参数</span></span><br><span class="line">    <span class="keyword">if</span> ( v4 == <span class="number">-1</span> ) <span class="comment">// 如果没有更多的参数</span></span><br><span class="line">      <span class="keyword">break</span>; <span class="comment">// 退出循环</span></span><br><span class="line">    <span class="keyword">switch</span> ( v4 ) <span class="comment">// 根据参数类型进行处理</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;g&#x27;</span>: <span class="comment">// 如果参数是 &#x27;g&#x27;</span></span><br><span class="line">        autograde = <span class="number">1</span>; <span class="comment">// 设置自动评分标志</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;h&#x27;</span>: <span class="comment">// 如果参数是 &#x27;h&#x27;</span></span><br><span class="line">        usage(); <span class="comment">// 调用 usage 函数</span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;n&#x27;</span>: <span class="comment">// 如果参数是 &#x27;n&#x27;</span></span><br><span class="line">        v10 = <span class="number">1</span>; <span class="comment">// 设置 v10 标志</span></span><br><span class="line">        v3 = <span class="number">5</span>; <span class="comment">// 设置 v3 的值为 5</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;s&#x27;</span>: <span class="comment">// 如果参数是 &#x27;s&#x27;</span></span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;This is a quiet bomb. Ignoring -s flag.&quot;</span>); <span class="comment">// 输出一条消息</span></span><br><span class="line">        notify = <span class="number">0</span>; <span class="comment">// 设置通知标志</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;u&#x27;</span>: <span class="comment">// 如果参数是 &#x27;u&#x27;</span></span><br><span class="line">        userid = __strdup(optarg); <span class="comment">// 复制用户 ID</span></span><br><span class="line">        cookie = gencookie(userid); <span class="comment">// 生成 cookie</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>: <span class="comment">// 如果参数不是上述任何一种</span></span><br><span class="line">        usage(); <span class="comment">// 调用 usage 函数</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __usercall __noreturn <span class="title function_">usage</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *a1@&lt;eax&gt;)</span></span><br><span class="line">&#123;</span><br><span class="line">  __printf_chk(<span class="number">1</span>, <span class="string">&quot;Usage: %s -u &lt;userid&gt; [-nsh]\n&quot;</span>, a1);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -u &lt;userid&gt; User ID&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -n          Nitro mode&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -s          Submit your solution to the grading server&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -h          Print help information&quot;</span>);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>最后一段，要求必须有<code>userid</code>,即执行<code>bufbomb</code>程序的时候必须添加<code>-u</code>参数。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212867&authkey=%21ANiKrfTOh3bHFkY&width=1100&height=802" width="1100" height=" " />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212867&authkey=%21ANiKrfTOh3bHFkY&width=1100&height=802" width="1100" height=" " /></p>
 <p>后面初始化<code>bomb</code>炸弹，打印<code>Userid</code>和<code>Cookie</code>。重点看下下面这段的汇编，<code>cookie</code>放<code>eax</code>寄存器以后，放到栈顶，作为<code>seed</code>执行<code>_srandom</code>函数和<code>_random</code>函数，该函数的返回值与<code>0xFF0</code>按位与运算后将结果加上256，比较符合C伪代码，并将结果放到<code>esp+18</code>的内存地址，后面将<code>4</code>和<code>edi</code>里存的数据作为参数入栈，查看<code>edi(v3)</code>的引用信息，发现默认为1，在传入<code>-n</code>参数时修改为5。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212869&authkey=%21ANiKrfTOh3bHFkY&width=862&height=677" width="862" height=" " />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212871&authkey=%21ANiKrfTOh3bHFkY&width=1030&height=287" width="1030" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212869&authkey=%21ANiKrfTOh3bHFkY&width=862&height=677" width="862" height=" " /></p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212871&authkey=%21ANiKrfTOh3bHFkY&width=1030&height=287" width="1030" height="" /></p>
 <p>使用<code>_calloc</code>函数分配好堆空间以后，把分配空间的内存地址放到<code>eax</code>寄存器中,并把堆空间中首元素置零，<code>ebx</code>寄存器赋1，跳转到<code>loc_80491BB</code>。后面分析下来基本和C伪代码保持一致。重点在于<code>-n</code>参数会把<code>v10(默认为0)</code>参数改为<code>1</code>,会把<code>v3（默认为1）</code>参数改为5，从而影响到分配到分配到的<code>v5</code>的大小，这里我将其改名为<code>arry</code>，为了便于理解，将其他参数也改名。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">launcher(launcher_flag, arry[j] + ran_cookie);</span><br></pre></td></tr></table></figure>
-
 <p>这是修改后的各个参数的名字，后面我们重点分析<code>launcher</code>函数即可。看下<code>launcher</code>函数的C风格的伪代码</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" /></p>
 <p>可以看到，<code>launcher_flag</code>实际上是开启<code>nitro</code>这一关的全局变量，<code>arry[j] + ran_cookie</code>随机数当作全局偏移量量出现。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">launcher</span><span class="params">(<span class="type">int</span> a1, <span class="type">int</span> a2)</span> <span class="comment">// 定义一个名为 launcher 的函数，它接受两个整数参数 a1 和 a2</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> v3; <span class="comment">// 在栈上定义一个整数变量 v3 [esp+0h] [ebp-28h] BYREF</span></span><br><span class="line"></span><br><span class="line">  global_nitro = a1; <span class="comment">// 将 a1 的值赋给全局变量 global_nitro</span></span><br><span class="line">  global_offset = a2; <span class="comment">// 将 a2 的值赋给全局变量 global_offset</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用 mmap 函数尝试在内存中预留一块空间，大小为 0x100000 字节，权限为 7（即可读、可写、可执行），并将其映射到进程的地址空间</span></span><br><span class="line">  <span class="comment">// 如果映射失败（即 mmap 的返回值不等于预期的地址 reserved），则向标准错误输出流 stderr 写入错误信息，并退出程序</span></span><br><span class="line">  <span class="keyword">if</span> ( mmap(&amp;reserved, <span class="number">0x100000</span>u, <span class="number">7</span>, <span class="number">306</span>, <span class="number">0</span>, <span class="number">0</span>) != &amp;reserved )</span><br><span class="line">  &#123;</span><br><span class="line">    fwrite(<span class="string">&quot;Internal error.  Couldn&#x27;t use mmap. Try different value for START_ADDR\n&quot;</span>, <span class="number">1u</span>, <span class="number">0x47</span>u, <span class="built_in">stderr</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  stack_top = (<span class="type">int</span>)&amp;unk_55685FF8; <span class="comment">// 将一个未知的内存地址赋给全局变量 stack_top</span></span><br><span class="line">  global_save_stack = (<span class="type">int</span>)&amp;v3; <span class="comment">// 将 v3 的地址赋给全局变量 global_save_stack</span></span><br><span class="line"></span><br><span class="line">  launch(global_nitro, global_offset); <span class="comment">// 调用名为 launch 的函数，参数为 global_nitro 和 global_offset</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> munmap(&amp;reserved, <span class="number">0x100000</span>u); <span class="comment">// 使用 munmap 函数取消之前通过 mmap 函数预留的内存空间，并返回 munmap 的结果</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>重点看下<code>mmap</code>分配的空间，应该注意到，<code>(int)&amp;unk_55685FF8</code>实际上是<code>mmap()</code>函数分配的内存空间的<code>reserved</code>的最后一段。下面是程序头表（Program Header Table，PHT）的条目，它是在可执行和链接格式（ELF）文件中找到的。这个条目提供了加载（LOAD）段到内存中的必要信息。注意这里的 <code>_reserved</code> 物理地址这刚好是<code>0x5586000</code>,分配的权限为<code>6</code>（写和读），大小是<code>0x100000</code>。</p>
 <p><a target="_blank" rel="noopener" href="https://www.ibm.com/docs/en/zos/2.4.0?topic=functions-mmap-map-pages-memor">mmap函数说明文档</a></p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212878&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212879&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" /></p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212878&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" /></p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212879&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" /></p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" /></p>
 <p>有关信息与上图所示，重点是对一些变量的赋值和分配堆空间。重点函数是<code>launch</code>,看下C风格的伪代码。下面是入栈信息，可以看到参数并未放栈上，而是放在了<code>eax</code>和<code>edx</code>寄存器中了。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212884&authkey=%21ANiKrfTOh3bHFkY&width=1540&height=871" width="1540" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212884&authkey=%21ANiKrfTOh3bHFkY&width=1540&height=871" width="1540" height="" /></p>
 <p>看下函数本体。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212885&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212885&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" /></p>
 <p>C伪代码</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" /></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> __usercall launch@&lt;eax&gt;(<span class="type">int</span> global_nitro@&lt;eax&gt;, <span class="type">int</span> global_offset@&lt;edx&gt;)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">void</span> *v3; <span class="comment">// esp，栈指针</span></span><br><span class="line">  <span class="type">int</span> v5; <span class="comment">// [esp+10h] [ebp-58h] BYREF，局部变量v5</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v6; <span class="comment">// [esp+5Ch] [ebp-Ch]，局部变量v6</span></span><br><span class="line">  <span class="type">int</span> savedregs; <span class="comment">// [esp+68h] [ebp+0h] BYREF，保存寄存器的值</span></span><br><span class="line"></span><br><span class="line">  v6 = __readgsdword(<span class="number">0x14</span>u); <span class="comment">// 读取线程局部存储（Thread Local Storage，TLS）中的值</span></span><br><span class="line">  v3 = alloca((((<span class="type">unsigned</span> __int16)&amp;savedregs - <span class="number">76</span>) &amp; <span class="number">0x3FF0</span>) + global_offset + <span class="number">15</span>); <span class="comment">// 分配一块内存，大小取决于savedregs的地址、global_offset和15</span></span><br><span class="line">  <span class="built_in">memset</span>(&amp;v5, <span class="number">244</span>, ((<span class="type">unsigned</span> __int16)&amp;savedregs - <span class="number">76</span>) &amp; <span class="number">0x3FF0</span>); <span class="comment">// 将v5的内存区域设置为244</span></span><br><span class="line">  __printf_chk(<span class="number">1</span>, <span class="string">&quot;Type string:&quot;</span>); <span class="comment">// 打印字符串&quot;Type string:&quot;</span></span><br><span class="line">  <span class="keyword">if</span> ( global_nitro ) <span class="comment">// 如果global_nitro为真</span></span><br><span class="line">    testn(); <span class="comment">// 调用函数testn</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    test(); <span class="comment">// 否则调用函数test</span></span><br><span class="line">  <span class="keyword">if</span> ( !success ) <span class="comment">// 如果success为假</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Better luck next time&quot;</span>); <span class="comment">// 打印字符串&quot;Better luck next time&quot;</span></span><br><span class="line">    success = <span class="number">0</span>; <span class="comment">// 将success设置为0</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> __readgsdword(<span class="number">0x14</span>u) ^ v6; <span class="comment">// 返回TLS中的值与v6的异或结果</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>进去<code>testn()</code>函数和<code>test()</code>函数看一下，大体可以分辨这两个函数为漏洞函数。<code>testn()</code>需要<code>-n</code>参数触发，<code>test()</code>函数不需要。大体知道这些就够了，具体的漏洞原理流程在每个部分具体说明。</p>
 <h3 id="Smoke"><a href="#Smoke" class="headerlink" title="Smoke"></a>Smoke</h3><p>可以看到，<code>Gets</code>函数最多能读取1024个字节，而数组大小仅仅为40个字节，因此，可以传入44个字节装满数组并覆盖<code>rbp</code>,4个字节覆盖返回地址，使得跳转到指定的返回地址，本题要求是跳转到<code>Smoke</code>函数，仅仅跳转过去就完成了目标。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212889&authkey=%21ANiKrfTOh3bHFkY&width=859&height=759" width="859" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212889&authkey=%21ANiKrfTOh3bHFkY&width=859&height=759" width="859" height="" /></p>
 <p>原理主要是因为<code>leave</code>指令相当于</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov esp, ebp</span><br><span class="line">pop ebp</span><br></pre></td></tr></table></figure>
-
 <p><code>ret</code>指令相当于</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
-
 <blockquote>
 <p>注意：这里的<code>eip</code>是不能直接操作的，所以上述代码只是为了解释<code>ret</code>的功能，并不能直接在代码中使用。</p>
 </blockquote>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212891&authkey=%21ANiKrfTOh3bHFkY&width=1225&height=676" width="1225" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212891&authkey=%21ANiKrfTOh3bHFkY&width=1225&height=676" width="1225" height="" /></p>
 <p>返回点在如图所示的高亮部分。</p>
 <h3 id="Fizz"><a href="#Fizz" class="headerlink" title="Fizz"></a>Fizz</h3><p>本题还要求<code>cookie</code>要与栈上一个值相等。</p>
 <p>这是修改后的各个参数的名字，后面我们重点分析<code>launcher</code>函数即可。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" /></p>
 <p>这段除了<code>launch</code>以外都是分配内存与变量赋值的操作，重点看下<code>launch</code>函数，逻辑也很简单，开<code>-n</code>参数执行<code>testn</code>，不开<code>-n</code>执行<code>test</code>函数</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" /></p>
 <h3 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h3><p><code>leave</code>指令</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">push esp,ebp</span><br><span class="line">pop  ebp</span><br></pre></td></tr></table></figure>
-
 <p><code>ret</code>指令</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
-
 <h3 id="Smoke-1"><a href="#Smoke-1" class="headerlink" title="Smoke"></a>Smoke</h3><blockquote>
 <p>函数在执行<code>getbuf</code>后不返回1，而是转向<code>Smoke</code>函数</p>
 </blockquote>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212896&authkey=%21ANiKrfTOh3bHFkY&width=824&height=344" width="824" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212896&authkey=%21ANiKrfTOh3bHFkY&width=824&height=344" width="824" height="" /></p>
 <p>容易知道，<code>Gets</code>函数最多能写入1024个字节，而<code>v1</code>仅仅开辟了40（0x28）个字节的空间。因此，输入可以用44个字节覆盖整个<code>v1</code>和<code>ebp</code>，再用4个字节覆盖返回地址，使函数跳转到<code>Smoke</code>执行。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212898&authkey=%21ANiKrfTOh3bHFkY&width=735&height=189" width="735" height="" />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212900&authkey=%21ANiKrfTOh3bHFkY&width=654&height=703" width="654" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212898&authkey=%21ANiKrfTOh3bHFkY&width=735&height=189" width="735" height="" /></p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212900&authkey=%21ANiKrfTOh3bHFkY&width=654&height=703" width="654" height="" /></p>
 <p>实操：生成<code>cookie</code></p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212902&authkey=%21ANiKrfTOh3bHFkY&width=556&height=101" width="556" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212902&authkey=%21ANiKrfTOh3bHFkY&width=556&height=101" width="556" height="" /></p>
 <p>二进制文件<code>Smkoe</code></p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212904&authkey=%21ANiKrfTOh3bHFkY&width=839&height=156" width="839" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212904&authkey=%21ANiKrfTOh3bHFkY&width=839&height=156" width="839" height="" /></p>
 <p>验证</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212906&authkey=%21ANiKrfTOh3bHFkY&width=553&height=206" width="553" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212906&authkey=%21ANiKrfTOh3bHFkY&width=553&height=206" width="553" height="" /></p>
 <h3 id="Fizz-1"><a href="#Fizz-1" class="headerlink" title="Fizz"></a>Fizz</h3><p>跳转思路与<code>Smoke</code>一致，不过这里还需要与栈上数据比较一下</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212907&authkey=%21ANiKrfTOh3bHFkY&width=774&height=297" width="774" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212907&authkey=%21ANiKrfTOh3bHFkY&width=774&height=297" width="774" height="" /></p>
 <p>那就在后面再加上几位<code>cookie</code>即可</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212909&authkey=%21ANiKrfTOh3bHFkY&width=835&height=176" width="835" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212909&authkey=%21ANiKrfTOh3bHFkY&width=835&height=176" width="835" height="" /></p>
 <p>执行结果</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212911&authkey=%21ANiKrfTOh3bHFkY&width=633&height=216" width="633" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212911&authkey=%21ANiKrfTOh3bHFkY&width=633&height=216" width="633" height="" /></p>
 <h3 id="Bang"><a href="#Bang" class="headerlink" title="Bang"></a>Bang</h3><p>要求与全局变量进行比较，修改下全局变量</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212913&authkey=%21ANiKrfTOh3bHFkY&width=881&height=342" width="881" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212913&authkey=%21ANiKrfTOh3bHFkY&width=881&height=342" width="881" height="" /></p>
 <p>在跳转<code>bang</code>之前需要执行的汇编指令如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push 0x3962b26d,%eax</span><br><span class="line">mov  %eax,0x0804d100</span><br><span class="line">ret </span><br></pre></td></tr></table></figure>
-
 <h3 id="Nitro"><a href="#Nitro" class="headerlink" title="Nitro"></a>Nitro</h3><p>通过第一阶段的基本逻辑分析容易知道：只有在执行<code>-n</code>程序的时候添加<code>-n</code>参数，该阶段才会被开启。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212922&authkey=%21ANiKrfTOh3bHFkY&width=917&height=421" width="917" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212922&authkey=%21ANiKrfTOh3bHFkY&width=917&height=421" width="917" height="" /></p>
 <p>这里<code>testn</code>函数如果想正常返回，需要满足两个条件</p>
 <ul>
 <li>栈帧不被破坏</li>
 <li><code>getbufn</code>函数返回<code>cookie</code></li>
 </ul>
 <p>我们现在来寻找漏洞点来注入我们的攻击指令。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212924&authkey=%21ANiKrfTOh3bHFkY&width=693&height=208" width="693" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212924&authkey=%21ANiKrfTOh3bHFkY&width=693&height=208" width="693" height="" /></p>
 <p>我们前面分析了<code>Gets</code>函数的实现，容易知道，这里是存在栈溢出漏洞的。依照前面的思路，我们用520个字符填满<code>v1</code>数组，用4个字符覆盖<code>ebp</code>，用四个字符覆盖<code>getbufn</code>的返回地址。由前面的基本逻辑逆向，我们知道，该函数实际上需要执行5次，每次执行时的栈状态不一致，因此，我们选择使用<code>nop</code>指令来填充输入中除了攻击指令其他位置，以此保证只要返回地址跳到任意一个<code>nop</code>指令上，程序都会执行我们的攻击指令。</p>
 <p>以上的分析结束以后，是时候来生成攻击指令了。</p>
 <p>先写出汇编代码</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lea 0x28(%ebp),%esp</span><br><span class="line">mov cookie,%eax</span><br><span class="line">push 返回地址</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
-
 
     </div>
 

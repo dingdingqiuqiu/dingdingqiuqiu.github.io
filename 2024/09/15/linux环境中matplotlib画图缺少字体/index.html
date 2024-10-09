@@ -201,9 +201,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文主要解决linux环境下画图没中文字体的问题</p>
-<span id="more"></span>
-
+        <p>本文主要解决linux环境下画图没中文字体的问题<br><span id="more"></span></p>
 <h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>倘若使用的linux没有x协议支持，无法使用<code>plt.show</code>函数绘图，转而使用<code>plt.savefig</code>和<code>plt.close</code>函数保存图片查看。我们使用以下代码添加中文支持。</p>
 <blockquote>
 <p>补充: <code>feh</code>可以查看png图片，<code>apt-get install fet</code>安装它，<code>feh example.png</code>查看图片。</p>
@@ -218,30 +216,21 @@
 </ul>
 <p>将字体放到对应文件夹</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp SimHei.ttf /usr/share/fonts/SimHei.ttf</span><br></pre></td></tr></table></figure>
-
 <p>赋予使用权限</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod 777 /usr/share/fonts</span><br></pre></td></tr></table></figure>
-
 <h3 id="配置matplotlib"><a href="#配置matplotlib" class="headerlink" title="配置matplotlib"></a>配置matplotlib</h3><h4 id="方法1-删除缓存"><a href="#方法1-删除缓存" class="headerlink" title="方法1.删除缓存"></a>方法1.删除缓存</h4><blockquote>
 <p>已尝试，有效</p>
 </blockquote>
 <p>查看<code>matplotlib</code>的缓存</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> mlt</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(mlt.get_cacahedir())</span><br><span class="line"><span class="comment"># /home/ubuntu22/.cache/matplotlib </span></span><br></pre></td></tr></table></figure>
-
 <p>删除缓存</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf /home/ubuntu22/.cache/matplotlib </span><br></pre></td></tr></table></figure>
-
 <h4 id="方法2-在matplotlib对应字体文件夹下更改"><a href="#方法2-在matplotlib对应字体文件夹下更改" class="headerlink" title="方法2.在matplotlib对应字体文件夹下更改"></a>方法2.在matplotlib对应字体文件夹下更改</h4><p>查看<code>matplotlib</code>配置文件位置</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(matplotlib.matplotlib_fname())</span><br><span class="line"><span class="comment"># /home/ubuntu22/henu/ML/ml/lib/python3.10/site-packages/matplotlib/mpl-data/matplotlibrc</span></span><br></pre></td></tr></table></figure>
-
 <p>由输出，我们得到字体目录为</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/home/ubuntu22/henu/ML/ml/lib/python3.10/site-packages/matplotlib/mpl-data/fonts/ttf</span><br></pre></td></tr></table></figure>
-
 <p>我们把安装好的字体复制过去一份</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/share/fonts/SimHei.ttf /home/ubuntu22/henu/ML/ml/lib/python3.10/site-packages/matplotlib/mpl-data/fonts/ttf/SimHei.ttf </span><br></pre></td></tr></table></figure>
-
-
-
 
     </div>
 
