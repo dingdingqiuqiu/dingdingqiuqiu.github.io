@@ -224,7 +224,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文主要实现了<code>Archlinux</code>环境下<code>git push</code>指令免密登录的配置<br>介绍了<code>git</code>相关操作<br><span id="more"></span></p>
+        <p>本文主要实现了<code>Archlinux</code>环境下<code>git push</code>指令免密登录的配置<br>介绍了<code>git</code>相关操作</p>
+<span id="more"></span>
 <h3 id="Arch配置Git自动登录验证"><a href="#Arch配置Git自动登录验证" class="headerlink" title="Arch配置Git自动登录验证"></a>Arch配置Git自动登录验证</h3><p>参考文档：</p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/571015337">核心参考文档</a> 本文思路基本和该文一致，相当于这篇文章的详细版</p>
 <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/apocelipes/p/14491762.html">图解如何在Linux上配置git自动登录验证 </a> (了解)</p>
@@ -238,15 +239,19 @@
 <blockquote>
 <p>官方已经停用了在终端中利用git通过账户名密码的方式登录github</p>
 </blockquote>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212664&authkey=%21ANiKrfTOh3bHFkY&width=1898&height=178" width="1898" height="" /></p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212664&authkey=%21ANiKrfTOh3bHFkY&width=1898&height=178" width="1898" height="" />
+
 <blockquote>
 <p>因此配置SSH免密登录和Token登录是必要的</p>
 </blockquote>
 <h3 id="配置方式"><a href="#配置方式" class="headerlink" title="配置方式"></a>配置方式</h3><p>生成<code>ssh-key</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C 1501608414@qq.com  </span><br></pre></td></tr></table></figure>
+
 <p><code>ENTER</code>后会回显密钥储存位置，进入该位置</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /root/.ssh/</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls</span><br></pre></td></tr></table></figure>
+
 <p>可以看到有两个文件<code>id_rsa</code>（私钥）和<code>id_rsa.pub</code>（公钥）</p>
 <p>把公钥导入<code>Github</code>中的<code>Settings</code>中的<code>SSH and GPG keys</code>即可。</p>
 <h3 id="git修改远程仓库地址"><a href="#git修改远程仓库地址" class="headerlink" title="git修改远程仓库地址"></a>git修改远程仓库地址</h3><p>方法有三种：</p>
@@ -256,6 +261,7 @@
 </li>
 <li><p>先删后加</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote rm origin</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin git@github.com:dingdingqiuqiu/Leetcode.git</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>直接修改config文件</p>
@@ -267,51 +273,76 @@
 </blockquote>
 <h4 id="首次使用"><a href="#首次使用" class="headerlink" title="首次使用"></a>首次使用</h4><p>配置<code>Git</code>的全局账户名和电子邮箱</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;P4yl04d&quot;</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email &quot;1501608414@qq.com&quot;</span><br></pre></td></tr></table></figure>
+
 <p>使用以下命令检验配置结果</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email</span><br></pre></td></tr></table></figure>
+
 <p>修改默认编辑器为<code>nvim</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global core.editor nvim</span><br></pre></td></tr></table></figure>
+
 <p><code>merge</code>时修改冲突文件工具<code>mergetool</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git config --global merge.tool vimdiff</span><br><span class="line">git config --global merge.conflictstyle diff3</span><br><span class="line">git config --global mergetool.prompt false</span><br><span class="line"><span class="meta prompt_"> </span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">让git mergetool不再生成备份文件(*.orig)</span>  </span><br><span class="line">git config --global mergetool.keepBackup false</span><br></pre></td></tr></table></figure>
+
 <h4 id="修改远程库"><a href="#修改远程库" class="headerlink" title="修改远程库"></a>修改远程库</h4><p>参考文档：</p>
 <p><a target="_blank" rel="noopener" href="https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories">官方文档</a> （推荐）</p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/571015337">linux下，git配置github</a> (讲的很细，也推荐)</p>
 <p>拉取库</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/dingdingqiuqiu/OS_NJU_Jsut2try</span><br></pre></td></tr></table></figure>
+
 <p>修改库</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd OS_NJU_Jsut2try</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv /home/P4yl04d/Documents/OS_NJU_Jsut2try_my/* .</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m &quot;M32_C90_unsigned_BUG_try&quot;</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git remote -v</span><br><span class="line"># 回显：</span><br><span class="line"># origin  https://github.com/dingdingqiuqiu/OS_NJU_Jsut2try (fetch)</span><br><span class="line"># origin  https://github.com/dingdingqiuqiu/OS_NJU_Jsut2try (push)</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -u origin mian</span><br></pre></td></tr></table></figure>
+
 <blockquote>
 <p><code>git push -u origin main</code> 命令会将本地分支 <code>main</code> 推送到远程仓库 <code>origin</code> 中的 <code>main</code> 分支。如果您想将本地分支推送到远程仓库的其他分支，可以使用以下命令：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -u &lt;remote&gt; &lt;local_branch&gt;:&lt;remote_branch&gt;</span><br></pre></td></tr></table></figure>
+
 <p>这个命令会将本地分支 <code>&lt;local_branch&gt;</code> 推送到远程仓库 <code>&lt;remote&gt;</code> 中的 <code>&lt;remote_branch&gt;</code> 分支。例如，如果您想将本地分支 <code>dev</code> 推送到远程仓库 <code>origin</code> 中的 <code>develop</code> 分支，可以使用以下命令：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -u origin dev:develop</span><br></pre></td></tr></table></figure>
 </blockquote>
 <h4 id="本地文件上传库"><a href="#本地文件上传库" class="headerlink" title="本地文件上传库"></a>本地文件上传库</h4><p>参考文档：<br><a target="_blank" rel="noopener" href="https://www.freecodecamp.org/news/introduction-to-git-and-github/#how-to-start-using-git-and-github">How to use git</a></p>
 <p><a target="_blank" rel="noopener" href="https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories">官方文档</a> (推荐)</p>
 <p>首先在<code>Github</code>上创建新仓库（不添加READ.MD文件）,官方这里也有介绍，我解释下每一句的意思。</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212663&authkey=%21ANiKrfTOh3bHFkY&width=1854&height=902" width="1854" height="" /></p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212663&authkey=%21ANiKrfTOh3bHFkY&width=1854&height=902" width="1854" height="" />
+
 <p>首先在本地创建文件夹用于上传文件到<code>Github</code>中的仓库  </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /home/P4yl04d/Documents                    </span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir Leetcode</span><br></pre></td></tr></table></figure>
+
 <p>进入文件夹，并对其初始化</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># 进入文件夹</span><br><span class="line">cd Leetcode</span><br><span class="line"></span><br><span class="line"># 创建README.md文件，并写入仓库名字</span><br><span class="line">echo &quot;# Leetcode&quot; &gt;&gt; README.md</span><br><span class="line"></span><br><span class="line"># 对文件夹进行初始化，主要是在该文件夹中创建.git文件，记录版本变化</span><br><span class="line"># rm -rf .git可撤销初始化操作</span><br><span class="line">git init</span><br><span class="line"></span><br><span class="line"># 添加README.md文件到”预提交“处</span><br><span class="line">git add README.md</span><br><span class="line"></span><br><span class="line"># 进行实际提交命令，参数m用来标记提交信息</span><br><span class="line">git commit -m &quot;first commit&quot;</span><br><span class="line"></span><br><span class="line"># 把默认分支master**重命名**为main，让新版本被添加时处于main分支下</span><br><span class="line">git branch -M main</span><br><span class="line"></span><br><span class="line"># 添加一个名为origin的远程分支到git仓库</span><br><span class="line">git remote add origin git@github.com:dingdingqiuqiu/Leetcode.git</span><br><span class="line"></span><br><span class="line"># 把本地仓库的改变推送到远程仓库origin</span><br><span class="line"># -u参数将当前分支的上游分支(upstream branch)设置成origin/main</span><br><span class="line">#这允许您将来使用 git push 时无需指定远程名称和分支名称。</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
 <p><code>checkout</code>代表切换到<code>master</code>分支，<code>-b</code>参数代表如果不存在<code>master</code>分支，那就创建一个<code>master</code>分支。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b master</span><br></pre></td></tr></table></figure>
+
 <h4 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a>Debug</h4><p>在某次<code>git push</code>后</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212824&authkey=%21ANiKrfTOh3bHFkY&width=796&height=199" width="796" height=" " /></p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212824&authkey=%21ANiKrfTOh3bHFkY&width=796&height=199" width="796" height=" " />
+
 <p>进入<code>.ssh</code>文件夹，新建<code>config</code>文件，输入以下内容即可</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212826&authkey=%21ANiKrfTOh3bHFkY&width=1213&height=762" width="1213" height="" /></p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212826&authkey=%21ANiKrfTOh3bHFkY&width=1213&height=762" width="1213" height="" />
+
+
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">Hostname ssh.github.com</span><br><span class="line">Port 443</span><br><span class="line">User git</span><br></pre></td></tr></table></figure>
+
 <p><code>Arch</code>也碰到了相同的问题，同样方法解决即可</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212827&authkey=%21ANiKrfTOh3bHFkY&width=1896&height=986" width="1896" height=" " /></p>
-<p>参考文档:<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_62159662/article/details/125156695?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_utm_term~default-1-125156695-blog-127533568.235^v39^pc_relevant_default_base&amp;spm=1001.2101.3001.4242.2&amp;utm_relevant_index=4">ssh -T git@github.com ssh: connect to host github.com port 22: Connection refused 会报错_this key is not known by any other names.-CSDN博客</a></p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212827&authkey=%21ANiKrfTOh3bHFkY&width=1896&height=986" width="1896" height=" " />
+
+<p>参考文档:<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_62159662/article/details/125156695?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_utm_term~default-1-125156695-blog-127533568.235^v39^pc_relevant_default_base&spm=1001.2101.3001.4242.2&utm_relevant_index=4">ssh -T git@github.com ssh: connect to host github.com port 22: Connection refused 会报错_this key is not known by any other names.-CSDN博客</a></p>
 
     </div>
 

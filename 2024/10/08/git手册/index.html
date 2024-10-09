@@ -205,6 +205,7 @@
       
         <p>结合他人blog或视频以及自己平时使用git的一些经验写成的一篇实用向git手册。</p>
 <span id="more"></span>
+
 <p>参考视频：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Sp421o7U4">十分钟速通git核心指令</a></p>
 <blockquote>
 <p>博主分支部分有些错误，在本文已修正。</p>
@@ -222,43 +223,60 @@
 <p>git branch</p>
 </blockquote>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b new_branch</span><br></pre></td></tr></table></figure>
+
 <p>通过以上命令在本地新建分支<code>new_branch</code>，该分支中文件在当前分支的基础上进行，同时自动进入<code>new_branch</code>分支。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -vv</span><br></pre></td></tr></table></figure>
+
 <p>查看本地所有branch以及其与远程branch的绑定</p>
 <p>进行一定开发后add,commit………然后：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -u origin new_branch</span><br></pre></td></tr></table></figure>
+
 <p>将本地<code>new_branch</code>分支推送到远程<code>new_branch</code>，此时在远程新建了<code>new_branch</code>分支，并使用<code>-u</code>参数记住了该本地分支下次<code>git push/git pull</code>时需要推送/拉取的远程分支。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git switch main</span><br></pre></td></tr></table></figure>
+
 <p>本地切换到main分支。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin new_branch</span><br></pre></td></tr></table></figure>
+
 <p>拉取远程的<code>new_branch</code>分支。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git merge origin/new_branch</span><br></pre></td></tr></table></figure>
+
 <p>合并本地<code>main</code>分支和远程<code>new_branch</code>分支</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin</span><br></pre></td></tr></table></figure>
+
 <p>将本地<code>main</code>分支的修改推送到远程仓库</p>
 <h3 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h3><blockquote>
 <p>git的文件冲突解决方式比较智能，有时会因为错误的合并策略导致再次合并时不能重新合并，这是因为已经检测到合并过了，此时对要并入的文件略微添加注释即可重新合并。这是因为合并时会根据文件内容，合并历史，文件历史综合考虑合并策略。</p>
 </blockquote>
 <p>合并时提示有冲突可以使用<code>mergetool</code>解决冲突。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git mergetool filename</span><br></pre></td></tr></table></figure>
+
 <blockquote>
 <p>若不加文件名，自动打开冲突文件</p>
 </blockquote>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1XYiq30zod2xxZG?embed=1&width=1274&height=817" width="1274" height=" " /></p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1XYiq30zod2xxZG?embed=1&width=1274&height=817" width="1274" height=" " />
+
 <p>vimdiff使用</p>
 <p>配置：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git config --global merge.tool vimdiff</span><br><span class="line">git config --global merge.conflictstyle diff3</span><br><span class="line">git config --global mergetool.prompt false</span><br><span class="line"><span class="meta prompt_"> </span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">让git mergetool不再生成备份文件(*.orig)</span>  </span><br><span class="line">git config --global mergetool.keepBackup false</span><br></pre></td></tr></table></figure>
+
 <p>键入以下命令启动</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git mergetool</span><br></pre></td></tr></table></figure>
+
 <p>上面三个窗口分别是本地文件(LOCAL)，共同上游（BASE），远程文件(REMOTE)。下面的窗口为MERGED窗口(即合并后的窗口/有冲突的窗口)</p>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1bYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " /></p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1bYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " />
+
 <p>光标标移动到MERGED窗口，以下命令可以获取上面窗口的内容(也可根据个人需求自行修改MERGED窗口内容)</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">:diffget REMOTE # 获取REMOTE的修改到MERGED文件, 忽略大小写</span><br><span class="line">:diffg REMOTE # 获取REMOTE的修改到MERGED文件, 忽略大小写</span><br><span class="line">:diffg BASE # get from base</span><br><span class="line">:diffg LOCAL # get from local</span><br></pre></td></tr></table></figure>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1fYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " /></p>
+
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1fYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " />
+
 <p>上面这张图片键入命令无效，要求有一条白线(没有白线可以换成输入模式输入点内容自动白线)，如下：</p>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1jYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " /></p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1jYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " />
+
+
 <p>还有一些其他命令</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">]c      # nect difference</span><br><span class="line">[c      # previous difference</span><br><span class="line">zo      # open folded text</span><br><span class="line">zc      # close folded text</span><br><span class="line">zr      # open all folds</span><br><span class="line">zm      # close all folds</span><br><span class="line">:diffupdate     # re-scan the file for difference</span><br><span class="line">do      # diff obtain</span><br><span class="line">dp      # diff put</span><br></pre></td></tr></table></figure>
+
 <p>解决冲突完成后<code>git comit</code>提交即可。</p>
 <h3 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h3><blockquote>
 <p>项目复制</p>

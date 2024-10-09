@@ -207,6 +207,7 @@
       
         <p>本文主要对个人的vim以及tmux的快捷键进行了简单统一的映射，仅个人所用。</p>
 <span id="more"></span>
+
 <p>由于<code>ctrl</code>键经常需要用而且位置阴间，推荐下面这个工具进行<code>ctrl</code>键和<code>capsLk</code>键的键位修改。小拇指蒸滴受不了了要….</p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/412076746">如何操作[知乎回答]</a><br><a target="_blank" rel="noopener" href="https://github.com/microsoft/PowerToys/releases/tag/v0.84.1">下载地址[github]</a></p>
 <h3 id="vim-快捷键"><a href="#vim-快捷键" class="headerlink" title="vim 快捷键"></a>vim 快捷键</h3><h4 id="V模式"><a href="#V模式" class="headerlink" title="V模式"></a>V模式</h4><blockquote>
@@ -219,59 +220,83 @@
 <p>我的主键是空格</p>
 </blockquote>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;leader&gt;sv</span><br></pre></td></tr></table></figure>
+
 <p>垂直增加窗口</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;leader&gt;sh</span><br></pre></td></tr></table></figure>
+
 <p>退出窗口</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:q</span><br></pre></td></tr></table></figure>
+
 <h4 id="取消高亮"><a href="#取消高亮" class="headerlink" title="取消高亮"></a>取消高亮</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;leader&gt;nh</span><br></pre></td></tr></table></figure>
+
 <h4 id="文档树"><a href="#文档树" class="headerlink" title="文档树"></a>文档树</h4><p>打开/关闭</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;leader&gt;e</span><br></pre></td></tr></table></figure>
+
 <p>展开文件夹,展示文件内容（光标依旧在文档树）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;tab&gt;</span><br></pre></td></tr></table></figure>
+
 <p>打开文件（光标在文件内容中）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;enter&gt;</span><br></pre></td></tr></table></figure>
+
 <p>创建新文件，在文档树中想添加新文件的位置输入</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a</span><br></pre></td></tr></table></figure>
+
 <p>底部会出现文件名，输入完成后按<code>&lt;enter&gt;</code>即可</p>
 <h4 id="跳转"><a href="#跳转" class="headerlink" title="跳转"></a>跳转</h4><p>查看函数/变量定义</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gd</span><br></pre></td></tr></table></figure>
+
 <h4 id="自动补全"><a href="#自动补全" class="headerlink" title="自动补全"></a>自动补全</h4><p>按<code>&lt;tab&gt;</code>可以选择想要自动补全的内容，按<code>&lt;enter&gt;</code>输入自动补全。对于自动补全的各个参数，按<code>&lt;tab&gt;</code>输入下一个参数，按<code>&lt;shift&gt;+&lt;tab&gt;</code>输入上一个参数。安装新的语言服务：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:Mason</span><br></pre></td></tr></table></figure>
+
 <p>搜索需要的服务，按<code>i</code>安装即可。</p>
 <p>取消补全</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;ctrl&gt;e</span><br></pre></td></tr></table></figure>
+
 <p>函数文档查看</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;shift&gt;K</span><br></pre></td></tr></table></figure>
+
 <p>补全文档翻阅</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;ctrl&gt;b</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;ctrl&gt;f</span><br></pre></td></tr></table></figure>
+
 <h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>单行注释/解注释</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc</span><br></pre></td></tr></table></figure>
+
 <p>多行注释/解注释</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gc</span><br></pre></td></tr></table></figure>
+
 <h4 id="缓冲区"><a href="#缓冲区" class="headerlink" title="缓冲区"></a>缓冲区</h4><p>缓冲区间切换</p>
 <p>向右切换缓冲区</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;shift&gt;L</span><br></pre></td></tr></table></figure>
+
 <p>向左切换缓冲区</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;shift&gt;H</span><br></pre></td></tr></table></figure>
+
 <h4 id="文件检索"><a href="#文件检索" class="headerlink" title="文件检索"></a>文件检索</h4><blockquote>
 <p>telescope插件</p>
 </blockquote>
 <p>文件名查找(Find Filename)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;leader&gt;ff</span><br></pre></td></tr></table></figure>
+
 <p>文件内容查找(Find grep)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;leader&gt;fg</span><br></pre></td></tr></table></figure>
+
 <p>缓冲列表查找(Find Buffer)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;leader&gt;fb</span><br></pre></td></tr></table></figure>
+
 <p>帮助文档(Find Help)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;leader&gt;fh</span><br></pre></td></tr></table></figure>
+
 <h4 id="vim-tmux"><a href="#vim-tmux" class="headerlink" title="vim-tmux"></a>vim-tmux</h4><p>借助<code>vim-tmux-navigator</code>插件实现窗格切换</p>
 <blockquote>
 <p>详细配置过程可见以下blog：<br><a target="_blank" rel="noopener" href="https://dingdingqiuqiu.github.io/2024/09/16/vim-tmux-navigator%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8/#more">vim-tmux-navigator配置使用</a></p>
 </blockquote>
 <p>vim中窗口切换</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;ctrl&gt; h/j/k/l</span><br></pre></td></tr></table></figure>
+
 <p>tmux中窗口切换</p>
 
     </div>
