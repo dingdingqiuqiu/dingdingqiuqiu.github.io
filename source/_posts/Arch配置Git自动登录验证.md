@@ -82,6 +82,8 @@ ls
 
 ### Git基本使用
 
+> 该部分介绍基本够用，更详细的介绍在[dingdingqiuqiu-git手册](https://dingdingqiuqiu.github.io/2024/10/08/git%E6%89%8B%E5%86%8C/#more)
+
 #### 首次使用
 
 配置`Git`的全局账户名和电子邮箱
@@ -102,6 +104,23 @@ git config --global user.name
 
 ```zsh
 git config --global user.email
+```
+
+修改默认编辑器为`nvim`
+
+```shell
+git config --global core.editor nvim
+```
+
+`merge`时修改冲突文件工具`mergetool`
+
+```shell
+git config --global merge.tool vimdiff
+git config --global merge.conflictstyle diff3
+git config --global mergetool.prompt false
+ 
+#让git mergetool不再生成备份文件(*.orig)  
+git config --global mergetool.keepBackup false
 ```
 
 #### 修改远程库

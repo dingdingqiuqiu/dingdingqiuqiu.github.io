@@ -14,6 +14,7 @@ categories:
 ---
 本文主要记录了双系统安装的过程以及clash,pycharm,vim,zsh等软件相关安装配置
 <!--more-->
+
 ### 双系统安装
 
 照着下面这个up主装就行。
@@ -71,6 +72,8 @@ https://ventoy.net/cn/download.html
 ```
 
 `ventoy`下载解压后，打开`Ventory2Disk`，设置分区类型为`GPT`(这里可供选择的有`MBR`和`GPT`,详细介绍在《鸟哥的linux私房菜》P131)
+
+> 关于分区各种格式的详细介绍可以参考这篇[电脑是怎么开机的](https://dingdingqiuqiu.github.io/2024/10/08/%E7%94%B5%E8%84%91%E6%98%AF%E6%80%8E%E4%B9%88%E5%BC%80%E6%9C%BA%E7%9A%84(x86)/#more)
 
 > MBR: 早期的，最大2.2TB,开头扇区记录分区信息及开机启动项，且开机管理程序区块仅446Bytes,较小
 >
@@ -152,7 +155,7 @@ timedatectl
 fdisk -l
 ```
 
-![./磁盘分区.jpg)
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m0DYiq30zod2xxZG?embed=1&width=1660&height=1648" width="1660" height="" />
 
 如图`/dev/nvme0n1`开头是`windows`下的，不用动;我们所有操作都在第二块固态上，即`/dev/nvme1n1`开头
 

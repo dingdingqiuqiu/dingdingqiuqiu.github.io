@@ -42,9 +42,9 @@ jupyter server password
 
 如果采用方式1，直接在命令行打印了密钥，如果采用了方式二，会提示密钥写在了何处，我们查看并复制，下一步配置自动登录时会用到
 
-![image-20240915031943805](../../../../../OneDrive/图片/Blog/wsl配置使用notebook/image-20240915031943805.png)
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwzYiq30zod2xxZG?embed=1&width=940&height=253" width="940" height=" " />
 
-![image-20240915032115478](../../../../../OneDrive/图片/Blog/wsl配置使用notebook/image-20240915032115478.png)
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mw7Yiq30zod2xxZG?embed=1&width=958&height=95" width="958" height=" " />
 
 #### 配置文件修改
 
@@ -56,7 +56,7 @@ vim ~/.jupyter/jupyter_notebook_config.py
 
 修改下面`c.ServerApp.password `的值为上面的密钥即可。
 
-![image-20240915032441851](../../../../../OneDrive/图片/Blog/wsl配置使用notebook/image-20240915032441851.png)
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mw_Yiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height=" " />
 
 编辑默认生成的配置文件
 
@@ -80,11 +80,11 @@ c.NotebookApp.open_browser = False     	#不自动打开浏览器
 nohup jupyter notebook&
 ```
 
-![image-20240915033346360](../../../../../OneDrive/图片/Blog/wsl配置使用notebook/image-20240915033346360.png)
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mxDYiq30zod2xxZG?embed=1&width=958&height=202" width="958" height=" " />
 
 该命令返回的一个pid,我们可以使用`kill`命令来杀死它，注意这里我们实际上是将输出写入了当前目录下的`nohup.out`,如果太大，记得删除。我们想要停止该进程可以使用`kill -9 pid`停止。
 
-![image-20240915034040605](../../../../../OneDrive/图片/Blog/wsl配置使用notebook/image-20240915034040605.png)
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mxHYiq30zod2xxZG?embed=1&width=958&height=390" width="958" height=" " />
 
 另一种方式是使用`tumx`启动`notebook`
 
