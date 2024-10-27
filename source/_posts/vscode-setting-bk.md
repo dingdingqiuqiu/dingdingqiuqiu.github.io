@@ -28,13 +28,15 @@ categories:
 
 3. `vscode`下载`c/cpp`插件
 
-4. `ctrl-shift-p`，选中第一个
+4. `ctrl-shift-p`，选中第一个`C/C++:Edit Configurations(UI)`
 
    <img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1579&height=796" width="1579" height=" " />
 
    5.配置信息如下：
 
    <img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1390&height=2584" width="1390" height=" " />
+   
+   其实不用改啥东西了，几乎所有选项在配置好环境变量后vscode都能自动识别，这里主要做对照用。关键是要下载`mingw64`,不要下载任何其他乱七八糟的。
 
 ### VSCode_编辑配置
 
@@ -106,7 +108,7 @@ categories:
 
 ### 2.keybinding.jsoon
 
-`ctrl-shift-p`,打开箭头指的这个即可。
+`ctrl-shift-p`,打开箭头指的这个`Preferences:Open Keyboard Shortcuts(JSON)`即可。
 
 <img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1092&height=614" width="1092" height=" " />
 
