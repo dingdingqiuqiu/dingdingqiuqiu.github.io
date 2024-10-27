@@ -242,58 +242,40 @@
       
         <p>一直使用linux终端比较习惯，这里展示wsl优雅启动notebook,以及基本使用</p>
 <span id="more"></span>
-
 <h3 id="jupyter配置"><a href="#jupyter配置" class="headerlink" title="jupyter配置"></a>jupyter配置</h3><h4 id="生成默认配置文件"><a href="#生成默认配置文件" class="headerlink" title="生成默认配置文件"></a>生成默认配置文件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook --generate-config</span><br></pre></td></tr></table></figure>
-
 <p>会在用户目录下生成<code>.jupyter</code>文件夹，其中<code>jupyter_notebook_config.py</code>就是配置文件。</p>
 <h4 id="生成密钥"><a href="#生成密钥" class="headerlink" title="生成密钥"></a>生成密钥</h4><p>终端输入<code>ipython</code>进入命令行</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ipython</span><br></pre></td></tr></table></figure>
-
 <p>输入密码</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from jupyter_server.auth import passwd</span><br><span class="line">passwd()</span><br></pre></td></tr></table></figure>
-
 <p>or直接在shell</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter server password</span><br></pre></td></tr></table></figure>
-
 <p>如果采用方式1，直接在命令行打印了密钥，如果采用了方式二，会提示密钥写在了何处，我们查看并复制，下一步配置自动登录时会用到</p>
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwzYiq30zod2xxZG?embed=1&width=940&height=253" width="940" height=" " />
-
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mw7Yiq30zod2xxZG?embed=1&width=958&height=95" width="958" height=" " />
-
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwzYiq30zod2xxZG?embed=1&width=940&height=253" width="940" height=" " /></p>
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mw7Yiq30zod2xxZG?embed=1&width=958&height=95" width="958" height=" " /></p>
 <h4 id="配置文件修改"><a href="#配置文件修改" class="headerlink" title="配置文件修改"></a>配置文件修改</h4><p>默认自动登录，打开第一步生成的配置文件，把hash写入，仅手动登录一次后即可实现自动登录</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.jupyter/jupyter_notebook_config.py </span><br></pre></td></tr></table></figure>
-
 <p>修改下面<code>c.ServerApp.password</code>的值为上面的密钥即可。</p>
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mw_Yiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height=" " />
-
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mw_Yiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height=" " /></p>
 <p>编辑默认生成的配置文件</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.jupyter/jupyter_notebook_config.py</span><br></pre></td></tr></table></figure>
-
 <p>对下面这行解注释即可</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.NotebookApp.open_browser = False     	#不自动打开浏览器</span><br></pre></td></tr></table></figure>
-
 <h3 id="jupyter使用"><a href="#jupyter使用" class="headerlink" title="jupyter使用"></a>jupyter使用</h3><h4 id="nohup方式"><a href="#nohup方式" class="headerlink" title="nohup方式"></a>nohup方式</h4><p>我们用下面这行命令打开<code>notebook</code>没有额外输出，终端可以继续干别的事情</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup jupyter notebook&amp;</span><br></pre></td></tr></table></figure>
-
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mxDYiq30zod2xxZG?embed=1&width=958&height=202" width="958" height=" " />
-
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mxDYiq30zod2xxZG?embed=1&width=958&height=202" width="958" height=" " /></p>
 <p>该命令返回的一个pid,我们可以使用<code>kill</code>命令来杀死它，注意这里我们实际上是将输出写入了当前目录下的<code>nohup.out</code>,如果太大，记得删除。我们想要停止该进程可以使用<code>kill -9 pid</code>停止。</p>
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mxHYiq30zod2xxZG?embed=1&width=958&height=390" width="958" height=" " />
-
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mxHYiq30zod2xxZG?embed=1&width=958&height=390" width="958" height=" " /></p>
 <p>另一种方式是使用<code>tumx</code>启动<code>notebook</code></p>
 <h4 id="tmux方式"><a href="#tmux方式" class="headerlink" title="tmux方式"></a><code>tmux</code>方式</h4><blockquote>
 <p>会介绍的这些已经可以很优雅得使用nootbook了</p>
 <p>实际上tmux相当好用，还有别的有趣功能</p>
 </blockquote>
-<p>安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install tmux</span><br></pre></td></tr></table></figure>
-
+<p>安装：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install tmux</span><br></pre></td></tr></table></figure></p>
 <p>进入：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tmux</span><br></pre></td></tr></table></figure>
-
 <p>之后在终端上下左右切分切换即可。如下图所示。上方窗口在下方<code>notebook</code>启动后依旧可以执行其他命令。</p>
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mxLYiq30zod2xxZG?embed=1&width=1919&height=1018" width="1919" height=" " />
-
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mxLYiq30zod2xxZG?embed=1&width=1919&height=1018" width="1919" height=" " /></p>
 <p>由于<code>tmux</code>快捷键设置较为阴间，我们配合neovim的窗口快捷键切换出一篇blog介绍统一方便的快捷键设置。可跳转至下面这篇文章:</p>
 <p><a target="_blank" rel="noopener" href="https://dingdingqiuqiu.github.io/2024/09/15/Neovim%E4%B8%8ETmux%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%AE%BE%E7%BD%AE/#more">Neovim与Tmux快捷键设置[myblog]</a></p>
 

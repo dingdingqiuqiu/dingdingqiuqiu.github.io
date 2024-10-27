@@ -236,9 +236,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>针对第一周的内容做了具体总结归纳。</p>
-<span id="more"></span>
-
+        <p>针对第一周的内容做了具体总结归纳。<br><span id="more"></span></p>
 <h2 id="课程"><a href="#课程" class="headerlink" title="课程"></a>课程</h2><h2 id="实验01-设置"><a href="#实验01-设置" class="headerlink" title="实验01-设置"></a>实验01-设置</h2><h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><blockquote>
 <p> git的自动登录和简单使用在原先的文章中已经有所涉及:</p>
 <p><a target="_blank" rel="noopener" href="https://dingdingqiuqiu.github.io/tags/Git/">点此跳转</a></p>
@@ -258,7 +256,6 @@
 <p><code>sculpture</code>，它是您将从中接收框架代码的远程存储库。</p>
 <p>这里<code>git</code>初始配置贴一个没见过（使用过）的：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global pull.rebase false</span><br></pre></td></tr></table></figure>
-
 <blockquote>
 <p><code>pull.rebase</code> 是一个配置项，它决定了 <code>git pull</code> 命令的行为。如果设置为 <code>true</code>，那么在执行 <code>git pull</code> 命令时，Git 会使用 <code>rebase</code> 而不是 <code>merge</code> 来合并远程仓库的新提交。<code>rebase</code> 会把你本地的提交放到远程仓库的新提交之后，这样可以得到一个线性的提交历史，使得历史更加清晰。</p>
 </blockquote>
@@ -268,20 +265,11 @@
 <p>这就是 <code>git config --global pull.rebase false</code> 这个命令的作用。它会设置 Git 的 <code>pull</code> 命令在合并远程仓库的新提交时，使用 <code>merge</code> 而不是 <code>rebase</code>。</p>
 <p>例如，你的提交历史可能会像下面这样：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A - B - C (master)</span><br><span class="line">     \</span><br><span class="line">      D - E (feature)</span><br></pre></td></tr></table></figure>
-
-
-
 <p>当你在 <code>feature</code> 分支上执行 <code>git pull origin master</code> 后，如果你的 <code>pull.rebase</code> 配置项被设置为 <code>false</code>，那么你的提交历史会变成：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A - B - C - F (master)</span><br><span class="line">     \       /</span><br><span class="line">      D - E (feature)</span><br></pre></td></tr></table></figure>
-
-
-
 <p>这里的 <code>F</code> 就是一个新的 “合并提交”，它包含了 <code>master</code> 分支和 <code>feature</code> 分支的所有改动。</p>
 <p>如果你的 <code>pull.rebase</code> 配置项被设置为 <code>true</code>，那么在执行 <code>git pull origin master</code> 后，你的提交历史会变成：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A - B - C (master)</span><br><span class="line">         \</span><br><span class="line">          D&#x27; - E&#x27; (feature)</span><br></pre></td></tr></table></figure>
-
-
-
 <p>这里的 <code>D&#39;</code> 和 <code>E&#39;</code> 是 <code>D</code> 和 <code>E</code> 的重新应用。它们的改动和 <code>D</code> 和 <code>E</code> 是一样的，但它们是全新的提交，因为它们的父提交是 <code>C</code>，而不是 <code>B</code>。</p>
 <p>所以，<code>git config --global pull.rebase false</code> 这个命令的意思就是在全局范围内，设置 <code>git pull</code> 命令在合并远程仓库的新提交时，使用 <code>merge</code> 而不是 <code>rebase</code>。这是 Git 的默认行为，如果你没有特别的需求，一般不需要执行这个命令。</p>
 <h3 id="Git-存储库和-Java-库"><a href="#Git-存储库和-Java-库" class="headerlink" title="Git 存储库和 Java 库"></a>Git 存储库和 Java 库</h3><h3 id="Java-库"><a href="#Java-库" class="headerlink" title="Java 库"></a>Java 库</h3><p>就像在 Python 中一样，我们有时想使用其他人编写的库。Java 依赖项管理有点混乱，因此我们提供了一个 git 存储库，其中包含我们将在本课程中使用的所有依赖项。再次确保您的终端已打开。</p>
@@ -289,22 +277,14 @@
 <p><img src="https://sp24.datastructur.es/labs/lab01/img/terminal_directory.png" alt="终端目录"></p>
 <p>进入文件夹后，运行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Berkeley-CS61B/library-sp24</span><br></pre></td></tr></table></figure>
-
 <p>下面是 的目录结构<code>library-sp24</code>。使用查看文件夹内部 <code>ls library-sp24</code>并确保您看到<code>.jar</code>下面列出的文件。还有很多，但我们只列出前几个。如果您使用操作系统的文件资源管理器，该<code>jar</code>部分可能不会显示在文件名中，但这没关系。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">library-sp24</span><br><span class="line">├── algs4.jar</span><br><span class="line">├── animated-gif-lib-1.4.jar</span><br><span class="line">├── antlr4-runtime-4.11.1.jar</span><br><span class="line">├── apiguardian-api-1.1.2.jar</span><br><span class="line">└── ...</span><br></pre></td></tr></table></figure>
-
 <h3 id="个人储存库"><a href="#个人储存库" class="headerlink" title="个人储存库"></a>个人储存库</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CS61b/</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:dingdingqiuqiu/CS61B-sp24.git</span><br><span class="line"># git clone git@github.com:dingdingqiuqiu/CS61B-sp21.git  </span><br></pre></td></tr></table></figure>
-
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd CS61B-sp24</span><br><span class="line"># cd CS61B-sp21  </span><br></pre></td></tr></table></figure>
-
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -M main  </span><br></pre></td></tr></table></figure>
-
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote add skeleton https://github.com/Berkeley-CS61B/skeleton-sp24.git </span><br><span class="line"># git remote add skeleton https://github.com/Berkeley-CS61B/skeleton-sp21.git</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git pull skeleton main</span><br><span class="line"># git pull skeleton master</span><br></pre></td></tr></table></figure>
-
 <p>课程实验库拉取成功</p>
 <blockquote>
 <p>后续发现sp21有开源的自动评分机器，又开了个sp21的仓库。</p>

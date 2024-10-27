@@ -249,20 +249,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文是对《计算机系统基础》一书中第一章C语言中字面量数据类型认定实验的复现,主要涉及C语言字面量数据类型，gcc编译32位程序两个知识点。重点在于计算机在进行比较时不会先看正负号认定数据类型，而是根据数据绝对值的大小认定。</p>
-<span id="more"></span>
+        <p>本文是对《计算机系统基础》一书中第一章C语言中字面量数据类型认定实验的复现,主要涉及C语言字面量数据类型，gcc编译32位程序两个知识点。重点在于计算机在进行比较时不会先看正负号认定数据类型，而是根据数据绝对值的大小认定。<br><span id="more"></span></p>
 <h2 id="c语言数值常量的类型"><a href="#c语言数值常量的类型" class="headerlink" title="c语言数值常量的类型"></a>c语言数值常量的类型</h2><p>安装<code>gcc</code>多平台编译工具</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S gcc-multilib    </span><br></pre></td></tr></table></figure>
-
 <p>安装32位程序所需的<code>libc</code>库</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S lib32-glibc lib32-gcc-libs</span><br></pre></td></tr></table></figure>
-
 <p>实验代码</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="number">-2147483648</span>&gt;<span class="number">2147483647</span>)</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;false!!!&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;true!!!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>实验结果</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212635&authkey=%21ANiKrfTOh3bHFkY&width=1914&height=374" width="1914" height="" />
-
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212635&authkey=%21ANiKrfTOh3bHFkY&width=1914&height=374" width="1914" height="" /></p>
 <p>关键点在于理解计算机先不管符号，根据<code>2127483648</code>确定类型为<code>unsigned int</code>，再加上符号，对<code>0x80000000</code>进行补码转换又得到<code>0x80000000</code>，由于先前已经确定<code>unsigned int</code>类型，所以比较时，以<code>2147483648(0x80000000)</code>和<code>2147483647(0x7fffffff)</code>比较，满足大于条件，输出<code>false</code>。</p>
 <p>参考下文：</p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/gzxb1995/article/details/104334278">计算机系统基础读书笔记摘要</a></p>
