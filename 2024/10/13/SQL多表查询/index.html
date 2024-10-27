@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文主要记录数据库实验作业的完成过程，供期末复习使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL多表查询">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/10/13/SQL%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="本文主要记录数据库实验作业的完成过程，供期末复习使用。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-10-13T11:23:00.000Z">
+<meta property="article:modified_time" content="2024-10-13T13:27:38.990Z">
+<meta property="article:author" content="P4yl04d">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/10/13/SQL%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>SQL多表查询 | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/10/13/SQL%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SQL多表查询
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2024-10-13 19:23:00 / Modified: 21:27:38" itemprop="dateCreated datePublished" datetime="2024-10-13T19:23:00+08:00">2024-10-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文主要记录数据库实验作业的完成过程，供期末复习使用。</p>
+<span id="more"></span>
+
+<p>在这之前</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44867329/article/details/137777665">https://blog.csdn.net/weixin_44867329/article/details/137777665</a></p>
+<h2 id="数据库实验三-数据查询二"><a href="#数据库实验三-数据查询二" class="headerlink" title="数据库实验三 数据查询二"></a>数据库实验三 数据查询二</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_66547608/article/details/131141175">https://blog.csdn.net/weixin_66547608/article/details/131141175</a></p>
+<h3 id="第一题："><a href="#第一题：" class="headerlink" title="第一题："></a>第一题：</h3><p>统计每本书借阅的次数,显示书名和借阅次数（借阅次数命名为<code>jycs</code>),按借阅次数降序排列,借阅次数相同的按书名降序排列。</p>
+<p>错误</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> book.sm,<span class="built_in">count</span>(borrow.jyrq)<span class="keyword">as</span> jycs <span class="keyword">FROM</span> book,borrow <span class="keyword">GROUP</span> <span class="keyword">BY</span> sm <span class="keyword">ORDER</span> <span class="keyword">BY</span> jycs <span class="keyword">desc</span>,book.sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>group by</code>用法：</p>
+<p>正确</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> sm,<span class="built_in">count</span>(sm)<span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm <span class="keyword">group</span> <span class="keyword">by</span> sm <span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h3><p>统计借阅次数在2次以上的图书的借阅的次数,显示书名和借阅次数，按借阅次数降序排列,借阅次数相同的按书名降序排列</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> sm,<span class="built_in">count</span>(sm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm <span class="keyword">group</span> <span class="keyword">by</span> sm <span class="keyword">having</span>(jycs<span class="operator">&gt;=</span><span class="number">2</span>) <span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+
+<p>正确：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> sm,<span class="built_in">count</span>(sm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm <span class="keyword">GROUP</span> <span class="keyword">BY</span> sm <span class="keyword">HAVING</span>(jycs<span class="operator">&gt;=</span><span class="number">2</span>) <span class="keyword">ORDER</span> <span class="keyword">BY</span> jysc <span class="keyword">desc</span>,sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="第三题"><a href="#第三题" class="headerlink" title="第三题"></a>第三题</h3><p>统计每个出版社的图书的借阅次数,显示出版社的名称和借阅次数，按借阅次数降序排列,借阅次数相同的按出版社降序排列</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> cbs,<span class="built_in">count</span>(cbs) <span class="keyword">as</span> jycs </span><br><span class="line"><span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> cbs</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,cbs <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第四题"><a href="#第四题" class="headerlink" title="第四题"></a>第四题</h3><p>统计每位读者借阅的次数,显示姓名和借阅次数,按借阅次数降序排列，借阅次数相同的按姓名降序排列</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> xm,<span class="built_in">count</span>(xm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> reader <span class="keyword">on</span> borrow.dzzh<span class="operator">=</span>reader.dzzh </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> xm</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,xm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第五题"><a href="#第五题" class="headerlink" title="第五题"></a>第五题</h3><p>统计研究生读者借阅的次数,显示姓名和借阅次数，按借阅次数降序排列，借阅次数相同的按姓名降序排列</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> xm,<span class="built_in">count</span>(xm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> reader <span class="keyword">on</span> borrow.dzzh<span class="operator">=</span>reader.dzzh <span class="keyword">where</span> sf<span class="operator">=</span><span class="string">'研究生'</span><span class="keyword">group</span> <span class="keyword">by</span> xm <span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,xm <span class="keyword">desc</span>;开始你的任务吧，祝你成功！</span><br><span class="line"></span><br><span class="line">use library;</span><br><span class="line">#代码开始</span><br><span class="line">#答案<span class="number">1</span></span><br><span class="line"><span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> cbs<span class="operator">=</span>"上海古籍出版社" <span class="keyword">and</span> sm<span class="operator">!=</span>"李白全集";</span><br><span class="line">#答案<span class="number">2</span></span><br><span class="line"><span class="keyword">select</span> sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj<span class="operator">&gt;</span>(<span class="keyword">select</span> <span class="built_in">avg</span>(sj) <span class="keyword">from</span> book);</span><br><span class="line">#答案<span class="number">2</span></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj<span class="operator">=</span>(<span class="keyword">select</span> <span class="built_in">max</span>(sj) <span class="keyword">from</span> book);</span><br><span class="line"> </span><br><span class="line">#答案<span class="number">3</span></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj<span class="operator">=</span>(<span class="keyword">select</span> <span class="built_in">min</span>(sj) <span class="keyword">from</span> book);</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> #代码结束</span><br><span class="line">任务描述</span><br><span class="line">本关任务： 第一题 查询曾经借过图书的读者的读者证号和姓名 第二题 查询曾经没有被借阅的图书的条形码和书名 第三题 查询与孙思旺借过相同图书的读者的读者证号和姓名，按读者证号升序排列 第四题 查询借阅过李白全集的读者所借过的其他图书的书名 按书名升序排列</span><br><span class="line"></span><br><span class="line">开始你的任务吧，祝你成功！</span><br><span class="line"></span><br><span class="line"> use library;</span><br><span class="line">#代码开始</span><br><span class="line">#题目<span class="number">1</span></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow);</span><br><span class="line">#题目<span class="number">2</span></span><br><span class="line"><span class="keyword">select</span> txm,sm <span class="keyword">from</span> book <span class="keyword">where</span> book.txm <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow);</span><br><span class="line"> </span><br><span class="line">#题目<span class="number">3</span></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span><br><span class="line"><span class="keyword">where</span> txm <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow </span><br><span class="line"><span class="keyword">where</span> borrow.dzzh<span class="operator">=</span>(<span class="keyword">select</span> dzzh <span class="keyword">from</span> reader </span><br><span class="line"><span class="keyword">where</span> xm<span class="operator">=</span><span class="string">'孙思旺'</span>))) </span><br><span class="line"><span class="keyword">and</span> dzzh<span class="operator">!=</span><span class="string">'006'</span> <span class="keyword">order</span> <span class="keyword">by</span> dzzh <span class="keyword">asc</span>;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">#题目<span class="number">4</span></span><br><span class="line"> <span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> book.txm <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow</span><br><span class="line"><span class="keyword">where</span> borrow.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span><br><span class="line"><span class="keyword">where</span> borrow.txm<span class="operator">=</span>(<span class="keyword">select</span> txm <span class="keyword">from</span> book <span class="keyword">where</span> sm<span class="operator">=</span>"李白全集")))</span><br><span class="line"><span class="keyword">and</span> sm<span class="operator">!=</span>"李白全集" <span class="keyword">order</span> <span class="keyword">by</span> sm <span class="keyword">asc</span>;</span><br><span class="line"> </span><br><span class="line"> #代码结束</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="任务描述"><a href="#任务描述" class="headerlink" title="任务描述"></a>任务描述</h4><p>本关任务：根据图书数据表进行子查询</p>
+<h4 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h4><p>为了完成本关任务，你需要掌握：子查询</p>
+<p>子查询</p>
+<p>在SELECT语句中，一个查询语句完全嵌套在另一个查询语句的WHERE或HAVING的条件短语中，称为子查询或嵌套查询。 通常把条件短语中的查询成为子查询，父查询则使用子查询的查询结果作为查询条件。</p>
+<h4 id="任务要求"><a href="#任务要求" class="headerlink" title="任务要求"></a>任务要求</h4><p>第一题 查询与李白全集同一个出版社的图书的书名（不包括李白全集） 第二题 查询高于图书的平均售价(sj)的图书的书名和售价 第三题 查询售价最高的图书的条形码、书名和售价 第四题 查询售价最低的图书的条形码、书名和售价</p>
+<hr>
+<p>开始你的任务吧，祝你成功！</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">use library;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#代码开始</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> cbs=<span class="string">"上海古籍出版社"</span> <span class="keyword">and</span> sm!=<span class="string">"李白全集"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj&gt;(<span class="function"><span class="keyword">select</span> <span class="title">avg</span>(<span class="params">sj</span>) <span class="keyword">from</span> book)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj=(<span class="function"><span class="keyword">select</span> <span class="title">max</span>(<span class="params">sj</span>) <span class="keyword">from</span> book)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj=(<span class="function"><span class="keyword">select</span> <span class="title">min</span>(<span class="params">sj</span>) <span class="keyword">from</span> book)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="meta">#代码结束</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="任务描述-1"><a href="#任务描述-1" class="headerlink" title="任务描述"></a>任务描述</h4><p>本关任务： 第一题 查询曾经借过图书的读者的读者证号和姓名 第二题 查询曾经没有被借阅的图书的条形码和书名 第三题 查询与孙思旺借过相同图书的读者的读者证号和姓名，按读者证号升序排列 第四题 查询借阅过李白全集的读者所借过的其他图书的书名 按书名升序排列</p>
+<p>开始你的任务吧，祝你成功！</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"> use library;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#代码开始</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.<span class="function">dzzh <span class="title">in</span> (<span class="params"><span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> txm,sm <span class="keyword">from</span> book <span class="keyword">where</span> book.<span class="function">txm <span class="keyword">not</span> <span class="title">in</span> (<span class="params"><span class="keyword">select</span> txm <span class="keyword">from</span> borrow</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.<span class="function">dzzh <span class="title">in</span> (<span class="params"><span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> txm <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> borrow.dzzh=(<span class="keyword">select</span> dzzh <span class="keyword">from</span> reader </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> xm=<span class="string">'孙思旺'</span></span>))) </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">and</span> dzzh!</span>=<span class="string">'006'</span> order <span class="keyword">by</span> dzzh asc;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> book.<span class="function">txm <span class="title">in</span> (<span class="params"><span class="keyword">select</span> txm <span class="keyword">from</span> borrow</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> borrow.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> borrow.txm=(<span class="keyword">select</span> txm <span class="keyword">from</span> book <span class="keyword">where</span> sm=<span class="string">"李白全集"</span></span>)))</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">and</span> sm!</span>=<span class="string">"李白全集"</span> order <span class="keyword">by</span> sm asc;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="meta">#代码结束</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="MySQL数据库-连接查询"><a href="#MySQL数据库-连接查询" class="headerlink" title="MySQL数据库 - 连接查询"></a><strong>MySQL数据库 - 连接查询</strong></h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44867329/article/details/139355889">https://blog.csdn.net/weixin_44867329/article/details/139355889</a></p>
+<p>任务描述<br>本关任务：使用内连接查询数据表中学生姓名和对应的班级。</p>
+<p>相关知识<br>为了完成本关任务，你需要掌握：<br>1.什么是内连接查询；<br>2.如何使用内连接查询。</p>
+<p>内连接查询<br>仅将两个表中满足连接条件的行组合起来作为结果集，称为内连接；</p>
+<p>关键字：[inner] join …  on。</p>
+<p>语法：</p>
+<p>表1 [inner] join 表2 on 表1.字段=表2.字段<br>语法解释：</p>
+<p>从表1中取出每一条记录，去表2中与所有的记录进行匹配，匹配必须是某个条件在表1中与表2中相同，最终才会保留结果，否则不保留。inner 关键字可省略不写；on 表示连接条件：条件字段就是代表相同的业务含义（如下面两张表中的 employee.dept_id 和 department.id），大多数情况下为两张表中的主外键关系。<br>内连接查询的使用<br>现在我们有两张表，数据如下：<br>employee表数据：</p>
+<p>id    name    dept_id<br>1    Nancy    4<br>2    Tod    2<br>3    Carly    1<br>4    Allen    2<br>5    Mary    (null)<br>department表数据：</p>
+<p>id    name<br>1    开发部<br>2    测试部<br>3    运维部<br>4    销售部<br>现在想要查询出员工姓名以及其对应的部门名称，我们就使用内连接来进行查询。</p>
+<p>我们可以将关联查询思路分为三步：<br>1.确定所连接的表，<br>2.确定所要查询的字段，<br>3.确定连接条件与连接方式。</p>
+<p>其中，没有部门的员工和部门没有员工的部门都没有被查出来，这就是内连接的特点，只查询在连接表中有对应的记录，其中dept.id=emp.dept_id是连接条件。</p>
+<p>编程要求<br>在右侧编辑器补充代码，查询数据表中学生姓名以及对应的班级名称，将其对应的列名分别另命名为studentName和className。</p>
+<p>我们为你提供了两张表，内容如下：</p>
+<p>tb_student表数据：</p>
+<p>id    name    class_id<br>1    Emma    2<br>2    Mary    4<br>3    Allen    (null)<br>4    Kevin    1<br>5    Rose    2<br>6    James    1<br>tb_class表数据：</p>
+<p>id    name<br>1    软件1631<br>2    软件1632<br>3    测试1631<br>4    测试1632<br>测试说明<br>平台会对你编写的代码进行测试：</p>
+<p>预期输出：</p>
+<p> studentName    className<br>    Kevin       软件1631<br>    James       软件1631<br>    Emma        软件1632<br>    Rose        软件1632<br>    Mary        测试1632<br>开始你的任务吧，祝你成功！</p>
+<p>第一关</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">########## 查询数据表中学生姓名和对应的班级 ##########</span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"><span class="keyword">select</span> tb_student.name <span class="keyword">as</span> studentName,tb_class.name <span class="keyword">as</span> className </span><br><span class="line"><span class="keyword">from</span> tb_student <span class="keyword">inner</span> <span class="keyword">join</span> tb_class </span><br><span class="line"><span class="keyword">on</span> tb_student.class_id<span class="operator">=</span>tb_class.id</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>第二关：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">########## 使用左外连接查询所有学生姓名和对应的班级 ##########</span><br><span class="line"> </span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"> #studentName列在左，className列在右</span><br><span class="line"><span class="keyword">select</span> tb_student.name <span class="keyword">as</span> studentName,tb_class.name <span class="keyword">as</span> className</span><br><span class="line"><span class="keyword">from</span> tb_class <span class="keyword">right</span> <span class="keyword">join</span> tb_student #class表右插入student表，student表在左边，以在左边的为name（emma<span class="operator">-</span>mary<span class="operator">-</span>allen<span class="operator">-</span>kevin<span class="operator">-</span>rose<span class="operator">-</span>james）为优先顺序先排（先放），</span><br><span class="line">#然后将class表根据id号相等后连接</span><br><span class="line"><span class="keyword">on</span> tb_class.id<span class="operator">=</span>tb_student.class_id;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"> </span><br><span class="line">########## 使用右外连接查询所有学生姓名和对应的班级 ##########</span><br><span class="line"> </span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line">#studentName列在左，className列在右</span><br><span class="line"><span class="keyword">select</span> tb_student.name <span class="keyword">as</span> studentName,tb_class.name <span class="keyword">as</span> className </span><br><span class="line"><span class="keyword">from</span> tb_class <span class="keyword">left</span> <span class="keyword">join</span> tb_student#class表左插入student表，class表在左边，以在左边表的name（<span class="number">1631</span><span class="number">-1632</span><span class="number">-1631</span><span class="number">-1632</span>）为顺序，根据class与student表的id号相等，连接</span><br><span class="line"><span class="keyword">on</span> tb_class.id<span class="operator">=</span>tb_student.class_id;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>第三关</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">########## 查询所有班级里分数在<span class="number">90</span>分以上的学生的姓名和学生的成绩以及学生所在的班级 ##########</span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"><span class="keyword">select</span> s1.name <span class="keyword">as</span> studentName,score,s2.name <span class="keyword">as</span> className </span><br><span class="line"><span class="keyword">from</span> tb_student <span class="keyword">as</span> s1,tb_class <span class="keyword">as</span> s2 </span><br><span class="line"><span class="keyword">where</span> s1.class_id<span class="operator">=</span>s2.id <span class="keyword">and</span> s1.score<span class="operator">&gt;</span><span class="number">90</span> </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> score <span class="keyword">desc</span> ;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>第四关</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"> </span><br><span class="line">#<span class="number">1.</span>查询表中<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>年级中分别男女的总人数</span><br><span class="line"><span class="keyword">select</span> gradeId,sex,<span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> student </span><br><span class="line"><span class="keyword">where</span> gradeid <span class="keyword">in</span> (<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>) <span class="keyword">group</span> <span class="keyword">by</span> gradeid,sex;</span><br><span class="line"> </span><br><span class="line"><span class="comment">-- 方法2</span></span><br><span class="line"><span class="keyword">select</span> gradeId,sex,<span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> student </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> gradeid,sex <span class="keyword">having</span> gradeid <span class="keyword">in</span> (<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/10/08/git%E6%89%8B%E5%86%8C/" rel="prev" title="git手册">
+      <i class="fa fa-chevron-left"></i> git手册
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/10/27/vscode-setting-bk/" rel="next" title="vscode-setting-bk">
+      vscode-setting-bk <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8C%E4%B8%89-%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2%E4%BA%8C"><span class="nav-number">1.</span> <span class="nav-text">数据库实验三 数据查询二</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%A2%98%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">第一题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">第二题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E9%A2%98"><span class="nav-number">1.3.</span> <span class="nav-text">第三题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">第四题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E9%A2%98"><span class="nav-number">1.5.</span> <span class="nav-text">第五题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.5.1.</span> <span class="nav-text">任务描述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86"><span class="nav-number">1.5.2.</span> <span class="nav-text">相关知识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E8%A6%81%E6%B1%82"><span class="nav-number">1.5.3.</span> <span class="nav-text">任务要求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">1.5.4.</span> <span class="nav-text">任务描述</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL%E6%95%B0%E6%8D%AE%E5%BA%93-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.</span> <span class="nav-text">MySQL数据库 - 连接查询</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = 'true';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
