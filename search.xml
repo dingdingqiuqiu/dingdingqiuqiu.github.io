@@ -465,120 +465,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Archlinux深度学习环境搭建</title>
-    <url>/2024/03/07/Archlinux%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[<p>本文主要介绍了Archlinux下本地深度学习环境的搭建</p>
-<span id="more"></span>
-
-<p>参考文章：<a href="https://xland.cyou/p/arch-linux-configuration-driver-and-software/">Arch Linux 配置 – 驱动和软件安装</a></p>
-<h3 id="显卡安装"><a href="#显卡安装" class="headerlink" title="显卡安装"></a>显卡安装</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo pacman -S nvidia-open-dkms nvidia-settings lib32-nvidia-utils <span class="comment"># 必须安装</span></span><br></pre></td></tr></table></figure>
-
-<p>安装好驱动后，编辑<code>/etc/mkinitcpio.conf</code>，删去<code>HOOKS</code>那一项中得<code>kms</code>，阻止内核启动时加载<code>nouveau</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># HOOKS=(base udev autodetect modconf keyboard keymap kms consolefont block filesystems fsck)  # 更改前</span><br><span class="line">HOOKS=(base udev autodetect modconf keyboard keymap consolefont block filesystems fsck)  # 更改后</span><br></pre></td></tr></table></figure>
-
-<p>更改后重新生成<code>initramfs</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo mkinitcpio -P</span><br></pre></td></tr></table></figure>
-
-<p>更新时需要重新生成<code>mkinitcpio</code>，自动更新脚本配置如下</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/pacman.d/hooks/nvidia.hook</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[Trigger]</span><br><span class="line">Operation=Install</span><br><span class="line">Operation=Upgrade</span><br><span class="line">Operation=Remove</span><br><span class="line">Type=Package</span><br><span class="line">Target=nvidia-open-dkms</span><br><span class="line">#Target=linux</span><br><span class="line"># Change the linux part above and in the Exec line if a different kernel is used</span><br><span class="line"># 如果使用不同的内核，请更改上面的 linux 部分和 Exec 行中的内容</span><br><span class="line"></span><br><span class="line">[Action]</span><br><span class="line">Description=Update Nvidia module in initcpio</span><br><span class="line">Depends=mkinitcpio</span><br><span class="line">When=PostTransaction</span><br><span class="line">#NeedsTargets</span><br><span class="line">#Exec=/bin/sh -c &#x27;while read -r trg; do case $trg in linux) exit 0; esac; done; /usr/bin/mkinitcpio -P&#x27;</span><br><span class="line">Exec=/usr/bin/mkinitcpio -P</span><br></pre></td></tr></table></figure>
-
-<p>重启电脑后，键入下列代码，回显如下</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lspci -k | grep -A 2 -E &quot;(VGA|3D)&quot;</span><br><span class="line">01:00.0 VGA compatible controller: NVIDIA Corporation GA107BM [GeForce RTX 3050 Mobile] (rev a1)</span><br><span class="line">        Subsystem: Lenovo GA107BM [GeForce RTX 3050 Mobile]</span><br><span class="line">        Kernel driver in use: nvidia</span><br><span class="line">--</span><br><span class="line">06:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Cezanne [Radeon Vega Series / Radeon Vega Mobile Series] (rev c5)</span><br><span class="line">        Subsystem: Lenovo Cezanne [Radeon Vega Series / Radeon Vega Mobile Series]</span><br><span class="line">        Kernel driver in use: amdgpu</span><br></pre></td></tr></table></figure>
-
-<h3 id="核显和独显动态切换"><a href="#核显和独显动态切换" class="headerlink" title="核显和独显动态切换"></a>核显和独显动态切换</h3><blockquote>
-<p>nvidia独显的话，基本只能用x11桌面</p>
-<p>optimus软件都打不开,目前在用独显模式，还需要把bios改成独显</p>
-<p>不然桌面系统都进不去</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yay -S optimus-manager optimus-manager-qt</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/environment</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">__NV_PRIME_RENDER_OFFLOAD=1</span><br><span class="line">__GLX_VENDOR_LIBRARY_NAME=<span class="string">&quot;nvidia&quot;</span></span><br><span class="line">__VK_LAYER_NV_optimus=<span class="string">&quot;NVIDIA_only&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="cuda-amp-amp-cudnn"><a href="#cuda-amp-amp-cudnn" class="headerlink" title="cuda&amp;&amp;cudnn"></a>cuda&amp;&amp;cudnn</h3><blockquote>
-<p>考虑到tensorflow需要对应版本的cuda和cudnn推荐google搜索官网版本下载</p>
-<p>查询网站：</p>
-<p><a href="https://tensorflow.google.cn/install/source">https://tensorflow.google.cn/install/source</a></p>
-<p>我的版本：</p>
-<p>cuda 12.4</p>
-<p>cudnn  8.9.7.29</p>
-<p>tensorflow 12.7</p>
-<p>兼容性不太行，但可以用，有点警告，pytorch可以完全兼容</p>
-<p>警告修复：<br><a href="https://github.com/tensorflow/tensorflow/issues/62075">https://github.com/tensorflow/tensorflow/issues/62075</a></p>
-<p>中文翻译：<br><a href="https://dingdingqiuqiu.github.io/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/#more">https://dingdingqiuqiu.github.io/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/#more</a></p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yay -S cuda</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yay -S cudnn</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd </span><br><span class="line">vim .zshrc</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#cuda-setting</span><br><span class="line">export PATH=&quot;/opt/cuda/bin:$PATH&quot;</span><br><span class="line">export LD_LIBRARY_PATH=&quot;/opt/cuda/lib64:$LD_LIBRARY_PATH&quot;</span><br><span class="line">export CUDA_HOME=$CUDA_HOME:/opt/cuda</span><br><span class="line">export CUDA_VISIBLE_DEVICES=0</span><br></pre></td></tr></table></figure>
-
-<p><code>export CUDA_VISIBLE_DEVICES=0</code>如果有四块显卡，改为<code>export CUDA_VISIBLE_DEVICES=0,1,2,3</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>如果不重启电脑，依然用不了，提示环境错误，版本不适配</p>
-<p><code>CUDA initialization: CUDA unknown error - this may be due to an incorrectly set up environment</code></p>
-</blockquote>
-<p>测试cuda是否可用：</p>
-<p><strong>torch框架</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">test.py</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;CUDA版本:&#x27;</span>, torch.version.cuda)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Pytorch版本:&#x27;</span>, torch.__version__)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;显卡是否可用:&#x27;</span>, <span class="string">&#x27;可用&#x27;</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">&#x27;不可用&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;显卡数量:&#x27;</span>, torch.cuda.device_count())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;是否支持BF16数字格式:&#x27;</span>, <span class="string">&#x27;支持&#x27;</span> <span class="keyword">if</span> torch.cuda.is_bf16_supported() <span class="keyword">else</span> <span class="string">&#x27;不支持&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡型号:&#x27;</span>, torch.cuda.get_device_name())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的CUDA算力:&#x27;</span>, torch.cuda.get_device_capability())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的总显存:&#x27;</span>, torch.cuda.get_device_properties(<span class="number">0</span>).total_memory / <span class="number">1024</span> / <span class="number">1024</span> / <span class="number">1024</span>, <span class="string">&#x27;GB&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;是否支持TensorCore:&#x27;</span>, <span class="string">&#x27;支持&#x27;</span> <span class="keyword">if</span> torch.cuda.get_device_properties(<span class="number">0</span>).major &gt;= <span class="number">7</span> <span class="keyword">else</span> <span class="string">&#x27;不支持&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的显存使用率:&#x27;</span>, torch.cuda.memory_allocated(<span class="number">0</span>) / torch.cuda.get_device_properties(<span class="number">0</span>).total_memory * <span class="number">100</span>, <span class="string">&#x27;%&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 结果</span><br><span class="line">CUDA版本: 12.1</span><br><span class="line">Pytorch版本: 2.2.2+cu121</span><br><span class="line">显卡是否可用: 可用</span><br><span class="line">显卡数量: 1</span><br><span class="line">是否支持BF16数字格式: 支持</span><br><span class="line">当前显卡型号: NVIDIA GeForce RTX 3050 Laptop GPU</span><br><span class="line">当前显卡的CUDA算力: (8, 6)</span><br><span class="line">当前显卡的总显存: 3.58929443359375 GB</span><br><span class="line">是否支持TensorCore: 支持</span><br><span class="line">当前显卡的显存使用率: 0.0 %</span><br></pre></td></tr></table></figure>
-
-<p><strong>paddle框架</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">test.py</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> paddle</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;CUDA版本:&#x27;</span>, torch.version.cuda)</span><br><span class="line">torch.cuda.is_available()</span><br><span class="line">paddle.utils.run_check()</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 结果</span><br><span class="line">CUDA版本: 12.1</span><br><span class="line">Running verify PaddlePaddle program ... </span><br><span class="line">I0407 17:14:43.856997  8841 program_interpreter.cc:212] New Executor is Running.</span><br><span class="line">W0407 17:14:43.862674  8841 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.6, Driver API Version: 12.4, Runtime API Version: 11.8</span><br><span class="line">W0407 17:14:43.863399  8841 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.</span><br><span class="line">I0407 17:14:44.297957  8841 interpreter_util.cc:624] Standalone Executor is Used.</span><br><span class="line">PaddlePaddle works well on 1 GPU.</span><br><span class="line">PaddlePaddle is installed successfully! Let&#x27;s start deep learning with PaddlePaddle now.</span><br></pre></td></tr></table></figure>
-
-<h3 id="python虚拟环境"><a href="#python虚拟环境" class="headerlink" title="python虚拟环境"></a>python虚拟环境</h3><blockquote>
-<p>由于系统<code>python</code>包管理属于<code>pacman</code>,有很多<code>pip</code>包无法安装</p>
-<p>所以我们通过<code>python</code>虚拟环境的方式来安装这些包    </p>
-<p>虚拟环境管理有很多方式，包括<code>conda</code>等，<code>python -m venv</code>更轻量级，<code>conda</code>适合大型项目</p>
-</blockquote>
-<p>注意：</p>
-<ul>
-<li><p>想要使用<code>cuda&amp;&amp;cudnn</code>进行深度学习，务必启动虚拟环境</p>
-<blockquote>
-<p>这是因为全局环境中的<code>torch.__version__</code>为<code>2.2.2</code></p>
-<p>而虚拟环境中的为<code>2.2.2+cu121</code></p>
-<p><code>cu121</code>表示 PyTorch 版本是专门针对 CUDA 12.1 编译的。</p>
-<p>这是由于我的<code>torch</code>是虚拟环境启动后通过<code>pip</code>安装的</p>
-<p>而系统上的是<code>pacman</code>安装的，版本不同</p>
-</blockquote>
-</li>
-<li><p>虚拟环境启动后，<code>pip</code>安装的包都会存在于虚拟环境中</p>
-</li>
-</ul>
-<h4 id="虚拟环境创建"><a href="#虚拟环境创建" class="headerlink" title="虚拟环境创建"></a>虚拟环境创建</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /home/P4yl04d/Documents/HENU_overview</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -m venv myenv</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>这里的 <code>myenv</code> 是你想要创建的虚拟环境的名称，你可以将其替换为你喜欢的任何名称。</p>
-</blockquote>
-<h4 id="虚拟环境激活"><a href="#虚拟环境激活" class="headerlink" title="虚拟环境激活"></a>虚拟环境激活</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">source myenv/bin/activate</span><br></pre></td></tr></table></figure>
-
-<h4 id="退出虚拟环境"><a href="#退出虚拟环境" class="headerlink" title="退出虚拟环境"></a>退出虚拟环境</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deactivate</span><br></pre></td></tr></table></figure>
-
-<h3 id="tensorflow安装"><a href="#tensorflow安装" class="headerlink" title="tensorflow安装"></a>tensorflow安装</h3><p>以下查询版本对应，务必下载对应版本的cuda和cudnn</p>
-<p><a href="https://tensorflow.google.cn/install/source">https://tensorflow.google.cn/install/source</a></p>
-]]></content>
-      <categories>
-        <category>环境搭建</category>
-        <category>开发环境</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Arch配置Git自动登录验证</title>
     <url>/2023/11/10/Arch%E9%85%8D%E7%BD%AEGit%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81/</url>
     <content><![CDATA[<p>本文主要实现了<code>Archlinux</code>环境下<code>git push</code>指令免密登录的配置<br>介绍了<code>git</code>相关操作</p>
@@ -708,6 +594,120 @@
       <tags>
         <tag>Git</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Archlinux深度学习环境搭建</title>
+    <url>/2024/03/07/Archlinux%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<p>本文主要介绍了Archlinux下本地深度学习环境的搭建</p>
+<span id="more"></span>
+
+<p>参考文章：<a href="https://xland.cyou/p/arch-linux-configuration-driver-and-software/">Arch Linux 配置 – 驱动和软件安装</a></p>
+<h3 id="显卡安装"><a href="#显卡安装" class="headerlink" title="显卡安装"></a>显卡安装</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo pacman -S nvidia-open-dkms nvidia-settings lib32-nvidia-utils <span class="comment"># 必须安装</span></span><br></pre></td></tr></table></figure>
+
+<p>安装好驱动后，编辑<code>/etc/mkinitcpio.conf</code>，删去<code>HOOKS</code>那一项中得<code>kms</code>，阻止内核启动时加载<code>nouveau</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># HOOKS=(base udev autodetect modconf keyboard keymap kms consolefont block filesystems fsck)  # 更改前</span><br><span class="line">HOOKS=(base udev autodetect modconf keyboard keymap consolefont block filesystems fsck)  # 更改后</span><br></pre></td></tr></table></figure>
+
+<p>更改后重新生成<code>initramfs</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo mkinitcpio -P</span><br></pre></td></tr></table></figure>
+
+<p>更新时需要重新生成<code>mkinitcpio</code>，自动更新脚本配置如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/pacman.d/hooks/nvidia.hook</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[Trigger]</span><br><span class="line">Operation=Install</span><br><span class="line">Operation=Upgrade</span><br><span class="line">Operation=Remove</span><br><span class="line">Type=Package</span><br><span class="line">Target=nvidia-open-dkms</span><br><span class="line">#Target=linux</span><br><span class="line"># Change the linux part above and in the Exec line if a different kernel is used</span><br><span class="line"># 如果使用不同的内核，请更改上面的 linux 部分和 Exec 行中的内容</span><br><span class="line"></span><br><span class="line">[Action]</span><br><span class="line">Description=Update Nvidia module in initcpio</span><br><span class="line">Depends=mkinitcpio</span><br><span class="line">When=PostTransaction</span><br><span class="line">#NeedsTargets</span><br><span class="line">#Exec=/bin/sh -c &#x27;while read -r trg; do case $trg in linux) exit 0; esac; done; /usr/bin/mkinitcpio -P&#x27;</span><br><span class="line">Exec=/usr/bin/mkinitcpio -P</span><br></pre></td></tr></table></figure>
+
+<p>重启电脑后，键入下列代码，回显如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lspci -k | grep -A 2 -E &quot;(VGA|3D)&quot;</span><br><span class="line">01:00.0 VGA compatible controller: NVIDIA Corporation GA107BM [GeForce RTX 3050 Mobile] (rev a1)</span><br><span class="line">        Subsystem: Lenovo GA107BM [GeForce RTX 3050 Mobile]</span><br><span class="line">        Kernel driver in use: nvidia</span><br><span class="line">--</span><br><span class="line">06:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Cezanne [Radeon Vega Series / Radeon Vega Mobile Series] (rev c5)</span><br><span class="line">        Subsystem: Lenovo Cezanne [Radeon Vega Series / Radeon Vega Mobile Series]</span><br><span class="line">        Kernel driver in use: amdgpu</span><br></pre></td></tr></table></figure>
+
+<h3 id="核显和独显动态切换"><a href="#核显和独显动态切换" class="headerlink" title="核显和独显动态切换"></a>核显和独显动态切换</h3><blockquote>
+<p>nvidia独显的话，基本只能用x11桌面</p>
+<p>optimus软件都打不开,目前在用独显模式，还需要把bios改成独显</p>
+<p>不然桌面系统都进不去</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yay -S optimus-manager optimus-manager-qt</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/environment</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">__NV_PRIME_RENDER_OFFLOAD=1</span><br><span class="line">__GLX_VENDOR_LIBRARY_NAME=<span class="string">&quot;nvidia&quot;</span></span><br><span class="line">__VK_LAYER_NV_optimus=<span class="string">&quot;NVIDIA_only&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="cuda-amp-amp-cudnn"><a href="#cuda-amp-amp-cudnn" class="headerlink" title="cuda&amp;&amp;cudnn"></a>cuda&amp;&amp;cudnn</h3><blockquote>
+<p>考虑到tensorflow需要对应版本的cuda和cudnn推荐google搜索官网版本下载</p>
+<p>查询网站：</p>
+<p><a href="https://tensorflow.google.cn/install/source">https://tensorflow.google.cn/install/source</a></p>
+<p>我的版本：</p>
+<p>cuda 12.4</p>
+<p>cudnn  8.9.7.29</p>
+<p>tensorflow 12.7</p>
+<p>兼容性不太行，但可以用，有点警告，pytorch可以完全兼容</p>
+<p>警告修复：<br><a href="https://github.com/tensorflow/tensorflow/issues/62075">https://github.com/tensorflow/tensorflow/issues/62075</a></p>
+<p>中文翻译：<br><a href="https://dingdingqiuqiu.github.io/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/#more">https://dingdingqiuqiu.github.io/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/#more</a></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yay -S cuda</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yay -S cudnn</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd </span><br><span class="line">vim .zshrc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#cuda-setting</span><br><span class="line">export PATH=&quot;/opt/cuda/bin:$PATH&quot;</span><br><span class="line">export LD_LIBRARY_PATH=&quot;/opt/cuda/lib64:$LD_LIBRARY_PATH&quot;</span><br><span class="line">export CUDA_HOME=$CUDA_HOME:/opt/cuda</span><br><span class="line">export CUDA_VISIBLE_DEVICES=0</span><br></pre></td></tr></table></figure>
+
+<p><code>export CUDA_VISIBLE_DEVICES=0</code>如果有四块显卡，改为<code>export CUDA_VISIBLE_DEVICES=0,1,2,3</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果不重启电脑，依然用不了，提示环境错误，版本不适配</p>
+<p><code>CUDA initialization: CUDA unknown error - this may be due to an incorrectly set up environment</code></p>
+</blockquote>
+<p>测试cuda是否可用：</p>
+<p><strong>torch框架</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">test.py</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;CUDA版本:&#x27;</span>, torch.version.cuda)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Pytorch版本:&#x27;</span>, torch.__version__)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;显卡是否可用:&#x27;</span>, <span class="string">&#x27;可用&#x27;</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">&#x27;不可用&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;显卡数量:&#x27;</span>, torch.cuda.device_count())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;是否支持BF16数字格式:&#x27;</span>, <span class="string">&#x27;支持&#x27;</span> <span class="keyword">if</span> torch.cuda.is_bf16_supported() <span class="keyword">else</span> <span class="string">&#x27;不支持&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡型号:&#x27;</span>, torch.cuda.get_device_name())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的CUDA算力:&#x27;</span>, torch.cuda.get_device_capability())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的总显存:&#x27;</span>, torch.cuda.get_device_properties(<span class="number">0</span>).total_memory / <span class="number">1024</span> / <span class="number">1024</span> / <span class="number">1024</span>, <span class="string">&#x27;GB&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;是否支持TensorCore:&#x27;</span>, <span class="string">&#x27;支持&#x27;</span> <span class="keyword">if</span> torch.cuda.get_device_properties(<span class="number">0</span>).major &gt;= <span class="number">7</span> <span class="keyword">else</span> <span class="string">&#x27;不支持&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;当前显卡的显存使用率:&#x27;</span>, torch.cuda.memory_allocated(<span class="number">0</span>) / torch.cuda.get_device_properties(<span class="number">0</span>).total_memory * <span class="number">100</span>, <span class="string">&#x27;%&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 结果</span><br><span class="line">CUDA版本: 12.1</span><br><span class="line">Pytorch版本: 2.2.2+cu121</span><br><span class="line">显卡是否可用: 可用</span><br><span class="line">显卡数量: 1</span><br><span class="line">是否支持BF16数字格式: 支持</span><br><span class="line">当前显卡型号: NVIDIA GeForce RTX 3050 Laptop GPU</span><br><span class="line">当前显卡的CUDA算力: (8, 6)</span><br><span class="line">当前显卡的总显存: 3.58929443359375 GB</span><br><span class="line">是否支持TensorCore: 支持</span><br><span class="line">当前显卡的显存使用率: 0.0 %</span><br></pre></td></tr></table></figure>
+
+<p><strong>paddle框架</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">test.py</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> paddle</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;CUDA版本:&#x27;</span>, torch.version.cuda)</span><br><span class="line">torch.cuda.is_available()</span><br><span class="line">paddle.utils.run_check()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 结果</span><br><span class="line">CUDA版本: 12.1</span><br><span class="line">Running verify PaddlePaddle program ... </span><br><span class="line">I0407 17:14:43.856997  8841 program_interpreter.cc:212] New Executor is Running.</span><br><span class="line">W0407 17:14:43.862674  8841 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.6, Driver API Version: 12.4, Runtime API Version: 11.8</span><br><span class="line">W0407 17:14:43.863399  8841 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.</span><br><span class="line">I0407 17:14:44.297957  8841 interpreter_util.cc:624] Standalone Executor is Used.</span><br><span class="line">PaddlePaddle works well on 1 GPU.</span><br><span class="line">PaddlePaddle is installed successfully! Let&#x27;s start deep learning with PaddlePaddle now.</span><br></pre></td></tr></table></figure>
+
+<h3 id="python虚拟环境"><a href="#python虚拟环境" class="headerlink" title="python虚拟环境"></a>python虚拟环境</h3><blockquote>
+<p>由于系统<code>python</code>包管理属于<code>pacman</code>,有很多<code>pip</code>包无法安装</p>
+<p>所以我们通过<code>python</code>虚拟环境的方式来安装这些包    </p>
+<p>虚拟环境管理有很多方式，包括<code>conda</code>等，<code>python -m venv</code>更轻量级，<code>conda</code>适合大型项目</p>
+</blockquote>
+<p>注意：</p>
+<ul>
+<li><p>想要使用<code>cuda&amp;&amp;cudnn</code>进行深度学习，务必启动虚拟环境</p>
+<blockquote>
+<p>这是因为全局环境中的<code>torch.__version__</code>为<code>2.2.2</code></p>
+<p>而虚拟环境中的为<code>2.2.2+cu121</code></p>
+<p><code>cu121</code>表示 PyTorch 版本是专门针对 CUDA 12.1 编译的。</p>
+<p>这是由于我的<code>torch</code>是虚拟环境启动后通过<code>pip</code>安装的</p>
+<p>而系统上的是<code>pacman</code>安装的，版本不同</p>
+</blockquote>
+</li>
+<li><p>虚拟环境启动后，<code>pip</code>安装的包都会存在于虚拟环境中</p>
+</li>
+</ul>
+<h4 id="虚拟环境创建"><a href="#虚拟环境创建" class="headerlink" title="虚拟环境创建"></a>虚拟环境创建</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /home/P4yl04d/Documents/HENU_overview</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -m venv myenv</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里的 <code>myenv</code> 是你想要创建的虚拟环境的名称，你可以将其替换为你喜欢的任何名称。</p>
+</blockquote>
+<h4 id="虚拟环境激活"><a href="#虚拟环境激活" class="headerlink" title="虚拟环境激活"></a>虚拟环境激活</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">source myenv/bin/activate</span><br></pre></td></tr></table></figure>
+
+<h4 id="退出虚拟环境"><a href="#退出虚拟环境" class="headerlink" title="退出虚拟环境"></a>退出虚拟环境</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deactivate</span><br></pre></td></tr></table></figure>
+
+<h3 id="tensorflow安装"><a href="#tensorflow安装" class="headerlink" title="tensorflow安装"></a>tensorflow安装</h3><p>以下查询版本对应，务必下载对应版本的cuda和cudnn</p>
+<p><a href="https://tensorflow.google.cn/install/source">https://tensorflow.google.cn/install/source</a></p>
+]]></content>
+      <categories>
+        <category>环境搭建</category>
+        <category>开发环境</category>
+      </categories>
   </entry>
   <entry>
     <title>Blog多平台同步</title>
@@ -980,186 +980,6 @@
       <tags>
         <tag>Git</tag>
         <tag>博客搭建</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Bufbomb栈溢出炸弹实验</title>
-    <url>/2023/12/15/Bufbomb%E6%A0%88%E6%BA%A2%E5%87%BA%E7%82%B8%E5%BC%B9%E5%AE%9E%E9%AA%8C/</url>
-    <content><![CDATA[<p>本文是对计算机系统基础第三次实验的复现，以此为基础讲解栈溢出的相关知识。</p>
-<span id="more"></span>
-
-<h3 id="基本逻辑逆向"><a href="#基本逻辑逆向" class="headerlink" title="基本逻辑逆向"></a>基本逻辑逆向</h3><p><code>main</code>函数</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212861&authkey=%21ANiKrfTOh3bHFkY&width=812&height=668" width="812" height=" " />
-
-<p>这里比较引人注目的是<code>signal</code>函数，先执行了三个该函数，又引入标准输入的文件描述符为<code>infile</code>,以下链接比较深入讲解了<code>signal</code>函数，读者可详细了解。</p>
-<p><a href="https://www.tutorialspoint.com/c_standard_library/c_function_signal.htm">C library function - signal()</a></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">sighandler</span><span class="params">(<span class="type">int</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span> <span class="params">()</span> &#123;</span><br><span class="line">   signal(SIGINT, sighandler);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Going to sleep for a second...\n&quot;</span>);</span><br><span class="line">      sleep(<span class="number">1</span>); </span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">sighandler</span><span class="params">(<span class="type">int</span> signum)</span> &#123;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;Caught signal %d, coming out...\n&quot;</span>, signum);</span><br><span class="line">   <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以下是一个可能的输出</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Caught signal <span class="number">2</span>, coming out...</span><br></pre></td></tr></table></figure>
-
-<p>总之，这段利用<code>sign</code>函数来实现了一些违规输入的提示。包括段溢出，进程繁忙和错误指令。例如下面是段溢出错误的提示。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212863&authkey=%21ANiKrfTOh3bHFkY&width=1489&height=660" width="1489" height="" />
-
-<p>接下来，程序会去走一个循环。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212865&authkey=%21ANiKrfTOh3bHFkY&width=1479&height=660" width="1479" height="" />
-
-<p><a href="https://www.tutorialspoint.com/getopt-function-in-c-to-parse-command-line-arguments"><code>getopt()</code>function in C to parse command line arguments</a></p>
-<p><code>getopt()</code>函数原型：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">getopt(<span class="type">int</span> argc, <span class="type">char</span> *<span class="type">const</span> argv[], <span class="type">const</span> <span class="type">char</span> *optstring)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>如果选项带有一个值，那么该值将由<code>optarg</code> 指向</p>
-</li>
-<li><p>当没有更多选项可以处理时，它将返回-1</p>
-</li>
-<li><p>返回“?”表明这是一个无法识别的选项，它将其存储到 <code>optopt</code> 中。</p>
-</li>
-<li><p>有时某些选项需要一些值，如果选项存在但值不存在，那么它也会返回“？”。</p>
-</li>
-<li><p>我们可以使用 ‘:’ 作为 <code>optstring</code> 的第一个字符，这样，如果没有给出值，它将返回 ‘:’ 而不是 ‘?’。</p>
-</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">main(<span class="type">int</span> argc, <span class="type">char</span> *argv[]) &#123;</span><br><span class="line">   <span class="type">int</span> option;</span><br><span class="line">   <span class="comment">// put &#x27;:&#x27; at the starting of the string so compiler can distinguish between &#x27;?&#x27; and &#x27;:&#x27;</span></span><br><span class="line">   <span class="keyword">while</span>((option = getopt(argc, argv, <span class="string">&quot;:if:lrx&quot;</span>)) != <span class="number">-1</span>)&#123; <span class="comment">//get option from the getopt() method</span></span><br><span class="line">      <span class="keyword">switch</span>(option)&#123;</span><br><span class="line">         <span class="comment">//For option i, r, l, print that these are options</span></span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;i&#x27;</span>:</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span>:</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;r&#x27;</span>:</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Given Option: %c\n&quot;</span>, option);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;f&#x27;</span>: <span class="comment">//here f is used for some file name</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Given File: %s\n&quot;</span>, optarg);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;:&#x27;</span>:</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;option needs a value\n&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;?&#x27;</span>: <span class="comment">//used for some unknown options</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;unknown option: %c\n&quot;</span>, optopt);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">for</span>(; optind &lt; argc; optind++)&#123; <span class="comment">//when some extra arguments are passed</span></span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Given extra arguments: %s\n&quot;</span>, argv[optind]);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以下是输出</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Given Option: i</span><br><span class="line">Given File: test_file.c</span><br><span class="line">Given Option: l</span><br><span class="line">Given Option: r</span><br><span class="line">Given extra arguments: hello</span><br></pre></td></tr></table></figure>
-
-<p>因此，很容易为这段循环设置下面这段注释</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> ( <span class="number">1</span> ) <span class="comment">// 无限循环</span></span><br><span class="line">  &#123;</span><br><span class="line">    v4 = getopt(argc, (<span class="type">char</span> *<span class="type">const</span> *)argv, <span class="string">&quot;gsnhu:&quot;</span>); <span class="comment">// 解析命令行参数</span></span><br><span class="line">    <span class="keyword">if</span> ( v4 == <span class="number">-1</span> ) <span class="comment">// 如果没有更多的参数</span></span><br><span class="line">      <span class="keyword">break</span>; <span class="comment">// 退出循环</span></span><br><span class="line">    <span class="keyword">switch</span> ( v4 ) <span class="comment">// 根据参数类型进行处理</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;g&#x27;</span>: <span class="comment">// 如果参数是 &#x27;g&#x27;</span></span><br><span class="line">        autograde = <span class="number">1</span>; <span class="comment">// 设置自动评分标志</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;h&#x27;</span>: <span class="comment">// 如果参数是 &#x27;h&#x27;</span></span><br><span class="line">        usage(); <span class="comment">// 调用 usage 函数</span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;n&#x27;</span>: <span class="comment">// 如果参数是 &#x27;n&#x27;</span></span><br><span class="line">        v10 = <span class="number">1</span>; <span class="comment">// 设置 v10 标志</span></span><br><span class="line">        v3 = <span class="number">5</span>; <span class="comment">// 设置 v3 的值为 5</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;s&#x27;</span>: <span class="comment">// 如果参数是 &#x27;s&#x27;</span></span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;This is a quiet bomb. Ignoring -s flag.&quot;</span>); <span class="comment">// 输出一条消息</span></span><br><span class="line">        notify = <span class="number">0</span>; <span class="comment">// 设置通知标志</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;u&#x27;</span>: <span class="comment">// 如果参数是 &#x27;u&#x27;</span></span><br><span class="line">        userid = __strdup(optarg); <span class="comment">// 复制用户 ID</span></span><br><span class="line">        cookie = gencookie(userid); <span class="comment">// 生成 cookie</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>: <span class="comment">// 如果参数不是上述任何一种</span></span><br><span class="line">        usage(); <span class="comment">// 调用 usage 函数</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> __usercall __noreturn <span class="title function_">usage</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *a1@&lt;eax&gt;)</span></span><br><span class="line">&#123;</span><br><span class="line">  __printf_chk(<span class="number">1</span>, <span class="string">&quot;Usage: %s -u &lt;userid&gt; [-nsh]\n&quot;</span>, a1);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -u &lt;userid&gt; User ID&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -n          Nitro mode&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -s          Submit your solution to the grading server&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -h          Print help information&quot;</span>);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>最后一段，要求必须有<code>userid</code>,即执行<code>bufbomb</code>程序的时候必须添加<code>-u</code>参数。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212867&authkey=%21ANiKrfTOh3bHFkY&width=1100&height=802" width="1100" height=" " />
-
-<p>后面初始化<code>bomb</code>炸弹，打印<code>Userid</code>和<code>Cookie</code>。重点看下下面这段的汇编，<code>cookie</code>放<code>eax</code>寄存器以后，放到栈顶，作为<code>seed</code>执行<code>_srandom</code>函数和<code>_random</code>函数，该函数的返回值与<code>0xFF0</code>按位与运算后将结果加上256，比较符合C伪代码，并将结果放到<code>esp+18</code>的内存地址，后面将<code>4</code>和<code>edi</code>里存的数据作为参数入栈，查看<code>edi(v3)</code>的引用信息，发现默认为1，在传入<code>-n</code>参数时修改为5。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212869&authkey=%21ANiKrfTOh3bHFkY&width=862&height=677" width="862" height=" " />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212871&authkey=%21ANiKrfTOh3bHFkY&width=1030&height=287" width="1030" height="" />
-
-<p>使用<code>_calloc</code>函数分配好堆空间以后，把分配空间的内存地址放到<code>eax</code>寄存器中,并把堆空间中首元素置零，<code>ebx</code>寄存器赋1，跳转到<code>loc_80491BB</code>。后面分析下来基本和C伪代码保持一致。重点在于<code>-n</code>参数会把<code>v10(默认为0)</code>参数改为<code>1</code>,会把<code>v3（默认为1）</code>参数改为5，从而影响到分配到分配到的<code>v5</code>的大小，这里我将其改名为<code>arry</code>，为了便于理解，将其他参数也改名。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">launcher(launcher_flag, arry[j] + ran_cookie);</span><br></pre></td></tr></table></figure>
-
-<p>这是修改后的各个参数的名字，后面我们重点分析<code>launcher</code>函数即可。看下<code>launcher</code>函数的C风格的伪代码</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" />
-
-<p>可以看到，<code>launcher_flag</code>实际上是开启<code>nitro</code>这一关的全局变量，<code>arry[j] + ran_cookie</code>随机数当作全局偏移量量出现。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">launcher</span><span class="params">(<span class="type">int</span> a1, <span class="type">int</span> a2)</span> <span class="comment">// 定义一个名为 launcher 的函数，它接受两个整数参数 a1 和 a2</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> v3; <span class="comment">// 在栈上定义一个整数变量 v3 [esp+0h] [ebp-28h] BYREF</span></span><br><span class="line"></span><br><span class="line">  global_nitro = a1; <span class="comment">// 将 a1 的值赋给全局变量 global_nitro</span></span><br><span class="line">  global_offset = a2; <span class="comment">// 将 a2 的值赋给全局变量 global_offset</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用 mmap 函数尝试在内存中预留一块空间，大小为 0x100000 字节，权限为 7（即可读、可写、可执行），并将其映射到进程的地址空间</span></span><br><span class="line">  <span class="comment">// 如果映射失败（即 mmap 的返回值不等于预期的地址 reserved），则向标准错误输出流 stderr 写入错误信息，并退出程序</span></span><br><span class="line">  <span class="keyword">if</span> ( mmap(&amp;reserved, <span class="number">0x100000</span>u, <span class="number">7</span>, <span class="number">306</span>, <span class="number">0</span>, <span class="number">0</span>) != &amp;reserved )</span><br><span class="line">  &#123;</span><br><span class="line">    fwrite(<span class="string">&quot;Internal error.  Couldn&#x27;t use mmap. Try different value for START_ADDR\n&quot;</span>, <span class="number">1u</span>, <span class="number">0x47</span>u, <span class="built_in">stderr</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  stack_top = (<span class="type">int</span>)&amp;unk_55685FF8; <span class="comment">// 将一个未知的内存地址赋给全局变量 stack_top</span></span><br><span class="line">  global_save_stack = (<span class="type">int</span>)&amp;v3; <span class="comment">// 将 v3 的地址赋给全局变量 global_save_stack</span></span><br><span class="line"></span><br><span class="line">  launch(global_nitro, global_offset); <span class="comment">// 调用名为 launch 的函数，参数为 global_nitro 和 global_offset</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> munmap(&amp;reserved, <span class="number">0x100000</span>u); <span class="comment">// 使用 munmap 函数取消之前通过 mmap 函数预留的内存空间，并返回 munmap 的结果</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>重点看下<code>mmap</code>分配的空间，应该注意到，<code>(int)&amp;unk_55685FF8</code>实际上是<code>mmap()</code>函数分配的内存空间的<code>reserved</code>的最后一段。下面是程序头表（Program Header Table，PHT）的条目，它是在可执行和链接格式（ELF）文件中找到的。这个条目提供了加载（LOAD）段到内存中的必要信息。注意这里的 <code>_reserved</code> 物理地址这刚好是<code>0x5586000</code>,分配的权限为<code>6</code>（写和读），大小是<code>0x100000</code>。</p>
-<p><a href="https://www.ibm.com/docs/en/zos/2.4.0?topic=functions-mmap-map-pages-memor">mmap函数说明文档</a></p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212878&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212879&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
-<p>有关信息与上图所示，重点是对一些变量的赋值和分配堆空间。重点函数是<code>launch</code>,看下C风格的伪代码。下面是入栈信息，可以看到参数并未放栈上，而是放在了<code>eax</code>和<code>edx</code>寄存器中了。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212884&authkey=%21ANiKrfTOh3bHFkY&width=1540&height=871" width="1540" height="" />
-
-<p>看下函数本体。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212885&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
-
-<p>C伪代码</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" />
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> __usercall launch@&lt;eax&gt;(<span class="type">int</span> global_nitro@&lt;eax&gt;, <span class="type">int</span> global_offset@&lt;edx&gt;)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">void</span> *v3; <span class="comment">// esp，栈指针</span></span><br><span class="line">  <span class="type">int</span> v5; <span class="comment">// [esp+10h] [ebp-58h] BYREF，局部变量v5</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v6; <span class="comment">// [esp+5Ch] [ebp-Ch]，局部变量v6</span></span><br><span class="line">  <span class="type">int</span> savedregs; <span class="comment">// [esp+68h] [ebp+0h] BYREF，保存寄存器的值</span></span><br><span class="line"></span><br><span class="line">  v6 = __readgsdword(<span class="number">0x14</span>u); <span class="comment">// 读取线程局部存储（Thread Local Storage，TLS）中的值</span></span><br><span class="line">  v3 = alloca((((<span class="type">unsigned</span> __int16)&amp;savedregs - <span class="number">76</span>) &amp; <span class="number">0x3FF0</span>) + global_offset + <span class="number">15</span>); <span class="comment">// 分配一块内存，大小取决于savedregs的地址、global_offset和15</span></span><br><span class="line">  <span class="built_in">memset</span>(&amp;v5, <span class="number">244</span>, ((<span class="type">unsigned</span> __int16)&amp;savedregs - <span class="number">76</span>) &amp; <span class="number">0x3FF0</span>); <span class="comment">// 将v5的内存区域设置为244</span></span><br><span class="line">  __printf_chk(<span class="number">1</span>, <span class="string">&quot;Type string:&quot;</span>); <span class="comment">// 打印字符串&quot;Type string:&quot;</span></span><br><span class="line">  <span class="keyword">if</span> ( global_nitro ) <span class="comment">// 如果global_nitro为真</span></span><br><span class="line">    testn(); <span class="comment">// 调用函数testn</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    test(); <span class="comment">// 否则调用函数test</span></span><br><span class="line">  <span class="keyword">if</span> ( !success ) <span class="comment">// 如果success为假</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Better luck next time&quot;</span>); <span class="comment">// 打印字符串&quot;Better luck next time&quot;</span></span><br><span class="line">    success = <span class="number">0</span>; <span class="comment">// 将success设置为0</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> __readgsdword(<span class="number">0x14</span>u) ^ v6; <span class="comment">// 返回TLS中的值与v6的异或结果</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>进去<code>testn()</code>函数和<code>test()</code>函数看一下，大体可以分辨这两个函数为漏洞函数。<code>testn()</code>需要<code>-n</code>参数触发，<code>test()</code>函数不需要。大体知道这些就够了，具体的漏洞原理流程在每个部分具体说明。</p>
-<h3 id="Smoke"><a href="#Smoke" class="headerlink" title="Smoke"></a>Smoke</h3><p>可以看到，<code>Gets</code>函数最多能读取1024个字节，而数组大小仅仅为40个字节，因此，可以传入44个字节装满数组并覆盖<code>rbp</code>,4个字节覆盖返回地址，使得跳转到指定的返回地址，本题要求是跳转到<code>Smoke</code>函数，仅仅跳转过去就完成了目标。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212889&authkey=%21ANiKrfTOh3bHFkY&width=859&height=759" width="859" height="" />
-
-<p>原理主要是因为<code>leave</code>指令相当于</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mov esp, ebp</span><br><span class="line">pop ebp</span><br></pre></td></tr></table></figure>
-
-<p><code>ret</code>指令相当于</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注意：这里的<code>eip</code>是不能直接操作的，所以上述代码只是为了解释<code>ret</code>的功能，并不能直接在代码中使用。</p>
-</blockquote>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212891&authkey=%21ANiKrfTOh3bHFkY&width=1225&height=676" width="1225" height="" />
-
-<p>返回点在如图所示的高亮部分。</p>
-<h3 id="Fizz"><a href="#Fizz" class="headerlink" title="Fizz"></a>Fizz</h3><p>本题还要求<code>cookie</code>要与栈上一个值相等。</p>
-<p>这是修改后的各个参数的名字，后面我们重点分析<code>launcher</code>函数即可。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" />
-
-<p>这段除了<code>launch</code>以外都是分配内存与变量赋值的操作，重点看下<code>launch</code>函数，逻辑也很简单，开<code>-n</code>参数执行<code>testn</code>，不开<code>-n</code>执行<code>test</code>函数</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" />
-
-<h3 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h3><p><code>leave</code>指令</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">push esp,ebp</span><br><span class="line">pop  ebp</span><br></pre></td></tr></table></figure>
-
-<p><code>ret</code>指令</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
-
-<h3 id="Smoke-1"><a href="#Smoke-1" class="headerlink" title="Smoke"></a>Smoke</h3><blockquote>
-<p>函数在执行<code>getbuf</code>后不返回1，而是转向<code>Smoke</code>函数</p>
-</blockquote>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212896&authkey=%21ANiKrfTOh3bHFkY&width=824&height=344" width="824" height="" />
-
-<p>容易知道，<code>Gets</code>函数最多能写入1024个字节，而<code>v1</code>仅仅开辟了40（0x28）个字节的空间。因此，输入可以用44个字节覆盖整个<code>v1</code>和<code>ebp</code>，再用4个字节覆盖返回地址，使函数跳转到<code>Smoke</code>执行。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212898&authkey=%21ANiKrfTOh3bHFkY&width=735&height=189" width="735" height="" />
-
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212900&authkey=%21ANiKrfTOh3bHFkY&width=654&height=703" width="654" height="" />
-
-<p>实操：生成<code>cookie</code></p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212902&authkey=%21ANiKrfTOh3bHFkY&width=556&height=101" width="556" height="" />
-
-<p>二进制文件<code>Smkoe</code></p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212904&authkey=%21ANiKrfTOh3bHFkY&width=839&height=156" width="839" height="" />
-
-<p>验证</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212906&authkey=%21ANiKrfTOh3bHFkY&width=553&height=206" width="553" height="" />
-
-<h3 id="Fizz-1"><a href="#Fizz-1" class="headerlink" title="Fizz"></a>Fizz</h3><p>跳转思路与<code>Smoke</code>一致，不过这里还需要与栈上数据比较一下</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212907&authkey=%21ANiKrfTOh3bHFkY&width=774&height=297" width="774" height="" />
-
-<p>那就在后面再加上几位<code>cookie</code>即可</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212909&authkey=%21ANiKrfTOh3bHFkY&width=835&height=176" width="835" height="" />
-
-<p>执行结果</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212911&authkey=%21ANiKrfTOh3bHFkY&width=633&height=216" width="633" height="" />
-
-<h3 id="Bang"><a href="#Bang" class="headerlink" title="Bang"></a>Bang</h3><p>要求与全局变量进行比较，修改下全局变量</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212913&authkey=%21ANiKrfTOh3bHFkY&width=881&height=342" width="881" height="" />
-
-<p>在跳转<code>bang</code>之前需要执行的汇编指令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">push 0x3962b26d,%eax</span><br><span class="line">mov  %eax,0x0804d100</span><br><span class="line">ret </span><br></pre></td></tr></table></figure>
-
-<h3 id="Nitro"><a href="#Nitro" class="headerlink" title="Nitro"></a>Nitro</h3><p>通过第一阶段的基本逻辑分析容易知道：只有在执行<code>-n</code>程序的时候添加<code>-n</code>参数，该阶段才会被开启。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212922&authkey=%21ANiKrfTOh3bHFkY&width=917&height=421" width="917" height="" />
-
-<p>这里<code>testn</code>函数如果想正常返回，需要满足两个条件</p>
-<ul>
-<li>栈帧不被破坏</li>
-<li><code>getbufn</code>函数返回<code>cookie</code></li>
-</ul>
-<p>我们现在来寻找漏洞点来注入我们的攻击指令。</p>
-<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212924&authkey=%21ANiKrfTOh3bHFkY&width=693&height=208" width="693" height="" />
-
-<p>我们前面分析了<code>Gets</code>函数的实现，容易知道，这里是存在栈溢出漏洞的。依照前面的思路，我们用520个字符填满<code>v1</code>数组，用4个字符覆盖<code>ebp</code>，用四个字符覆盖<code>getbufn</code>的返回地址。由前面的基本逻辑逆向，我们知道，该函数实际上需要执行5次，每次执行时的栈状态不一致，因此，我们选择使用<code>nop</code>指令来填充输入中除了攻击指令其他位置，以此保证只要返回地址跳到任意一个<code>nop</code>指令上，程序都会执行我们的攻击指令。</p>
-<p>以上的分析结束以后，是时候来生成攻击指令了。</p>
-<p>先写出汇编代码</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lea 0x28(%ebp),%esp</span><br><span class="line">mov cookie,%eax</span><br><span class="line">push 返回地址</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>OS</category>
-        <category>asm</category>
-        <category>Pwn</category>
-        <category>StackOverflow</category>
-        <category>Book</category>
-        <category>CSAPP</category>
-      </categories>
-      <tags>
-        <tag>gdb</tag>
-        <tag>asm</tag>
-        <tag>CSAPP</tag>
       </tags>
   </entry>
   <entry>
@@ -1523,6 +1343,186 @@
       </tags>
   </entry>
   <entry>
+    <title>Bufbomb栈溢出炸弹实验</title>
+    <url>/2023/12/15/Bufbomb%E6%A0%88%E6%BA%A2%E5%87%BA%E7%82%B8%E5%BC%B9%E5%AE%9E%E9%AA%8C/</url>
+    <content><![CDATA[<p>本文是对计算机系统基础第三次实验的复现，以此为基础讲解栈溢出的相关知识。</p>
+<span id="more"></span>
+
+<h3 id="基本逻辑逆向"><a href="#基本逻辑逆向" class="headerlink" title="基本逻辑逆向"></a>基本逻辑逆向</h3><p><code>main</code>函数</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212861&authkey=%21ANiKrfTOh3bHFkY&width=812&height=668" width="812" height=" " />
+
+<p>这里比较引人注目的是<code>signal</code>函数，先执行了三个该函数，又引入标准输入的文件描述符为<code>infile</code>,以下链接比较深入讲解了<code>signal</code>函数，读者可详细了解。</p>
+<p><a href="https://www.tutorialspoint.com/c_standard_library/c_function_signal.htm">C library function - signal()</a></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">sighandler</span><span class="params">(<span class="type">int</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span> <span class="params">()</span> &#123;</span><br><span class="line">   signal(SIGINT, sighandler);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Going to sleep for a second...\n&quot;</span>);</span><br><span class="line">      sleep(<span class="number">1</span>); </span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">sighandler</span><span class="params">(<span class="type">int</span> signum)</span> &#123;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;Caught signal %d, coming out...\n&quot;</span>, signum);</span><br><span class="line">   <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以下是一个可能的输出</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Going to sleep <span class="keyword">for</span> a second...</span><br><span class="line">Caught signal <span class="number">2</span>, coming out...</span><br></pre></td></tr></table></figure>
+
+<p>总之，这段利用<code>sign</code>函数来实现了一些违规输入的提示。包括段溢出，进程繁忙和错误指令。例如下面是段溢出错误的提示。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212863&authkey=%21ANiKrfTOh3bHFkY&width=1489&height=660" width="1489" height="" />
+
+<p>接下来，程序会去走一个循环。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212865&authkey=%21ANiKrfTOh3bHFkY&width=1479&height=660" width="1479" height="" />
+
+<p><a href="https://www.tutorialspoint.com/getopt-function-in-c-to-parse-command-line-arguments"><code>getopt()</code>function in C to parse command line arguments</a></p>
+<p><code>getopt()</code>函数原型：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">getopt(<span class="type">int</span> argc, <span class="type">char</span> *<span class="type">const</span> argv[], <span class="type">const</span> <span class="type">char</span> *optstring)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>如果选项带有一个值，那么该值将由<code>optarg</code> 指向</p>
+</li>
+<li><p>当没有更多选项可以处理时，它将返回-1</p>
+</li>
+<li><p>返回“?”表明这是一个无法识别的选项，它将其存储到 <code>optopt</code> 中。</p>
+</li>
+<li><p>有时某些选项需要一些值，如果选项存在但值不存在，那么它也会返回“？”。</p>
+</li>
+<li><p>我们可以使用 ‘:’ 作为 <code>optstring</code> 的第一个字符，这样，如果没有给出值，它将返回 ‘:’ 而不是 ‘?’。</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">main(<span class="type">int</span> argc, <span class="type">char</span> *argv[]) &#123;</span><br><span class="line">   <span class="type">int</span> option;</span><br><span class="line">   <span class="comment">// put &#x27;:&#x27; at the starting of the string so compiler can distinguish between &#x27;?&#x27; and &#x27;:&#x27;</span></span><br><span class="line">   <span class="keyword">while</span>((option = getopt(argc, argv, <span class="string">&quot;:if:lrx&quot;</span>)) != <span class="number">-1</span>)&#123; <span class="comment">//get option from the getopt() method</span></span><br><span class="line">      <span class="keyword">switch</span>(option)&#123;</span><br><span class="line">         <span class="comment">//For option i, r, l, print that these are options</span></span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;i&#x27;</span>:</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span>:</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;r&#x27;</span>:</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Given Option: %c\n&quot;</span>, option);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;f&#x27;</span>: <span class="comment">//here f is used for some file name</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Given File: %s\n&quot;</span>, optarg);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;:&#x27;</span>:</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;option needs a value\n&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;?&#x27;</span>: <span class="comment">//used for some unknown options</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;unknown option: %c\n&quot;</span>, optopt);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">for</span>(; optind &lt; argc; optind++)&#123; <span class="comment">//when some extra arguments are passed</span></span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Given extra arguments: %s\n&quot;</span>, argv[optind]);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以下是输出</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Given Option: i</span><br><span class="line">Given File: test_file.c</span><br><span class="line">Given Option: l</span><br><span class="line">Given Option: r</span><br><span class="line">Given extra arguments: hello</span><br></pre></td></tr></table></figure>
+
+<p>因此，很容易为这段循环设置下面这段注释</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> ( <span class="number">1</span> ) <span class="comment">// 无限循环</span></span><br><span class="line">  &#123;</span><br><span class="line">    v4 = getopt(argc, (<span class="type">char</span> *<span class="type">const</span> *)argv, <span class="string">&quot;gsnhu:&quot;</span>); <span class="comment">// 解析命令行参数</span></span><br><span class="line">    <span class="keyword">if</span> ( v4 == <span class="number">-1</span> ) <span class="comment">// 如果没有更多的参数</span></span><br><span class="line">      <span class="keyword">break</span>; <span class="comment">// 退出循环</span></span><br><span class="line">    <span class="keyword">switch</span> ( v4 ) <span class="comment">// 根据参数类型进行处理</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;g&#x27;</span>: <span class="comment">// 如果参数是 &#x27;g&#x27;</span></span><br><span class="line">        autograde = <span class="number">1</span>; <span class="comment">// 设置自动评分标志</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;h&#x27;</span>: <span class="comment">// 如果参数是 &#x27;h&#x27;</span></span><br><span class="line">        usage(); <span class="comment">// 调用 usage 函数</span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;n&#x27;</span>: <span class="comment">// 如果参数是 &#x27;n&#x27;</span></span><br><span class="line">        v10 = <span class="number">1</span>; <span class="comment">// 设置 v10 标志</span></span><br><span class="line">        v3 = <span class="number">5</span>; <span class="comment">// 设置 v3 的值为 5</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;s&#x27;</span>: <span class="comment">// 如果参数是 &#x27;s&#x27;</span></span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;This is a quiet bomb. Ignoring -s flag.&quot;</span>); <span class="comment">// 输出一条消息</span></span><br><span class="line">        notify = <span class="number">0</span>; <span class="comment">// 设置通知标志</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;u&#x27;</span>: <span class="comment">// 如果参数是 &#x27;u&#x27;</span></span><br><span class="line">        userid = __strdup(optarg); <span class="comment">// 复制用户 ID</span></span><br><span class="line">        cookie = gencookie(userid); <span class="comment">// 生成 cookie</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>: <span class="comment">// 如果参数不是上述任何一种</span></span><br><span class="line">        usage(); <span class="comment">// 调用 usage 函数</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> __usercall __noreturn <span class="title function_">usage</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *a1@&lt;eax&gt;)</span></span><br><span class="line">&#123;</span><br><span class="line">  __printf_chk(<span class="number">1</span>, <span class="string">&quot;Usage: %s -u &lt;userid&gt; [-nsh]\n&quot;</span>, a1);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -u &lt;userid&gt; User ID&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -n          Nitro mode&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -s          Submit your solution to the grading server&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;  -h          Print help information&quot;</span>);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后一段，要求必须有<code>userid</code>,即执行<code>bufbomb</code>程序的时候必须添加<code>-u</code>参数。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212867&authkey=%21ANiKrfTOh3bHFkY&width=1100&height=802" width="1100" height=" " />
+
+<p>后面初始化<code>bomb</code>炸弹，打印<code>Userid</code>和<code>Cookie</code>。重点看下下面这段的汇编，<code>cookie</code>放<code>eax</code>寄存器以后，放到栈顶，作为<code>seed</code>执行<code>_srandom</code>函数和<code>_random</code>函数，该函数的返回值与<code>0xFF0</code>按位与运算后将结果加上256，比较符合C伪代码，并将结果放到<code>esp+18</code>的内存地址，后面将<code>4</code>和<code>edi</code>里存的数据作为参数入栈，查看<code>edi(v3)</code>的引用信息，发现默认为1，在传入<code>-n</code>参数时修改为5。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212869&authkey=%21ANiKrfTOh3bHFkY&width=862&height=677" width="862" height=" " />
+
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212871&authkey=%21ANiKrfTOh3bHFkY&width=1030&height=287" width="1030" height="" />
+
+<p>使用<code>_calloc</code>函数分配好堆空间以后，把分配空间的内存地址放到<code>eax</code>寄存器中,并把堆空间中首元素置零，<code>ebx</code>寄存器赋1，跳转到<code>loc_80491BB</code>。后面分析下来基本和C伪代码保持一致。重点在于<code>-n</code>参数会把<code>v10(默认为0)</code>参数改为<code>1</code>,会把<code>v3（默认为1）</code>参数改为5，从而影响到分配到分配到的<code>v5</code>的大小，这里我将其改名为<code>arry</code>，为了便于理解，将其他参数也改名。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">launcher(launcher_flag, arry[j] + ran_cookie);</span><br></pre></td></tr></table></figure>
+
+<p>这是修改后的各个参数的名字，后面我们重点分析<code>launcher</code>函数即可。看下<code>launcher</code>函数的C风格的伪代码</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" />
+
+<p>可以看到，<code>launcher_flag</code>实际上是开启<code>nitro</code>这一关的全局变量，<code>arry[j] + ran_cookie</code>随机数当作全局偏移量量出现。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">launcher</span><span class="params">(<span class="type">int</span> a1, <span class="type">int</span> a2)</span> <span class="comment">// 定义一个名为 launcher 的函数，它接受两个整数参数 a1 和 a2</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> v3; <span class="comment">// 在栈上定义一个整数变量 v3 [esp+0h] [ebp-28h] BYREF</span></span><br><span class="line"></span><br><span class="line">  global_nitro = a1; <span class="comment">// 将 a1 的值赋给全局变量 global_nitro</span></span><br><span class="line">  global_offset = a2; <span class="comment">// 将 a2 的值赋给全局变量 global_offset</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用 mmap 函数尝试在内存中预留一块空间，大小为 0x100000 字节，权限为 7（即可读、可写、可执行），并将其映射到进程的地址空间</span></span><br><span class="line">  <span class="comment">// 如果映射失败（即 mmap 的返回值不等于预期的地址 reserved），则向标准错误输出流 stderr 写入错误信息，并退出程序</span></span><br><span class="line">  <span class="keyword">if</span> ( mmap(&amp;reserved, <span class="number">0x100000</span>u, <span class="number">7</span>, <span class="number">306</span>, <span class="number">0</span>, <span class="number">0</span>) != &amp;reserved )</span><br><span class="line">  &#123;</span><br><span class="line">    fwrite(<span class="string">&quot;Internal error.  Couldn&#x27;t use mmap. Try different value for START_ADDR\n&quot;</span>, <span class="number">1u</span>, <span class="number">0x47</span>u, <span class="built_in">stderr</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  stack_top = (<span class="type">int</span>)&amp;unk_55685FF8; <span class="comment">// 将一个未知的内存地址赋给全局变量 stack_top</span></span><br><span class="line">  global_save_stack = (<span class="type">int</span>)&amp;v3; <span class="comment">// 将 v3 的地址赋给全局变量 global_save_stack</span></span><br><span class="line"></span><br><span class="line">  launch(global_nitro, global_offset); <span class="comment">// 调用名为 launch 的函数，参数为 global_nitro 和 global_offset</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> munmap(&amp;reserved, <span class="number">0x100000</span>u); <span class="comment">// 使用 munmap 函数取消之前通过 mmap 函数预留的内存空间，并返回 munmap 的结果</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重点看下<code>mmap</code>分配的空间，应该注意到，<code>(int)&amp;unk_55685FF8</code>实际上是<code>mmap()</code>函数分配的内存空间的<code>reserved</code>的最后一段。下面是程序头表（Program Header Table，PHT）的条目，它是在可执行和链接格式（ELF）文件中找到的。这个条目提供了加载（LOAD）段到内存中的必要信息。注意这里的 <code>_reserved</code> 物理地址这刚好是<code>0x5586000</code>,分配的权限为<code>6</code>（写和读），大小是<code>0x100000</code>。</p>
+<p><a href="https://www.ibm.com/docs/en/zos/2.4.0?topic=functions-mmap-map-pages-memor">mmap函数说明文档</a></p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
+
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212878&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
+
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212879&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
+
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212881&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
+
+<p>有关信息与上图所示，重点是对一些变量的赋值和分配堆空间。重点函数是<code>launch</code>,看下C风格的伪代码。下面是入栈信息，可以看到参数并未放栈上，而是放在了<code>eax</code>和<code>edx</code>寄存器中了。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212884&authkey=%21ANiKrfTOh3bHFkY&width=1540&height=871" width="1540" height="" />
+
+<p>看下函数本体。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212885&authkey=%21ANiKrfTOh3bHFkY&width=1454&height=837" width="1454" height="" />
+
+<p>C伪代码</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" />
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> __usercall launch@&lt;eax&gt;(<span class="type">int</span> global_nitro@&lt;eax&gt;, <span class="type">int</span> global_offset@&lt;edx&gt;)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">void</span> *v3; <span class="comment">// esp，栈指针</span></span><br><span class="line">  <span class="type">int</span> v5; <span class="comment">// [esp+10h] [ebp-58h] BYREF，局部变量v5</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v6; <span class="comment">// [esp+5Ch] [ebp-Ch]，局部变量v6</span></span><br><span class="line">  <span class="type">int</span> savedregs; <span class="comment">// [esp+68h] [ebp+0h] BYREF，保存寄存器的值</span></span><br><span class="line"></span><br><span class="line">  v6 = __readgsdword(<span class="number">0x14</span>u); <span class="comment">// 读取线程局部存储（Thread Local Storage，TLS）中的值</span></span><br><span class="line">  v3 = alloca((((<span class="type">unsigned</span> __int16)&amp;savedregs - <span class="number">76</span>) &amp; <span class="number">0x3FF0</span>) + global_offset + <span class="number">15</span>); <span class="comment">// 分配一块内存，大小取决于savedregs的地址、global_offset和15</span></span><br><span class="line">  <span class="built_in">memset</span>(&amp;v5, <span class="number">244</span>, ((<span class="type">unsigned</span> __int16)&amp;savedregs - <span class="number">76</span>) &amp; <span class="number">0x3FF0</span>); <span class="comment">// 将v5的内存区域设置为244</span></span><br><span class="line">  __printf_chk(<span class="number">1</span>, <span class="string">&quot;Type string:&quot;</span>); <span class="comment">// 打印字符串&quot;Type string:&quot;</span></span><br><span class="line">  <span class="keyword">if</span> ( global_nitro ) <span class="comment">// 如果global_nitro为真</span></span><br><span class="line">    testn(); <span class="comment">// 调用函数testn</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    test(); <span class="comment">// 否则调用函数test</span></span><br><span class="line">  <span class="keyword">if</span> ( !success ) <span class="comment">// 如果success为假</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Better luck next time&quot;</span>); <span class="comment">// 打印字符串&quot;Better luck next time&quot;</span></span><br><span class="line">    success = <span class="number">0</span>; <span class="comment">// 将success设置为0</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> __readgsdword(<span class="number">0x14</span>u) ^ v6; <span class="comment">// 返回TLS中的值与v6的异或结果</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>进去<code>testn()</code>函数和<code>test()</code>函数看一下，大体可以分辨这两个函数为漏洞函数。<code>testn()</code>需要<code>-n</code>参数触发，<code>test()</code>函数不需要。大体知道这些就够了，具体的漏洞原理流程在每个部分具体说明。</p>
+<h3 id="Smoke"><a href="#Smoke" class="headerlink" title="Smoke"></a>Smoke</h3><p>可以看到，<code>Gets</code>函数最多能读取1024个字节，而数组大小仅仅为40个字节，因此，可以传入44个字节装满数组并覆盖<code>rbp</code>,4个字节覆盖返回地址，使得跳转到指定的返回地址，本题要求是跳转到<code>Smoke</code>函数，仅仅跳转过去就完成了目标。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212889&authkey=%21ANiKrfTOh3bHFkY&width=859&height=759" width="859" height="" />
+
+<p>原理主要是因为<code>leave</code>指令相当于</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mov esp, ebp</span><br><span class="line">pop ebp</span><br></pre></td></tr></table></figure>
+
+<p><code>ret</code>指令相当于</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：这里的<code>eip</code>是不能直接操作的，所以上述代码只是为了解释<code>ret</code>的功能，并不能直接在代码中使用。</p>
+</blockquote>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212891&authkey=%21ANiKrfTOh3bHFkY&width=1225&height=676" width="1225" height="" />
+
+<p>返回点在如图所示的高亮部分。</p>
+<h3 id="Fizz"><a href="#Fizz" class="headerlink" title="Fizz"></a>Fizz</h3><p>本题还要求<code>cookie</code>要与栈上一个值相等。</p>
+<p>这是修改后的各个参数的名字，后面我们重点分析<code>launcher</code>函数即可。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212873&authkey=%21ANiKrfTOh3bHFkY&width=1230&height=419" width="1230" height="" />
+
+<p>这段除了<code>launch</code>以外都是分配内存与变量赋值的操作，重点看下<code>launch</code>函数，逻辑也很简单，开<code>-n</code>参数执行<code>testn</code>，不开<code>-n</code>执行<code>test</code>函数</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212887&authkey=%21ANiKrfTOh3bHFkY&width=1025&height=554" width="1025" height="" />
+
+<h3 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h3><p><code>leave</code>指令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">push esp,ebp</span><br><span class="line">pop  ebp</span><br></pre></td></tr></table></figure>
+
+<p><code>ret</code>指令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
+
+<h3 id="Smoke-1"><a href="#Smoke-1" class="headerlink" title="Smoke"></a>Smoke</h3><blockquote>
+<p>函数在执行<code>getbuf</code>后不返回1，而是转向<code>Smoke</code>函数</p>
+</blockquote>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212896&authkey=%21ANiKrfTOh3bHFkY&width=824&height=344" width="824" height="" />
+
+<p>容易知道，<code>Gets</code>函数最多能写入1024个字节，而<code>v1</code>仅仅开辟了40（0x28）个字节的空间。因此，输入可以用44个字节覆盖整个<code>v1</code>和<code>ebp</code>，再用4个字节覆盖返回地址，使函数跳转到<code>Smoke</code>执行。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212898&authkey=%21ANiKrfTOh3bHFkY&width=735&height=189" width="735" height="" />
+
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212900&authkey=%21ANiKrfTOh3bHFkY&width=654&height=703" width="654" height="" />
+
+<p>实操：生成<code>cookie</code></p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212902&authkey=%21ANiKrfTOh3bHFkY&width=556&height=101" width="556" height="" />
+
+<p>二进制文件<code>Smkoe</code></p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212904&authkey=%21ANiKrfTOh3bHFkY&width=839&height=156" width="839" height="" />
+
+<p>验证</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212906&authkey=%21ANiKrfTOh3bHFkY&width=553&height=206" width="553" height="" />
+
+<h3 id="Fizz-1"><a href="#Fizz-1" class="headerlink" title="Fizz"></a>Fizz</h3><p>跳转思路与<code>Smoke</code>一致，不过这里还需要与栈上数据比较一下</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212907&authkey=%21ANiKrfTOh3bHFkY&width=774&height=297" width="774" height="" />
+
+<p>那就在后面再加上几位<code>cookie</code>即可</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212909&authkey=%21ANiKrfTOh3bHFkY&width=835&height=176" width="835" height="" />
+
+<p>执行结果</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212911&authkey=%21ANiKrfTOh3bHFkY&width=633&height=216" width="633" height="" />
+
+<h3 id="Bang"><a href="#Bang" class="headerlink" title="Bang"></a>Bang</h3><p>要求与全局变量进行比较，修改下全局变量</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212913&authkey=%21ANiKrfTOh3bHFkY&width=881&height=342" width="881" height="" />
+
+<p>在跳转<code>bang</code>之前需要执行的汇编指令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">push 0x3962b26d,%eax</span><br><span class="line">mov  %eax,0x0804d100</span><br><span class="line">ret </span><br></pre></td></tr></table></figure>
+
+<h3 id="Nitro"><a href="#Nitro" class="headerlink" title="Nitro"></a>Nitro</h3><p>通过第一阶段的基本逻辑分析容易知道：只有在执行<code>-n</code>程序的时候添加<code>-n</code>参数，该阶段才会被开启。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212922&authkey=%21ANiKrfTOh3bHFkY&width=917&height=421" width="917" height="" />
+
+<p>这里<code>testn</code>函数如果想正常返回，需要满足两个条件</p>
+<ul>
+<li>栈帧不被破坏</li>
+<li><code>getbufn</code>函数返回<code>cookie</code></li>
+</ul>
+<p>我们现在来寻找漏洞点来注入我们的攻击指令。</p>
+<img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212924&authkey=%21ANiKrfTOh3bHFkY&width=693&height=208" width="693" height="" />
+
+<p>我们前面分析了<code>Gets</code>函数的实现，容易知道，这里是存在栈溢出漏洞的。依照前面的思路，我们用520个字符填满<code>v1</code>数组，用4个字符覆盖<code>ebp</code>，用四个字符覆盖<code>getbufn</code>的返回地址。由前面的基本逻辑逆向，我们知道，该函数实际上需要执行5次，每次执行时的栈状态不一致，因此，我们选择使用<code>nop</code>指令来填充输入中除了攻击指令其他位置，以此保证只要返回地址跳到任意一个<code>nop</code>指令上，程序都会执行我们的攻击指令。</p>
+<p>以上的分析结束以后，是时候来生成攻击指令了。</p>
+<p>先写出汇编代码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lea 0x28(%ebp),%esp</span><br><span class="line">mov cookie,%eax</span><br><span class="line">push 返回地址</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>OS</category>
+        <category>asm</category>
+        <category>Pwn</category>
+        <category>Book</category>
+        <category>StackOverflow</category>
+        <category>CSAPP</category>
+      </categories>
+      <tags>
+        <tag>gdb</tag>
+        <tag>asm</tag>
+        <tag>CSAPP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CPP拾遗-输入输出</title>
     <url>/2024/03/17/CPP%E6%8B%BE%E9%81%97-%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/</url>
     <content><![CDATA[<p>本文主要讲解C++中数据流相关概念以及std::getline()函数的使用</p>
@@ -1534,16 +1534,6 @@
 <h3 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h3><p>利用字符串数字间转换的方法分割数字，求和操作。</p>
 <p><img src="../../../../Pictures/Blog/CPP%E6%8B%BE%E9%81%97-%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/image-20240317222341961.png" alt="image-20240317222341961"></p>
 <p>应该注意的是<code>getline(cin,str)</code>使用时常常遇到一些bug,这是因为输入没有没清空，可以通过在<code>getline(cin,str)</code>前添加<code>getchar()</code>或者<code>cin.ignore()</code>来解决。</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>CS61b食用指南</title>
-    <url>/2024/03/14/CS61b%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<p>本文是对CS61b资源的总结和汉化，同时记录自己的学习过程。</p>
-<span id="more"></span>
-
-<p>本课程教材：<a href="https://cs61b-2.gitbook.io/cs61b-textbook/3.-references-recursion-and-lists">CS61b教材</a></p>
-<h3 id="WEEK1"><a href="#WEEK1" class="headerlink" title="WEEK1"></a>WEEK1</h3><p>博客链接：</p>
 ]]></content>
   </entry>
   <entry>
@@ -1650,6 +1640,33 @@
 <h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2>]]></content>
   </entry>
   <entry>
+    <title>Frida使用</title>
+    <url>/2023/11/18/Frida%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<p>本文主要讲解自动化逆向工具<code>Frida</code>的使用，长期更新，计划采用理论加实战。</p>
+<span id="more"></span>
+<h3 id="Frida使用"><a href="#Frida使用" class="headerlink" title="Frida使用"></a>Frida使用</h3><p>c:\users\lenovo\appdata\local\pip\cache\wheels\fb\7a\50\0944b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">PS C:\Users\lenovo\Desktop&gt; pip install frida-tools</span><br><span class="line">Collecting frida-tools</span><br><span class="line">  Downloading frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>.tar.gz (<span class="number">200</span> kB)</span><br><span class="line">     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">200</span>.<span class="number">5</span>/<span class="number">200</span>.<span class="number">5</span> kB <span class="number">158</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">  Installing build dependencies ... done</span><br><span class="line">  Getting requirements to build wheel ... done</span><br><span class="line">  Preparing metadata (pyproject.toml) ... done</span><br><span class="line">Collecting colorama&lt;<span class="number">1</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">0</span>.<span class="number">2</span>.<span class="number">7</span> (from frida-tools)</span><br><span class="line">  Downloading colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span>-py2.py3-none-any.whl (<span class="number">25</span> kB)</span><br><span class="line">Collecting frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> from https://files.pythonhosted.org/packages/<span class="number">53</span>/ab/<span class="number">8351</span>fd5bb7c6879e3c47c8f7d23be757d43b0585660ded476d9c9e0f1d89/frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata</span><br><span class="line">  Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata (<span class="number">2</span>.<span class="number">1</span> kB)</span><br><span class="line">Collecting prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> from https://files.pythonhosted.org/packages/<span class="number">1</span>f/<span class="number">9</span>d/be9b01085bbd67a71c4b6aa02518fade8104e7a2224e5de5e947811d7176/prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata (<span class="number">6</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> from https://files.pythonhosted.org/packages/<span class="number">43</span>/<span class="number">88</span>/<span class="number">29</span>adf0b44ba6ac85045e63734ae0997d3c58d8b1a91c914d240828d0d73d/Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata (<span class="number">2</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting wcwidth (from prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span>-&gt;frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> wcwidth from https://files.pythonhosted.org/packages/<span class="built_in">cd</span>/af/fb045bb3d3daedf28e1bedd771674f73de9e06664a48b1579e14d4120158/wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata</span><br><span class="line">  Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata (<span class="number">14</span> kB)</span><br><span class="line">Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl (<span class="number">32</span>.<span class="number">6</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">32</span>.<span class="number">6</span>/<span class="number">32</span>.<span class="number">6</span> MB <span class="number">218</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl (<span class="number">385</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">385</span>.<span class="number">5</span>/<span class="number">385</span>.<span class="number">5</span> kB <span class="number">300</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl (<span class="number">1</span>.<span class="number">2</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">1</span>.<span class="number">2</span>/<span class="number">1</span>.<span class="number">2</span> MB <span class="number">217</span>.<span class="number">3</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl (<span class="number">105</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">105</span>.<span class="number">2</span>/<span class="number">105</span>.<span class="number">2</span> kB <span class="number">1</span>.<span class="number">2</span> MB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Building wheels <span class="keyword">for</span> collected packages: frida-tools</span><br><span class="line">  Building wheel <span class="keyword">for</span> frida-tools (pyproject.toml) ... done</span><br><span class="line">  Created wheel <span class="keyword">for</span> frida-tools: filename=frida_tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>-py3-none-any.whl size=<span class="number">209506</span> sha256=<span class="number">4</span>a80e4fa6d17f8c097e0b880f90cab15b4f2565be290ec3afbbb81168413eb95</span><br><span class="line">  Stored <span class="keyword">in</span> directory: c:\users\lenovo\appdata\local\pip\cache\wheels\fb\<span class="number">7</span>a\<span class="number">50</span>\<span class="number">0944</span>b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</span><br><span class="line">Successfully built frida-tools</span><br><span class="line">Installing collected packages: wcwidth, pygments, prompt-toolkit, frida, colorama, frida-tools</span><br><span class="line">Successfully installed colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span> frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span> frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span> prompt-toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span> pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span> wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span></span><br><span class="line"></span><br><span class="line">[notice] A new release of pip is available: <span class="number">23</span>.<span class="number">2</span>.<span class="number">1</span> -&gt; <span class="number">23</span>.<span class="number">3</span>.<span class="number">1</span></span><br><span class="line">[notice] To update, run: python.exe -m pip install --upgrade pip</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Reserve</category>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>安卓逆向</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CS61b食用指南</title>
+    <url>/2024/03/14/CS61b%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<p>本文是对CS61b资源的总结和汉化，同时记录自己的学习过程。</p>
+<span id="more"></span>
+
+<p>本课程教材：<a href="https://cs61b-2.gitbook.io/cs61b-textbook/3.-references-recursion-and-lists">CS61b教材</a></p>
+<h3 id="WEEK1"><a href="#WEEK1" class="headerlink" title="WEEK1"></a>WEEK1</h3><p>博客链接：</p>
+]]></content>
+  </entry>
+  <entry>
     <title>IDA_v8.3指北</title>
     <url>/2023/12/09/IDA-v8-3%E6%8C%87%E5%8C%97/</url>
     <content><![CDATA[<p>本文基于IDA_Pro_8.3版本，记录使用过程中的一些问题，以及一些关于IDA的基本操作</p>
@@ -1695,23 +1712,6 @@
       </categories>
       <tags>
         <tag>IDA</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Frida使用</title>
-    <url>/2023/11/18/Frida%E4%BD%BF%E7%94%A8/</url>
-    <content><![CDATA[<p>本文主要讲解自动化逆向工具<code>Frida</code>的使用，长期更新，计划采用理论加实战。</p>
-<span id="more"></span>
-<h3 id="Frida使用"><a href="#Frida使用" class="headerlink" title="Frida使用"></a>Frida使用</h3><p>c:\users\lenovo\appdata\local\pip\cache\wheels\fb\7a\50\0944b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">PS C:\Users\lenovo\Desktop&gt; pip install frida-tools</span><br><span class="line">Collecting frida-tools</span><br><span class="line">  Downloading frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>.tar.gz (<span class="number">200</span> kB)</span><br><span class="line">     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">200</span>.<span class="number">5</span>/<span class="number">200</span>.<span class="number">5</span> kB <span class="number">158</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">  Installing build dependencies ... done</span><br><span class="line">  Getting requirements to build wheel ... done</span><br><span class="line">  Preparing metadata (pyproject.toml) ... done</span><br><span class="line">Collecting colorama&lt;<span class="number">1</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">0</span>.<span class="number">2</span>.<span class="number">7</span> (from frida-tools)</span><br><span class="line">  Downloading colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span>-py2.py3-none-any.whl (<span class="number">25</span> kB)</span><br><span class="line">Collecting frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> from https://files.pythonhosted.org/packages/<span class="number">53</span>/ab/<span class="number">8351</span>fd5bb7c6879e3c47c8f7d23be757d43b0585660ded476d9c9e0f1d89/frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata</span><br><span class="line">  Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata (<span class="number">2</span>.<span class="number">1</span> kB)</span><br><span class="line">Collecting prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> from https://files.pythonhosted.org/packages/<span class="number">1</span>f/<span class="number">9</span>d/be9b01085bbd67a71c4b6aa02518fade8104e7a2224e5de5e947811d7176/prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata (<span class="number">6</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> from https://files.pythonhosted.org/packages/<span class="number">43</span>/<span class="number">88</span>/<span class="number">29</span>adf0b44ba6ac85045e63734ae0997d3c58d8b1a91c914d240828d0d73d/Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata (<span class="number">2</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting wcwidth (from prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span>-&gt;frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> wcwidth from https://files.pythonhosted.org/packages/<span class="built_in">cd</span>/af/fb045bb3d3daedf28e1bedd771674f73de9e06664a48b1579e14d4120158/wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata</span><br><span class="line">  Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata (<span class="number">14</span> kB)</span><br><span class="line">Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl (<span class="number">32</span>.<span class="number">6</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">32</span>.<span class="number">6</span>/<span class="number">32</span>.<span class="number">6</span> MB <span class="number">218</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl (<span class="number">385</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">385</span>.<span class="number">5</span>/<span class="number">385</span>.<span class="number">5</span> kB <span class="number">300</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl (<span class="number">1</span>.<span class="number">2</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">1</span>.<span class="number">2</span>/<span class="number">1</span>.<span class="number">2</span> MB <span class="number">217</span>.<span class="number">3</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl (<span class="number">105</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">105</span>.<span class="number">2</span>/<span class="number">105</span>.<span class="number">2</span> kB <span class="number">1</span>.<span class="number">2</span> MB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Building wheels <span class="keyword">for</span> collected packages: frida-tools</span><br><span class="line">  Building wheel <span class="keyword">for</span> frida-tools (pyproject.toml) ... done</span><br><span class="line">  Created wheel <span class="keyword">for</span> frida-tools: filename=frida_tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>-py3-none-any.whl size=<span class="number">209506</span> sha256=<span class="number">4</span>a80e4fa6d17f8c097e0b880f90cab15b4f2565be290ec3afbbb81168413eb95</span><br><span class="line">  Stored <span class="keyword">in</span> directory: c:\users\lenovo\appdata\local\pip\cache\wheels\fb\<span class="number">7</span>a\<span class="number">50</span>\<span class="number">0944</span>b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</span><br><span class="line">Successfully built frida-tools</span><br><span class="line">Installing collected packages: wcwidth, pygments, prompt-toolkit, frida, colorama, frida-tools</span><br><span class="line">Successfully installed colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span> frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span> frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span> prompt-toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span> pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span> wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span></span><br><span class="line"></span><br><span class="line">[notice] A new release of pip is available: <span class="number">23</span>.<span class="number">2</span>.<span class="number">1</span> -&gt; <span class="number">23</span>.<span class="number">3</span>.<span class="number">1</span></span><br><span class="line">[notice] To update, run: python.exe -m pip install --upgrade pip</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>Reserve</category>
-        <category>Android</category>
-      </categories>
-      <tags>
-        <tag>安卓逆向</tag>
       </tags>
   </entry>
   <entry>
@@ -1994,6 +1994,107 @@
       </tags>
   </entry>
   <entry>
+    <title>Neovim与Tmux快捷键设置</title>
+    <url>/2024/09/15/Neovim%E4%B8%8ETmux%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%AE%BE%E7%BD%AE/</url>
+    <content><![CDATA[<p>本文主要对个人的vim以及tmux的快捷键进行了简单统一的映射，仅个人所用。</p>
+<span id="more"></span>
+
+<p>由于<code>ctrl</code>键经常需要用而且位置阴间，推荐下面这个工具进行<code>ctrl</code>键和<code>capsLk</code>键的键位修改。小拇指蒸滴受不了了要….</p>
+<p><a href="https://zhuanlan.zhihu.com/p/412076746">如何操作[知乎回答]</a><br><a href="https://github.com/microsoft/PowerToys/releases/tag/v0.84.1">下载地址[github]</a></p>
+<h3 id="vim-快捷键"><a href="#vim-快捷键" class="headerlink" title="vim 快捷键"></a>vim 快捷键</h3><h4 id="V模式"><a href="#V模式" class="headerlink" title="V模式"></a>V模式</h4><blockquote>
+<p>不选中默认一行，选中可以多行</p>
+<p>”V“：visual line和”v”:visual模式均适用</p>
+</blockquote>
+<p>快速移动单行（成块）：”J”和”K”</p>
+<h4 id="增加窗口"><a href="#增加窗口" class="headerlink" title="增加窗口"></a>增加窗口</h4><p>水平增加窗口：主键加sv</p>
+<blockquote>
+<p>我的主键是空格</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;sv</span><br></pre></td></tr></table></figure>
+
+<p>垂直增加窗口</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;sh</span><br></pre></td></tr></table></figure>
+
+<p>退出窗口</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:q</span><br></pre></td></tr></table></figure>
+
+<h4 id="取消高亮"><a href="#取消高亮" class="headerlink" title="取消高亮"></a>取消高亮</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;nh</span><br></pre></td></tr></table></figure>
+
+<h4 id="文档树"><a href="#文档树" class="headerlink" title="文档树"></a>文档树</h4><p>打开/关闭</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;e</span><br></pre></td></tr></table></figure>
+
+<p>展开文件夹,展示文件内容（光标依旧在文档树）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;tab&gt;</span><br></pre></td></tr></table></figure>
+
+<p>打开文件（光标在文件内容中）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">o</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;enter&gt;</span><br></pre></td></tr></table></figure>
+
+<p>创建新文件，在文档树中想添加新文件的位置输入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">a</span><br></pre></td></tr></table></figure>
+
+<p>底部会出现文件名，输入完成后按<code>&lt;enter&gt;</code>即可</p>
+<h4 id="跳转"><a href="#跳转" class="headerlink" title="跳转"></a>跳转</h4><p>查看函数/变量定义</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gd</span><br></pre></td></tr></table></figure>
+
+<h4 id="自动补全"><a href="#自动补全" class="headerlink" title="自动补全"></a>自动补全</h4><p>按<code>&lt;tab&gt;</code>可以选择想要自动补全的内容，按<code>&lt;enter&gt;</code>输入自动补全。对于自动补全的各个参数，按<code>&lt;tab&gt;</code>输入下一个参数，按<code>&lt;shift&gt;+&lt;tab&gt;</code>输入上一个参数。安装新的语言服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:Mason</span><br></pre></td></tr></table></figure>
+
+<p>搜索需要的服务，按<code>i</code>安装即可。</p>
+<p>取消补全</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;ctrl&gt;e</span><br></pre></td></tr></table></figure>
+
+<p>函数文档查看</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;shift&gt;K</span><br></pre></td></tr></table></figure>
+
+<p>补全文档翻阅</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;ctrl&gt;b</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;ctrl&gt;f</span><br></pre></td></tr></table></figure>
+
+<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>单行注释/解注释</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gcc</span><br></pre></td></tr></table></figure>
+
+<p>多行注释/解注释</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gc</span><br></pre></td></tr></table></figure>
+
+<h4 id="缓冲区"><a href="#缓冲区" class="headerlink" title="缓冲区"></a>缓冲区</h4><p>缓冲区间切换</p>
+<p>向右切换缓冲区</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;shift&gt;L</span><br></pre></td></tr></table></figure>
+
+<p>向左切换缓冲区</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;shift&gt;H</span><br></pre></td></tr></table></figure>
+
+<h4 id="文件检索"><a href="#文件检索" class="headerlink" title="文件检索"></a>文件检索</h4><blockquote>
+<p>telescope插件</p>
+</blockquote>
+<p>文件名查找(Find Filename)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;ff</span><br></pre></td></tr></table></figure>
+
+<p>文件内容查找(Find grep)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;fg</span><br></pre></td></tr></table></figure>
+
+<p>缓冲列表查找(Find Buffer)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;fb</span><br></pre></td></tr></table></figure>
+
+<p>帮助文档(Find Help)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;fh</span><br></pre></td></tr></table></figure>
+
+<h4 id="vim-tmux"><a href="#vim-tmux" class="headerlink" title="vim-tmux"></a>vim-tmux</h4><p>借助<code>vim-tmux-navigator</code>插件实现窗格切换</p>
+<blockquote>
+<p>详细配置过程可见以下blog：<br><a href="https://dingdingqiuqiu.github.io/2024/09/16/vim-tmux-navigator%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8/#more">vim-tmux-navigator配置使用</a></p>
+</blockquote>
+<p>vim中窗口切换</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;ctrl&gt; h/j/k/l</span><br></pre></td></tr></table></figure>
+
+<p>tmux中窗口切换</p>
+]]></content>
+      <tags>
+        <tag>vim, tmux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Neovim使用</title>
     <url>/2023/11/23/Neovim%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<p>本文是<code>vim/nvim</code>的使用及配置攻略。</p>
@@ -2209,107 +2310,6 @@
       </categories>
       <tags>
         <tag>vim</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Neovim与Tmux快捷键设置</title>
-    <url>/2024/09/15/Neovim%E4%B8%8ETmux%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%AE%BE%E7%BD%AE/</url>
-    <content><![CDATA[<p>本文主要对个人的vim以及tmux的快捷键进行了简单统一的映射，仅个人所用。</p>
-<span id="more"></span>
-
-<p>由于<code>ctrl</code>键经常需要用而且位置阴间，推荐下面这个工具进行<code>ctrl</code>键和<code>capsLk</code>键的键位修改。小拇指蒸滴受不了了要….</p>
-<p><a href="https://zhuanlan.zhihu.com/p/412076746">如何操作[知乎回答]</a><br><a href="https://github.com/microsoft/PowerToys/releases/tag/v0.84.1">下载地址[github]</a></p>
-<h3 id="vim-快捷键"><a href="#vim-快捷键" class="headerlink" title="vim 快捷键"></a>vim 快捷键</h3><h4 id="V模式"><a href="#V模式" class="headerlink" title="V模式"></a>V模式</h4><blockquote>
-<p>不选中默认一行，选中可以多行</p>
-<p>”V“：visual line和”v”:visual模式均适用</p>
-</blockquote>
-<p>快速移动单行（成块）：”J”和”K”</p>
-<h4 id="增加窗口"><a href="#增加窗口" class="headerlink" title="增加窗口"></a>增加窗口</h4><p>水平增加窗口：主键加sv</p>
-<blockquote>
-<p>我的主键是空格</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;sv</span><br></pre></td></tr></table></figure>
-
-<p>垂直增加窗口</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;sh</span><br></pre></td></tr></table></figure>
-
-<p>退出窗口</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:q</span><br></pre></td></tr></table></figure>
-
-<h4 id="取消高亮"><a href="#取消高亮" class="headerlink" title="取消高亮"></a>取消高亮</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;nh</span><br></pre></td></tr></table></figure>
-
-<h4 id="文档树"><a href="#文档树" class="headerlink" title="文档树"></a>文档树</h4><p>打开/关闭</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;e</span><br></pre></td></tr></table></figure>
-
-<p>展开文件夹,展示文件内容（光标依旧在文档树）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;tab&gt;</span><br></pre></td></tr></table></figure>
-
-<p>打开文件（光标在文件内容中）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">o</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;enter&gt;</span><br></pre></td></tr></table></figure>
-
-<p>创建新文件，在文档树中想添加新文件的位置输入</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">a</span><br></pre></td></tr></table></figure>
-
-<p>底部会出现文件名，输入完成后按<code>&lt;enter&gt;</code>即可</p>
-<h4 id="跳转"><a href="#跳转" class="headerlink" title="跳转"></a>跳转</h4><p>查看函数/变量定义</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gd</span><br></pre></td></tr></table></figure>
-
-<h4 id="自动补全"><a href="#自动补全" class="headerlink" title="自动补全"></a>自动补全</h4><p>按<code>&lt;tab&gt;</code>可以选择想要自动补全的内容，按<code>&lt;enter&gt;</code>输入自动补全。对于自动补全的各个参数，按<code>&lt;tab&gt;</code>输入下一个参数，按<code>&lt;shift&gt;+&lt;tab&gt;</code>输入上一个参数。安装新的语言服务：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:Mason</span><br></pre></td></tr></table></figure>
-
-<p>搜索需要的服务，按<code>i</code>安装即可。</p>
-<p>取消补全</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;ctrl&gt;e</span><br></pre></td></tr></table></figure>
-
-<p>函数文档查看</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;shift&gt;K</span><br></pre></td></tr></table></figure>
-
-<p>补全文档翻阅</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;ctrl&gt;b</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;ctrl&gt;f</span><br></pre></td></tr></table></figure>
-
-<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>单行注释/解注释</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gcc</span><br></pre></td></tr></table></figure>
-
-<p>多行注释/解注释</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gc</span><br></pre></td></tr></table></figure>
-
-<h4 id="缓冲区"><a href="#缓冲区" class="headerlink" title="缓冲区"></a>缓冲区</h4><p>缓冲区间切换</p>
-<p>向右切换缓冲区</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;shift&gt;L</span><br></pre></td></tr></table></figure>
-
-<p>向左切换缓冲区</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;shift&gt;H</span><br></pre></td></tr></table></figure>
-
-<h4 id="文件检索"><a href="#文件检索" class="headerlink" title="文件检索"></a>文件检索</h4><blockquote>
-<p>telescope插件</p>
-</blockquote>
-<p>文件名查找(Find Filename)</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;ff</span><br></pre></td></tr></table></figure>
-
-<p>文件内容查找(Find grep)</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;fg</span><br></pre></td></tr></table></figure>
-
-<p>缓冲列表查找(Find Buffer)</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;fb</span><br></pre></td></tr></table></figure>
-
-<p>帮助文档(Find Help)</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;leader&gt;fh</span><br></pre></td></tr></table></figure>
-
-<h4 id="vim-tmux"><a href="#vim-tmux" class="headerlink" title="vim-tmux"></a>vim-tmux</h4><p>借助<code>vim-tmux-navigator</code>插件实现窗格切换</p>
-<blockquote>
-<p>详细配置过程可见以下blog：<br><a href="https://dingdingqiuqiu.github.io/2024/09/16/vim-tmux-navigator%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8/#more">vim-tmux-navigator配置使用</a></p>
-</blockquote>
-<p>vim中窗口切换</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;ctrl&gt; h/j/k/l</span><br></pre></td></tr></table></figure>
-
-<p>tmux中窗口切换</p>
-]]></content>
-      <tags>
-        <tag>vim, tmux</tag>
       </tags>
   </entry>
   <entry>
@@ -2574,49 +2574,6 @@
       </tags>
   </entry>
   <entry>
-    <title>tensorflow使用警告</title>
-    <url>/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/</url>
-    <content><![CDATA[<p>本文主要对一篇英文回答进行翻译，练练英语能力。<br>同时尝试解决<code>tensorflow</code>使用时的警告问题。</p>
-<span id="more"></span>
-
-<p>原回答：<a href="https://stackoverflow.com/questions/77338229/tensorflow-2-14-0-with-cuda-not-registering-cuda">https://stackoverflow.com/questions/77338229/tensorflow-2-14-0-with-cuda-not-registering-cuda</a></p>
-<h3 id="本机环境"><a href="#本机环境" class="headerlink" title="本机环境"></a>本机环境</h3><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwPYiq30zod2xxZG?embed=1&width=958&height=614" width="958" height="" />
-
-<h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><blockquote>
-<p>实际上并不能算作严重的问题，警告而已</p>
-<p>本文目的主要是练练英语</p>
-</blockquote>
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwTYiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height="" />
-
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwXYiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height="" />
-
-<h3 id="警告翻译"><a href="#警告翻译" class="headerlink" title="警告翻译"></a>警告翻译</h3><p>开练英语…….</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.282338</span>: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:<span class="number">485</span>] Unable to <span class="keyword">register</span> cuFFT factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuFFT when one has already been registered</span><br><span class="line"><span class="comment">// </span></span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.351321</span>: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:<span class="number">8454</span>] Unable to <span class="keyword">register</span> cuDNN factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuDNN when one has already been registered</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.372352</span>: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:<span class="number">1452</span>] Unable to <span class="keyword">register</span> cuBLAS factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuBLAS when one has already been registered</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.508856</span>: I tensorflow/core/platform/cpu_feature_guard.cc:<span class="number">210</span>] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.</span><br><span class="line">To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">05.940357</span>: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:<span class="number">38</span>] TF-TRT Warning: Could not find TensorRT</span><br><span class="line">WARNING: All <span class="built_in">log</span> messages before <span class="title function_">absl::InitializeLog</span><span class="params">()</span> is called are written to STDERR</span><br><span class="line">I0000 00:00:1726156987.392321  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.582220  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.582324  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">Num GPUs Available:  1</span><br><span class="line">I0000 00:00:1726156987.588599  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.588689  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.588756  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156988.000957  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156988.001057  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">2024-09-13 00:03:08.001094: I tensorflow/core/common_runtime/gpu/gpu_device.cc:2112] Could not identify NUMA node of platform GPU id 0, defaulting to 0.  Your kernel may not have been built with NUMA support.</span><br><span class="line">I0000 00:00:1726156988.001174  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">2024-09-13 00:03:08.001553: I tensorflow/core/common_runtime/gpu/gpu_device.cc:2021] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 1767 MB memory:  -&gt; device: 0, name: NVIDIA GeForce RTX 3050 Laptop GPU, pci bus id: 0000:01:00.0, compute capability: 8.6</span><br><span class="line">tf.<span class="title function_">Tensor</span><span class="params">(</span></span><br><span class="line"><span class="params">[[<span class="number">1.</span> <span class="number">3.</span>]</span></span><br><span class="line"><span class="params"> [<span class="number">3.</span> <span class="number">7.</span>]], shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32)</span></span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <tags>
-        <tag>English</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>mysql连接不上3306端口</title>
-    <url>/2024/09/23/mysql%E8%BF%9E%E6%8E%A5%E4%B8%8D%E4%B8%8A3306%E7%AB%AF%E5%8F%A3/</url>
-    <content><![CDATA[<p>经过多次尝试，发现是安装时配置出现了问题，密码选项哪里不要选推荐的配置，选传统密码选项即可。不然解决连不上3306端口的问题以后还会被禁止登录。</p>
-<span id="more"></span>
-
-<p>可以参考这篇的<a href="https://blog.csdn.net/weixin_47406082/article/details/131867849">配置</a></p>
-<p><strong>注意</strong></p>
-<p>1.自定义安装可以指定sql安装位置。</p>
-<p>2.密码策略选择传统，否则极有可能出现下面两种报错。</p>
-<blockquote>
-<p>启动MySQL报错:ERROR 2003 (HY000): Can’t connect to MySQL server on ‘localhost’ (10061)</p>
-</blockquote>
-<blockquote>
-<p>ERROR 1045 (28000): Access denied for user ‘root‘@‘localhost‘ (using password: NO/YES)</p>
-</blockquote>
-]]></content>
-  </entry>
-  <entry>
     <title>vim-tmux-navigator配置使用</title>
     <url>/2024/09/16/vim-tmux-navigator%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<p>本文主要是对<code>vim-tmux-navigator</code>插件项目主页的汉化，主要为了练习英文能力。</p>
@@ -2670,44 +2627,47 @@
       </tags>
   </entry>
   <entry>
-    <title>vscode-setting-bk</title>
-    <url>/2024/10/27/vscode-setting-bk/</url>
-    <content><![CDATA[<p>本文主要是对个人vs-code设置以及配置的备份，用于及其意外情况下的恢复（希望不会用到）</p>
+    <title>mysql连接不上3306端口</title>
+    <url>/2024/09/23/mysql%E8%BF%9E%E6%8E%A5%E4%B8%8D%E4%B8%8A3306%E7%AB%AF%E5%8F%A3/</url>
+    <content><![CDATA[<p>经过多次尝试，发现是安装时配置出现了问题，密码选项哪里不要选推荐的配置，选传统密码选项即可。不然解决连不上3306端口的问题以后还会被禁止登录。</p>
 <span id="more"></span>
 
-<p><code>setting.json</code>和<code>keybinding.json</code>在<code>gitee</code>上也做了备份，地址：<a href="https://gitee.com/dingdingqiu/share">https://gitee.com/dingdingqiu/share</a></p>
-<h3 id="CPP调试环境"><a href="#CPP调试环境" class="headerlink" title="CPP调试环境"></a>CPP调试环境</h3><ol>
-<li><p>下载<code>mingw64</code>，解压到D盘</p>
-<p>访问下面这个链接得到资源：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">https://gitcode.com/open-source-toolkit/ee6ea/overview</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置环境变量</p>
-<img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1315&height=694" width="1315" height=" ">
-</li>
-<li><p><code>vscode</code>下载<code>c/cpp</code>插件</p>
-</li>
-<li><p><code>ctrl-shift-p</code>，选中第一个<code>C/C++:Edit Configurations(UI)</code></p>
-<img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1579&height=796" width="1579" height=" ">
+<p>可以参考这篇的<a href="https://blog.csdn.net/weixin_47406082/article/details/131867849">配置</a></p>
+<p><strong>注意</strong></p>
+<p>1.自定义安装可以指定sql安装位置。</p>
+<p>2.密码策略选择传统，否则极有可能出现下面两种报错。</p>
+<blockquote>
+<p>启动MySQL报错:ERROR 2003 (HY000): Can’t connect to MySQL server on ‘localhost’ (10061)</p>
+</blockquote>
+<blockquote>
+<p>ERROR 1045 (28000): Access denied for user ‘root‘@‘localhost‘ (using password: NO/YES)</p>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
+    <title>tensorflow使用警告</title>
+    <url>/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/</url>
+    <content><![CDATA[<p>本文主要对一篇英文回答进行翻译，练练英语能力。<br>同时尝试解决<code>tensorflow</code>使用时的警告问题。</p>
+<span id="more"></span>
 
-<p>5.配置信息如下：</p>
-<img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1390&height=2584" width="1390" height=" ">
+<p>原回答：<a href="https://stackoverflow.com/questions/77338229/tensorflow-2-14-0-with-cuda-not-registering-cuda">https://stackoverflow.com/questions/77338229/tensorflow-2-14-0-with-cuda-not-registering-cuda</a></p>
+<h3 id="本机环境"><a href="#本机环境" class="headerlink" title="本机环境"></a>本机环境</h3><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwPYiq30zod2xxZG?embed=1&width=958&height=614" width="958" height="" />
 
-<p>其实不用改啥东西了，几乎所有选项在配置好环境变量后vscode都能自动识别，这里主要做对照用。关键是要下载<code>mingw64</code>,不要下载任何其他乱七八糟的。</p>
-<p><a href="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212646&amp;authkey=%21ANiKrfTOh3bHFkY&amp;width=1558&amp;height=740">https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212646&amp;authkey=%21ANiKrfTOh3bHFkY&amp;width=1558&amp;height=740</a></p>
-<p><a href="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212648&amp;authkey=%21ANiKrfTOh3bHFkY&amp;width=1914&amp;height=952">https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212648&amp;authkey=%21ANiKrfTOh3bHFkY&amp;width=1914&amp;height=952</a></p>
-<p><img src="./mysql_passwd.png" alt="hello"></p>
-</li>
-</ol>
-<h3 id="VSCode-编辑配置"><a href="#VSCode-编辑配置" class="headerlink" title="VSCode_编辑配置"></a>VSCode_编辑配置</h3><h4 id="1-Setting-json"><a href="#1-Setting-json" class="headerlink" title="1.Setting.json"></a>1.Setting.json</h4><p>设置里直接搜索<code>setting.json</code>即可</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">{</span></span><br><span class="line">    <span class="attr">"security.allowedUNCHosts"</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">"wsl.localhost"</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">"git.openRepositoryInParentFolders"</span><span class="punctuation">:</span> <span class="string">"never"</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"cmake.showOptionsMovedNotification"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"code-runner.runInTerminal"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"security.workspace.trust.untrustedFiles"</span><span class="punctuation">:</span> <span class="string">"open"</span><span class="punctuation">,</span></span><br><span class="line">    </span><br><span class="line">    <span class="attr">"workbench.colorTheme"</span><span class="punctuation">:</span> <span class="string">"Tokyo Night Storm"</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.easymotion"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.incsearch"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.useSystemClipboard"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.useCtrlKeys"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.hlsearch"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.leader"</span><span class="punctuation">:</span> <span class="string">"&lt;space&gt;"</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.insertModeKeyBindings"</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"j"</span><span class="punctuation">,</span> <span class="string">"k"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"after"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;Esc&gt;"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;C-j&gt;"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"workbench.action.terminal.focus"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.normalModeKeyBindingsNonRecursive"</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;leader&gt;"</span><span class="punctuation">,</span><span class="string">"c"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"workbench.action.closeActiveEditor"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;leader&gt;"</span><span class="punctuation">,</span> <span class="string">"n"</span><span class="punctuation">,</span> <span class="string">"h"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">":nohl"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"L"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">":tabnex"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"H"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">":tabprev"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;leader&gt;"</span><span class="punctuation">,</span> <span class="string">"f"</span><span class="punctuation">,</span> <span class="string">"o"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"workbench.action.openRecent"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;C-j&gt;"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"workbench.action.terminal.focus"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">"vim.handleKeys"</span><span class="punctuation">:</span> <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"&lt;C-a&gt;"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"&lt;C-f&gt;"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">}</span></span><br></pre></td></tr></table></figure>
+<h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><blockquote>
+<p>实际上并不能算作严重的问题，警告而已</p>
+<p>本文目的主要是练练英语</p>
+</blockquote>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwTYiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height="" />
 
-<h3 id="2-keybinding-jsoon"><a href="#2-keybinding-jsoon" class="headerlink" title="2.keybinding.jsoon"></a>2.keybinding.jsoon</h3><p><code>ctrl-shift-p</code>,打开箭头指的这个<code>Preferences:Open Keyboard Shortcuts(JSON)</code>即可。</p>
-<img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1092&height=614" width="1092" height=" ">
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwXYiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height="" />
 
-<p>配置为：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Place your key bindings in this file to override the defaults</span></span><br><span class="line"><span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"shift+alt+down"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"-editor.action.insertCursorBelow"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"when"</span><span class="punctuation">:</span> <span class="string">"editorTextFocus"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"shift+alt+down"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"editor.action.copyLinesDownAction"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"when"</span><span class="punctuation">:</span> <span class="string">"editorTextFocus &amp;&amp; !editorReadonly"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"ctrl+shift+alt+down"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"-editor.action.copyLinesDownAction"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"when"</span><span class="punctuation">:</span> <span class="string">"editorTextFocus &amp;&amp; !editorReadonly"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"ctrl+h"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"workbench.action.navigateLeft"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"ctrl+l"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"workbench.action.navigateRight"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"ctrl+k"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"workbench.action.focusActiveEditorGroup"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"when"</span><span class="punctuation">:</span> <span class="string">"terminalFocus"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+<h3 id="警告翻译"><a href="#警告翻译" class="headerlink" title="警告翻译"></a>警告翻译</h3><p>开练英语…….</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.282338</span>: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:<span class="number">485</span>] Unable to <span class="keyword">register</span> cuFFT factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuFFT when one has already been registered</span><br><span class="line"><span class="comment">// </span></span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.351321</span>: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:<span class="number">8454</span>] Unable to <span class="keyword">register</span> cuDNN factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuDNN when one has already been registered</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.372352</span>: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:<span class="number">1452</span>] Unable to <span class="keyword">register</span> cuBLAS factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuBLAS when one has already been registered</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.508856</span>: I tensorflow/core/platform/cpu_feature_guard.cc:<span class="number">210</span>] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.</span><br><span class="line">To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">05.940357</span>: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:<span class="number">38</span>] TF-TRT Warning: Could not find TensorRT</span><br><span class="line">WARNING: All <span class="built_in">log</span> messages before <span class="title function_">absl::InitializeLog</span><span class="params">()</span> is called are written to STDERR</span><br><span class="line">I0000 00:00:1726156987.392321  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.582220  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.582324  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">Num GPUs Available:  1</span><br><span class="line">I0000 00:00:1726156987.588599  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.588689  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.588756  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156988.000957  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156988.001057  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">2024-09-13 00:03:08.001094: I tensorflow/core/common_runtime/gpu/gpu_device.cc:2112] Could not identify NUMA node of platform GPU id 0, defaulting to 0.  Your kernel may not have been built with NUMA support.</span><br><span class="line">I0000 00:00:1726156988.001174  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">2024-09-13 00:03:08.001553: I tensorflow/core/common_runtime/gpu/gpu_device.cc:2021] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 1767 MB memory:  -&gt; device: 0, name: NVIDIA GeForce RTX 3050 Laptop GPU, pci bus id: 0000:01:00.0, compute capability: 8.6</span><br><span class="line">tf.<span class="title function_">Tensor</span><span class="params">(</span></span><br><span class="line"><span class="params">[[<span class="number">1.</span> <span class="number">3.</span>]</span></span><br><span class="line"><span class="params"> [<span class="number">3.</span> <span class="number">7.</span>]], shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32)</span></span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <tags>
+        <tag>English</tag>
+      </tags>
   </entry>
   <entry>
     <title>wsl配置使用notebook</title>
@@ -2774,6 +2734,46 @@
       </tags>
   </entry>
   <entry>
+    <title>vscode-setting-bk</title>
+    <url>/2024/10/27/vscode-setting-bk/</url>
+    <content><![CDATA[<p>本文主要是对个人vs-code设置以及配置的备份，用于及其意外情况下的恢复（希望不会用到）</p>
+<span id="more"></span>
+
+<p><code>setting.json</code>和<code>keybinding.json</code>在<code>gitee</code>上也做了备份，地址：<a href="https://gitee.com/dingdingqiu/share">https://gitee.com/dingdingqiu/share</a></p>
+<h3 id="CPP调试环境"><a href="#CPP调试环境" class="headerlink" title="CPP调试环境"></a>CPP调试环境</h3><ol>
+<li><p>下载<code>mingw64</code>，解压到D盘</p>
+<p>访问下面这个链接得到资源：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">https://gitcode.com/open-source-toolkit/ee6ea/overview</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置环境变量</p>
+<img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1315&height=694" width="1315" height=" ">
+</li>
+<li><p><code>vscode</code>下载<code>c/cpp</code>插件</p>
+</li>
+<li><p><code>ctrl-shift-p</code>，选中第一个<code>C/C++:Edit Configurations(UI)</code></p>
+<img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1579&height=796" width="1579" height=" ">
+
+<p>5.配置信息如下：</p>
+<img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1390&height=2584" width="1390" height=" ">
+
+<p>其实不用改啥东西了，几乎所有选项在配置好环境变量后vscode都能自动识别，这里主要做对照用。关键是要下载<code>mingw64</code>,不要下载任何其他乱七八糟的。</p>
+<p><a href="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212646&amp;authkey=%21ANiKrfTOh3bHFkY&amp;width=1558&amp;height=740">https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212646&amp;authkey=%21ANiKrfTOh3bHFkY&amp;width=1558&amp;height=740</a></p>
+<p><a href="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212648&amp;authkey=%21ANiKrfTOh3bHFkY&amp;width=1914&amp;height=952">https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212648&amp;authkey=%21ANiKrfTOh3bHFkY&amp;width=1914&amp;height=952</a></p>
+<p><img src="./mysql_passwd.png" alt="hello"></p>
+</li>
+</ol>
+<h3 id="VSCode-编辑配置"><a href="#VSCode-编辑配置" class="headerlink" title="VSCode_编辑配置"></a>VSCode_编辑配置</h3><h4 id="1-Setting-json"><a href="#1-Setting-json" class="headerlink" title="1.Setting.json"></a>1.Setting.json</h4><p>设置里直接搜索<code>setting.json</code>即可</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">{</span></span><br><span class="line">    <span class="attr">"security.allowedUNCHosts"</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">"wsl.localhost"</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">"git.openRepositoryInParentFolders"</span><span class="punctuation">:</span> <span class="string">"never"</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"cmake.showOptionsMovedNotification"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"code-runner.runInTerminal"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"security.workspace.trust.untrustedFiles"</span><span class="punctuation">:</span> <span class="string">"open"</span><span class="punctuation">,</span></span><br><span class="line">    </span><br><span class="line">    <span class="attr">"workbench.colorTheme"</span><span class="punctuation">:</span> <span class="string">"Tokyo Night Storm"</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.easymotion"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.incsearch"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.useSystemClipboard"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.useCtrlKeys"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.hlsearch"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.leader"</span><span class="punctuation">:</span> <span class="string">"&lt;space&gt;"</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.insertModeKeyBindings"</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"j"</span><span class="punctuation">,</span> <span class="string">"k"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"after"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;Esc&gt;"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;C-j&gt;"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"workbench.action.terminal.focus"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"vim.normalModeKeyBindingsNonRecursive"</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;leader&gt;"</span><span class="punctuation">,</span><span class="string">"c"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"workbench.action.closeActiveEditor"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;leader&gt;"</span><span class="punctuation">,</span> <span class="string">"n"</span><span class="punctuation">,</span> <span class="string">"h"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">":nohl"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"L"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">":tabnex"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"H"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">":tabprev"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;leader&gt;"</span><span class="punctuation">,</span> <span class="string">"f"</span><span class="punctuation">,</span> <span class="string">"o"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"workbench.action.openRecent"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"before"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"&lt;C-j&gt;"</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"commands"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"workbench.action.terminal.focus"</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">"vim.handleKeys"</span><span class="punctuation">:</span> <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"&lt;C-a&gt;"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"&lt;C-f&gt;"</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">}</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-keybinding-jsoon"><a href="#2-keybinding-jsoon" class="headerlink" title="2.keybinding.jsoon"></a>2.keybinding.jsoon</h3><p><code>ctrl-shift-p</code>,打开箭头指的这个<code>Preferences:Open Keyboard Shortcuts(JSON)</code>即可。</p>
+<img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1092&height=614" width="1092" height=" ">
+
+<p>配置为：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Place your key bindings in this file to override the defaults</span></span><br><span class="line"><span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"shift+alt+down"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"-editor.action.insertCursorBelow"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"when"</span><span class="punctuation">:</span> <span class="string">"editorTextFocus"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"shift+alt+down"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"editor.action.copyLinesDownAction"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"when"</span><span class="punctuation">:</span> <span class="string">"editorTextFocus &amp;&amp; !editorReadonly"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"ctrl+shift+alt+down"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"-editor.action.copyLinesDownAction"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"when"</span><span class="punctuation">:</span> <span class="string">"editorTextFocus &amp;&amp; !editorReadonly"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"ctrl+h"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"workbench.action.navigateLeft"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"ctrl+l"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"workbench.action.navigateRight"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">        <span class="attr">"key"</span><span class="punctuation">:</span> <span class="string">"ctrl+k"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"command"</span><span class="punctuation">:</span> <span class="string">"workbench.action.focusActiveEditorGroup"</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">"when"</span><span class="punctuation">:</span> <span class="string">"terminalFocus"</span></span><br><span class="line">    <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
     <title>滑动窗口(双指针)</title>
     <url>/2024/08/25/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3-%E5%8F%8C%E6%8C%87%E9%92%88/</url>
     <content><![CDATA[<p>本文讲解常见算法技巧-滑动窗口（双指针），附有三道题。</p>
@@ -2817,6 +2817,31 @@
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">knapsackDP</span><span class="params">(vector&lt;<span class="type">int</span>&gt; &amp;wgt, vector&lt;<span class="type">int</span>&gt; &amp;val, <span class="type">int</span> cap)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n = wgt.<span class="built_in">size</span>();</span><br><span class="line">    <span class="comment">// 初始化 dp 表</span></span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">dp</span>(n + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(cap + <span class="number">1</span>, <span class="number">0</span>));</span><br><span class="line">    <span class="comment">// 初始化G表追踪状态，0表示未选，1表示选了</span></span><br><span class="line">    vector&lt;vector&lt;<span class="type">bool</span>&gt;&gt; <span class="built_in">selected</span>(n + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="type">bool</span>&gt;(cap + <span class="number">1</span>, <span class="literal">false</span>));</span><br><span class="line">    <span class="comment">// 状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> c = <span class="number">1</span>; c &lt;= cap; c++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (wgt[i - <span class="number">1</span>] &gt; c) &#123;</span><br><span class="line">                <span class="comment">// 若超过背包容量，则不选物品 i</span></span><br><span class="line">                dp[i][c] = dp[i - <span class="number">1</span>][c];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 不选和选物品 i 这两种方案的较大值</span></span><br><span class="line">                dp[i][c] = <span class="built_in">max</span>(dp[i - <span class="number">1</span>][c], dp[i - <span class="number">1</span>][c - wgt[i - <span class="number">1</span>]] + val[i - <span class="number">1</span>]);</span><br><span class="line">                <span class="comment">// 选取状态更新</span></span><br><span class="line">                <span class="keyword">if</span> (dp[i][c] == dp[i - <span class="number">1</span>][c]) &#123;</span><br><span class="line">                    selected[i][c] = <span class="literal">false</span>; <span class="comment">// 不选物品 i</span></span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    selected[i][c] = <span class="literal">true</span>; <span class="comment">// 选物品 i</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 最大数值</span></span><br><span class="line">    cout &lt;&lt; dp[n][cap] &lt;&lt; endl;</span><br><span class="line">    <span class="comment">// 打印最优方案</span></span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; selectedItems;</span><br><span class="line">    <span class="type">int</span> i = n, c = cap;</span><br><span class="line">    <span class="keyword">while</span> (i &gt; <span class="number">0</span> &amp;&amp; c &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (selected[i][c]) &#123;</span><br><span class="line">            selectedItems.<span class="built_in">push_back</span>(i - <span class="number">1</span>); <span class="comment">// 保存选中的物品索引</span></span><br><span class="line">            c -= wgt[i - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = selectedItems.<span class="built_in">size</span>() - <span class="number">1</span>; j &gt;= <span class="number">0</span>; j--) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;x&quot;</span> &lt;&lt; selectedItems[j] + <span class="number">1</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 物品数量</span></span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    <span class="comment">// 背包限制</span></span><br><span class="line">    <span class="type">int</span> cap;</span><br><span class="line">    <span class="comment">// 数据输入</span></span><br><span class="line">    cin &gt;&gt; n &gt;&gt; cap;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 长度数组，重量数组</span></span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">wgt</span><span class="params">(n)</span></span>;</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">val</span><span class="params">(n)</span></span>;</span><br><span class="line">    <span class="comment">// 数组输入</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        cin &gt;&gt; wgt[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        cin &gt;&gt; val[i];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 结果计算</span></span><br><span class="line">    <span class="built_in">knapsackDP</span>(wgt, val, cap);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这样的修改应该会使你的代码输出期望的结果。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>电脑是怎么开机的(x86)</title>
+    <url>/2024/10/08/%E7%94%B5%E8%84%91%E6%98%AF%E6%80%8E%E4%B9%88%E5%BC%80%E6%9C%BA%E7%9A%84(x86)/</url>
+    <content><![CDATA[<p>本文基于b站上一个视频，介绍x86架构电脑的开机流程。主要讲解分区格式，引导程序等相关概念。</p>
+<span id="more"></span>
+
+<p>参考视频：<a href="https://www.bilibili.com/video/BV1jdtkeCEC5/">(x86)电脑是怎么开机的</a></p>
+<h3 id="BIOS简介"><a href="#BIOS简介" class="headerlink" title="BIOS简介"></a>BIOS简介</h3><p>BIOS是一种firmware(存储在主板芯片上的固件)。购买IBM-PC(一个老古董电脑)时，BIOS会被预装在电脑上。作用为初始化硬件，并引导操作系统(当时的MS-DOS)的启动。WindowsXP(2001年发布)和windows Vista(2007年发布)时期，仍为主要固件接口。但2012年WIndows 8发布，微软要求新硬件必须支持UEFI安全启动(Secure Boot),才能获得Windows 8的认证，加速了UEFI取代BIOS的进程。2020年起，所有面向Intel平台的新PC均不再支持传统的Legacy BIOS……</p>
+<p>BIOS启动电脑的流程：</p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1DYiq30zod2xxZG?embed=1&width=1920&height=1011" width="1920" height=" " />
+
+<h3 id="UEFI简介"><a href="#UEFI简介" class="headerlink" title="UEFI简介"></a>UEFI简介</h3><p>UEFI也是一种firmware(存储在主板芯片上的固件)。始于Intel的EFI(Extensible Firmware Interface)，后由多个科技公司接手继续开发，饼更名为UEFI(Unified EFI)。相比BIOS，UEFI引入多项改进。例如，UEFI支持GPT(GUID Partition Table)，其与BIOS的MBR相比支持更大的磁盘容量和分区数，同时支持安全启动。同时UEFI支持CSM,提供Legacy BIOS兼容模式，来支持不支持UEFI的操作系统的启动。</p>
+<p>UEFI启动电脑的流程：</p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1PYiq30zod2xxZG?embed=1&width=1920&height=1000" width="1920" height=" " />
+
+<p>这里的bootloader在Windows下是Windows Boot Manager,在Linux下是GRUB(GRUB2)。这里根据NVRAM中的boot entries选择合适的EFI application。</p>
+<h3 id="启动方案对比"><a href="#启动方案对比" class="headerlink" title="启动方案对比"></a>启动方案对比</h3><p>UEFI+GPT相对BIOS+MBR改进：</p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m07Yiq30zod2xxZG?embed=1&width=1902&height=909" width="1902" height=" " />
+
+<p>这里给出不同启动方案对于分区格式的支持：</p>
+<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1HYiq30zod2xxZG?embed=1&width=1920&height=918" width="1920" height=" " />
+
+<p>这里注意windows无法从Legay BIOS方案的GPT下启动。</p>
 ]]></content>
   </entry>
   <entry>
@@ -2901,31 +2926,6 @@
 <p>2.最后为什么输出<code>ERRO</code></p>
 <p>3.以命令行参数的形式传入参数</p>
 <p>4.各种输出显示仍然有点问题</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>电脑是怎么开机的(x86)</title>
-    <url>/2024/10/08/%E7%94%B5%E8%84%91%E6%98%AF%E6%80%8E%E4%B9%88%E5%BC%80%E6%9C%BA%E7%9A%84(x86)/</url>
-    <content><![CDATA[<p>本文基于b站上一个视频，介绍x86架构电脑的开机流程。主要讲解分区格式，引导程序等相关概念。</p>
-<span id="more"></span>
-
-<p>参考视频：<a href="https://www.bilibili.com/video/BV1jdtkeCEC5/">(x86)电脑是怎么开机的</a></p>
-<h3 id="BIOS简介"><a href="#BIOS简介" class="headerlink" title="BIOS简介"></a>BIOS简介</h3><p>BIOS是一种firmware(存储在主板芯片上的固件)。购买IBM-PC(一个老古董电脑)时，BIOS会被预装在电脑上。作用为初始化硬件，并引导操作系统(当时的MS-DOS)的启动。WindowsXP(2001年发布)和windows Vista(2007年发布)时期，仍为主要固件接口。但2012年WIndows 8发布，微软要求新硬件必须支持UEFI安全启动(Secure Boot),才能获得Windows 8的认证，加速了UEFI取代BIOS的进程。2020年起，所有面向Intel平台的新PC均不再支持传统的Legacy BIOS……</p>
-<p>BIOS启动电脑的流程：</p>
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1DYiq30zod2xxZG?embed=1&width=1920&height=1011" width="1920" height=" " />
-
-<h3 id="UEFI简介"><a href="#UEFI简介" class="headerlink" title="UEFI简介"></a>UEFI简介</h3><p>UEFI也是一种firmware(存储在主板芯片上的固件)。始于Intel的EFI(Extensible Firmware Interface)，后由多个科技公司接手继续开发，饼更名为UEFI(Unified EFI)。相比BIOS，UEFI引入多项改进。例如，UEFI支持GPT(GUID Partition Table)，其与BIOS的MBR相比支持更大的磁盘容量和分区数，同时支持安全启动。同时UEFI支持CSM,提供Legacy BIOS兼容模式，来支持不支持UEFI的操作系统的启动。</p>
-<p>UEFI启动电脑的流程：</p>
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1PYiq30zod2xxZG?embed=1&width=1920&height=1000" width="1920" height=" " />
-
-<p>这里的bootloader在Windows下是Windows Boot Manager,在Linux下是GRUB(GRUB2)。这里根据NVRAM中的boot entries选择合适的EFI application。</p>
-<h3 id="启动方案对比"><a href="#启动方案对比" class="headerlink" title="启动方案对比"></a>启动方案对比</h3><p>UEFI+GPT相对BIOS+MBR改进：</p>
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m07Yiq30zod2xxZG?embed=1&width=1902&height=909" width="1902" height=" " />
-
-<p>这里给出不同启动方案对于分区格式的支持：</p>
-<img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1HYiq30zod2xxZG?embed=1&width=1920&height=918" width="1920" height=" " />
-
-<p>这里注意windows无法从Legay BIOS方案的GPT下启动。</p>
 ]]></content>
   </entry>
   <entry>
