@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文基于头歌平台的数据库实验X记录SQL语言的学习过程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库实验x">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/10/28/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8Cx/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="本文基于头歌平台的数据库实验X记录SQL语言的学习过程。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-10-28T13:10:31.000Z">
+<meta property="article:modified_time" content="2024-10-28T14:05:03.201Z">
+<meta property="article:author" content="P4yl04d">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/10/28/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8Cx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>数据库实验x | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/10/28/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8Cx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库实验x
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2024-10-28 21:10:31 / Modified: 22:05:03" itemprop="dateCreated datePublished" datetime="2024-10-28T21:10:31+08:00">2024-10-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文基于头歌平台的数据库实验X记录SQL语言的学习过程。</p>
+<span id="more"></span>
+<h2 id="数据库实验一"><a href="#数据库实验一" class="headerlink" title="数据库实验一"></a>数据库实验一</h2><h2 id="数据库实验二-数据表中数据的插入、修改和删除"><a href="#数据库实验二-数据表中数据的插入、修改和删除" class="headerlink" title="数据库实验二 数据表中数据的插入、修改和删除"></a>数据库实验二 数据表中数据的插入、修改和删除</h2><h3 id="第1关：数据表中插入一条记录-对指定字段赋值"><a href="#第1关：数据表中插入一条记录-对指定字段赋值" class="headerlink" title="第1关：数据表中插入一条记录,对指定字段赋值"></a>第1关：数据表中插入一条记录,对指定字段赋值</h3><h4 id="插入语句"><a href="#插入语句" class="headerlink" title="插入语句"></a>插入语句</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span>  <span class="keyword">INTO</span>  <span class="operator">&lt;</span>表名<span class="operator">&gt;</span>  (<span class="operator">&lt;</span>字段<span class="number">1</span><span class="operator">&gt;</span>[,<span class="operator">&lt;</span>字段<span class="number">2</span><span class="operator">&gt;</span>…]) <span class="keyword">VALUES</span> (<span class="operator">&lt;</span>表达式<span class="number">1</span><span class="operator">&gt;</span>[,<span class="operator">&lt;</span>表达式<span class="number">2</span><span class="operator">&gt;</span>…])</span><br></pre></td></tr></table></figure>
+<h4 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h4><p>在library数据库的reader数据表中插入一条数据<br>姓名xm为林团团，电话号码dhhm为13507311234，其余字段取默认值<br>显示数据表的所有数据</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use library;</span><br><span class="line"> #代码开始</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> reader (xm,dhhm) <span class="keyword">values</span> (<span class="string">'林团团'</span>,<span class="string">'13507311234'</span>);</span><br><span class="line"></span><br><span class="line"># <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> reader;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意这里字段名和值都要用括号包起来。</p>
+</blockquote>
+<h3 id="第2关：数据表中插入一条记录，对所有字段赋值"><a href="#第2关：数据表中插入一条记录，对所有字段赋值" class="headerlink" title="第2关：数据表中插入一条记录，对所有字段赋值"></a>第2关：数据表中插入一条记录，对所有字段赋值</h3><h4 id="对所有字段赋值的插入语句"><a href="#对所有字段赋值的插入语句" class="headerlink" title="对所有字段赋值的插入语句"></a>对所有字段赋值的插入语句</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span>  <span class="keyword">INTO</span>  <span class="operator">&lt;</span>表名<span class="operator">&gt;</span> <span class="keyword">VALUES</span> (<span class="operator">&lt;</span>表达式<span class="number">1</span><span class="operator">&gt;</span>[,<span class="operator">&lt;</span>表达式<span class="number">2</span><span class="operator">&gt;</span>…])</span><br></pre></td></tr></table></figure>
+<h4 id="应用-1"><a href="#应用-1" class="headerlink" title="应用"></a>应用</h4><p>在reader数据表中插入一位读者<br>读者证号是2，姓名是陈洁，性别是女，身份是教研人员，电话号码是13319551234</p>
+<p>提示：reader数据表各个字段顺序为dzzh,xm,xb,sf,dhhm</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> use library;</span><br><span class="line"> #代码开始</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> reader (xm,xb,sf,dhhm) <span class="keyword">values</span>(<span class="string">'陈洁'</span>,<span class="string">'女'</span>,<span class="string">'教研人员'</span>,<span class="string">'13319551234'</span>);</span><br><span class="line"> #代码结束</span><br><span class="line"> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> reader;</span><br></pre></td></tr></table></figure>
+<h3 id="第3关：数据表中插入多条记录"><a href="#第3关：数据表中插入多条记录" class="headerlink" title="第3关：数据表中插入多条记录"></a>第3关：数据表中插入多条记录</h3><h4 id="插入多条数据"><a href="#插入多条数据" class="headerlink" title="插入多条数据"></a>插入多条数据</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span>  <span class="keyword">INTO</span>  <span class="operator">&lt;</span>表名<span class="operator">&gt;</span>  (<span class="operator">&lt;</span>字段<span class="number">1</span><span class="operator">&gt;</span>[,<span class="operator">&lt;</span>字段<span class="number">2</span><span class="operator">&gt;</span>…])</span><br><span class="line"><span class="keyword">VALUES</span> (<span class="operator">&lt;</span>表达式<span class="number">11</span><span class="operator">&gt;</span>[,<span class="operator">&lt;</span>表达式<span class="number">12</span><span class="operator">&gt;</span>…])，</span><br><span class="line">   (<span class="operator">&lt;</span>表达式<span class="number">21</span><span class="operator">&gt;</span>[,<span class="operator">&lt;</span>表达式<span class="number">22</span><span class="operator">&gt;</span>…])，</span><br><span class="line">   (<span class="operator">&lt;</span>表达式<span class="number">31</span><span class="operator">&gt;</span>[,<span class="operator">&lt;</span>表达式<span class="number">32</span><span class="operator">&gt;</span>…])……</span><br></pre></td></tr></table></figure>
+<h4 id="应用-2"><a href="#应用-2" class="headerlink" title="应用"></a>应用</h4><p>本关任务：在reader数据表中插入多条数据<br>姓名是黄小小，性别是男，身份是研究生，电话是13316789987<br>姓名是刘大任，性别是男，身份是工作人员，电话18012341234<br>姓名是邓朝阳，性别是女，身份是研究生，电话是17716554432<br>提示：数据表reader的姓名、性别、身份、电话号码字段是xm,xb,sf,dhhm<br>读者证号是自增字段，其值会自动产生</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use library;</span><br><span class="line">#代码开始</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> reader (xm,xb,sf,dhhm) <span class="keyword">values</span>(<span class="string">'黄小小'</span>,<span class="string">'男'</span>,<span class="string">'研究生'</span>,<span class="string">'13316789987'</span>),(<span class="string">'刘大任'</span>,<span class="string">'男'</span>,<span class="string">'工作人员'</span>,<span class="string">'18012341234'</span>),(<span class="string">'邓朝阳'</span>,<span class="string">'女'</span>,<span class="string">'研究生'</span>,<span class="string">'17716554432'</span>);</span><br><span class="line"> #代码结束</span><br><span class="line"> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> reader;</span><br></pre></td></tr></table></figure>
+<h3 id="第4关：在数据表中修改单条数据记录的单个字段的值"><a href="#第4关：在数据表中修改单条数据记录的单个字段的值" class="headerlink" title="第4关：在数据表中修改单条数据记录的单个字段的值"></a>第4关：在数据表中修改单条数据记录的单个字段的值</h3><h4 id="更新字段"><a href="#更新字段" class="headerlink" title="更新字段"></a>更新字段</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> <span class="operator">&lt;</span>表名<span class="operator">&gt;</span>  <span class="keyword">SET</span><span class="operator">&lt;</span>字段<span class="number">1</span><span class="operator">&gt;=</span><span class="operator">&lt;</span>表达式<span class="number">1</span><span class="operator">&gt;</span>  [,<span class="operator">&lt;</span>字段<span class="number">2</span><span class="operator">&gt;=</span><span class="operator">&lt;</span>表达式<span class="number">1</span><span class="operator">&gt;</span>……]  [<span class="keyword">WHERE</span> <span class="operator">&lt;</span>条件<span class="operator">&gt;</span>]</span><br></pre></td></tr></table></figure>
+<p>对于指定数据表中符合条件的记录，用指定的表达式的值来更新指定的字段。使用UPDATE命令可以一次更新多个字段的值。WHERE &lt;条件&gt;用来指定更新的条件。</p>
+<h4 id="应用-3"><a href="#应用-3" class="headerlink" title="应用"></a>应用</h4><p>将reader数据表中林团团xm的电话号码dhhm修改为17718991989</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> use library;</span><br><span class="line">#代码开始</span><br><span class="line"><span class="keyword">update</span> reader <span class="keyword">set</span> dhhm<span class="operator">=</span><span class="number">17718991989</span> <span class="keyword">where</span> xm<span class="operator">=</span><span class="string">'林团团'</span>;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> #代码结束</span><br><span class="line"> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> reader;</span><br></pre></td></tr></table></figure>
+<h3 id="第五关：修改多字段信息"><a href="#第五关：修改多字段信息" class="headerlink" title="第五关：修改多字段信息"></a>第五关：修改多字段信息</h3><h4 id="应用-4"><a href="#应用-4" class="headerlink" title="应用"></a>应用</h4><p>修改读者表reader的陈洁xm的电话号码dhhm为13315667745，身份为工作人员。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use library;</span><br><span class="line">#代码开始</span><br><span class="line"><span class="keyword">update</span> reader <span class="keyword">set</span> dhhm <span class="operator">=</span><span class="number">13315667745</span>,sf<span class="operator">=</span><span class="string">'工作人员'</span><span class="keyword">where</span> xm<span class="operator">=</span><span class="string">'陈洁'</span>;</span><br><span class="line">#代码结束</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> reader;</span><br></pre></td></tr></table></figure>
+<h3 id="第6关：修改数据表的多条记录"><a href="#第6关：修改数据表的多条记录" class="headerlink" title="第6关：修改数据表的多条记录"></a>第6关：修改数据表的多条记录</h3><h4 id="应用-5"><a href="#应用-5" class="headerlink" title="应用"></a>应用</h4><p>将每位读者reader的读者证dzzh号加十</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use library;</span><br><span class="line">#代码开始</span><br><span class="line"><span class="keyword">update</span> reader <span class="keyword">set</span> dzzh<span class="operator">=</span>dzzh<span class="operator">+</span><span class="number">10</span>;</span><br><span class="line">#代码结束</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> reader;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意SQL语言中不能使用<code>dzzh+=10</code></p>
+</blockquote>
+<h3 id="第7关：删除数据表的记录"><a href="#第7关：删除数据表的记录" class="headerlink" title="第7关：删除数据表的记录"></a>第7关：删除数据表的记录</h3><h4 id="删除语句"><a href="#删除语句" class="headerlink" title="删除语句"></a>删除语句</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> 表名 <span class="keyword">where</span> 条件表达式;</span><br></pre></td></tr></table></figure>
+<h4 id="应用-6"><a href="#应用-6" class="headerlink" title="应用"></a>应用</h4><p>删除读者reader数据表中的陈洁xm</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> use library;</span><br><span class="line"> #代码开始</span><br><span class="line"> <span class="keyword">delete</span> <span class="keyword">from</span> reader <span class="keyword">where</span> xm<span class="operator">=</span><span class="string">'陈洁'</span>;</span><br><span class="line"> #代码结束</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> reader;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意是直接<code>delete from 表名</code></p>
+</blockquote>
+<h3 id="第8关：删除数据表的多条记录"><a href="#第8关：删除数据表的多条记录" class="headerlink" title="第8关：删除数据表的多条记录"></a>第8关：删除数据表的多条记录</h3><h4 id="应用-7"><a href="#应用-7" class="headerlink" title="应用"></a>应用</h4><p>删除读者reader中的所有研究生sf</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use library;</span><br><span class="line">#代码开始</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> reader <span class="keyword">where</span> sf<span class="operator">=</span><span class="string">'研究生'</span>;</span><br><span class="line">#代码结束</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> reader;</span><br></pre></td></tr></table></figure>
+<h3 id="第9关：删除数据表的所有数据"><a href="#第9关：删除数据表的所有数据" class="headerlink" title="第9关：删除数据表的所有数据"></a>第9关：删除数据表的所有数据</h3><h4 id="应用-8"><a href="#应用-8" class="headerlink" title="应用"></a>应用</h4><p>删除所有读者reader</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use library;</span><br><span class="line">#代码开始</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> reader;</span><br><span class="line">#代码结束</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> reader;</span><br></pre></td></tr></table></figure>
+<p>非常好第九关，使我删库跑路。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/10/28/MySQl-%E5%8D%95%E8%A1%A8%E6%9F%A5%E8%AF%A2/" rel="prev" title="MySQl-单表查询">
+      <i class="fa fa-chevron-left"></i> MySQl-单表查询
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8C%E4%B8%80"><span class="nav-number">1.</span> <span class="nav-text">数据库实验一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8C%E4%BA%8C-%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E6%95%B0%E6%8D%AE%E7%9A%84%E6%8F%92%E5%85%A5%E3%80%81%E4%BF%AE%E6%94%B9%E5%92%8C%E5%88%A0%E9%99%A4"><span class="nav-number">2.</span> <span class="nav-text">数据库实验二 数据表中数据的插入、修改和删除</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC1%E5%85%B3%EF%BC%9A%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E6%8F%92%E5%85%A5%E4%B8%80%E6%9D%A1%E8%AE%B0%E5%BD%95-%E5%AF%B9%E6%8C%87%E5%AE%9A%E5%AD%97%E6%AE%B5%E8%B5%8B%E5%80%BC"><span class="nav-number">2.1.</span> <span class="nav-text">第1关：数据表中插入一条记录,对指定字段赋值</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E8%AF%AD%E5%8F%A5"><span class="nav-number">2.1.1.</span> <span class="nav-text">插入语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">2.1.2.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC2%E5%85%B3%EF%BC%9A%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E6%8F%92%E5%85%A5%E4%B8%80%E6%9D%A1%E8%AE%B0%E5%BD%95%EF%BC%8C%E5%AF%B9%E6%89%80%E6%9C%89%E5%AD%97%E6%AE%B5%E8%B5%8B%E5%80%BC"><span class="nav-number">2.2.</span> <span class="nav-text">第2关：数据表中插入一条记录，对所有字段赋值</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E6%89%80%E6%9C%89%E5%AD%97%E6%AE%B5%E8%B5%8B%E5%80%BC%E7%9A%84%E6%8F%92%E5%85%A5%E8%AF%AD%E5%8F%A5"><span class="nav-number">2.2.1.</span> <span class="nav-text">对所有字段赋值的插入语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC3%E5%85%B3%EF%BC%9A%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E6%8F%92%E5%85%A5%E5%A4%9A%E6%9D%A1%E8%AE%B0%E5%BD%95"><span class="nav-number">2.3.</span> <span class="nav-text">第3关：数据表中插入多条记录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%A4%9A%E6%9D%A1%E6%95%B0%E6%8D%AE"><span class="nav-number">2.3.1.</span> <span class="nav-text">插入多条数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8-2"><span class="nav-number">2.3.2.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC4%E5%85%B3%EF%BC%9A%E5%9C%A8%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E4%BF%AE%E6%94%B9%E5%8D%95%E6%9D%A1%E6%95%B0%E6%8D%AE%E8%AE%B0%E5%BD%95%E7%9A%84%E5%8D%95%E4%B8%AA%E5%AD%97%E6%AE%B5%E7%9A%84%E5%80%BC"><span class="nav-number">2.4.</span> <span class="nav-text">第4关：在数据表中修改单条数据记录的单个字段的值</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E5%AD%97%E6%AE%B5"><span class="nav-number">2.4.1.</span> <span class="nav-text">更新字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8-3"><span class="nav-number">2.4.2.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E5%85%B3%EF%BC%9A%E4%BF%AE%E6%94%B9%E5%A4%9A%E5%AD%97%E6%AE%B5%E4%BF%A1%E6%81%AF"><span class="nav-number">2.5.</span> <span class="nav-text">第五关：修改多字段信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8-4"><span class="nav-number">2.5.1.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC6%E5%85%B3%EF%BC%9A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%9A%84%E5%A4%9A%E6%9D%A1%E8%AE%B0%E5%BD%95"><span class="nav-number">2.6.</span> <span class="nav-text">第6关：修改数据表的多条记录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8-5"><span class="nav-number">2.6.1.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC7%E5%85%B3%EF%BC%9A%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%9A%84%E8%AE%B0%E5%BD%95"><span class="nav-number">2.7.</span> <span class="nav-text">第7关：删除数据表的记录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%AF%AD%E5%8F%A5"><span class="nav-number">2.7.1.</span> <span class="nav-text">删除语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8-6"><span class="nav-number">2.7.2.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC8%E5%85%B3%EF%BC%9A%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%9A%84%E5%A4%9A%E6%9D%A1%E8%AE%B0%E5%BD%95"><span class="nav-number">2.8.</span> <span class="nav-text">第8关：删除数据表的多条记录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8-7"><span class="nav-number">2.8.1.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC9%E5%85%B3%EF%BC%9A%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%9A%84%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE"><span class="nav-number">2.9.</span> <span class="nav-text">第9关：删除数据表的所有数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8-8"><span class="nav-number">2.9.1.</span> <span class="nav-text">应用</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = 'true';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
