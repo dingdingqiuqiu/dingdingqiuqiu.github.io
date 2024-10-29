@@ -438,106 +438,6 @@
       </categories>
   </entry>
   <entry>
-    <title>Arch配置Git自动登录验证</title>
-    <url>/2023/11/10/Arch%E9%85%8D%E7%BD%AEGit%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81/</url>
-    <content><![CDATA[<p>本文主要实现了<code>Archlinux</code>环境下<code>git push</code>指令免密登录的配置<br>介绍了<code>git</code>相关操作<br><span id="more"></span></p>
-<h3 id="Arch配置Git自动登录验证"><a href="#Arch配置Git自动登录验证" class="headerlink" title="Arch配置Git自动登录验证"></a>Arch配置Git自动登录验证</h3><p>参考文档：</p>
-<p><a href="https://zhuanlan.zhihu.com/p/571015337">核心参考文档</a> 本文思路基本和该文一致，相当于这篇文章的详细版</p>
-<p><a href="https://www.cnblogs.com/apocelipes/p/14491762.html">图解如何在Linux上配置git自动登录验证 </a> (了解)</p>
-<blockquote>
-<p>实际使用下来不如SSH免密登录，因为http免密登录需要储存凭证程序，而使用储存凭证程序需要与‘’Secret Service”建立联系，国内网络连接被拒……更推荐下面这片文章中的SSH免密登录</p>
-</blockquote>
-<p><a href="https://cloud.tencent.com/developer/article/1861466">GitHub不再支持密码验证解决方案：SSH免密与Token登录配置</a> (推荐)</p>
-<p><a href="https://blog.csdn.net/qq_38163309/article/details/105335097">github配置SSH免密登录</a> (更针对目前的Github版本，在Github上导入密钥可以参考这篇)</p>
-<p><a href="https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/about-authentication-to-github">github关于身份验证的官方文档</a></p>
-<p>为什么要配置git自动登录验证？</p>
-<blockquote>
-<p>官方已经停用了在终端中利用git通过账户名密码的方式登录github</p>
-</blockquote>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212664&authkey=%21ANiKrfTOh3bHFkY&width=1898&height=178" width="1898" height="" /></p>
-<blockquote>
-<p>因此配置SSH免密登录和Token登录是必要的</p>
-</blockquote>
-<h3 id="配置方式"><a href="#配置方式" class="headerlink" title="配置方式"></a>配置方式</h3><p>生成<code>ssh-key</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C 1501608414@qq.com  </span><br></pre></td></tr></table></figure>
-<p><code>ENTER</code>后会回显密钥储存位置，进入该位置</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /root/.ssh/</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ls</span><br></pre></td></tr></table></figure>
-<p>可以看到有两个文件<code>id_rsa</code>（私钥）和<code>id_rsa.pub</code>（公钥）</p>
-<p>把公钥导入<code>Github</code>中的<code>Settings</code>中的<code>SSH and GPG keys</code>即可。</p>
-<h3 id="git修改远程仓库地址"><a href="#git修改远程仓库地址" class="headerlink" title="git修改远程仓库地址"></a>git修改远程仓库地址</h3><p>方法有三种：</p>
-<ol>
-<li><p>修改命令</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote set-url --push origin git@github.com:dingdingqiuqiu/Leetcode.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>先删后加</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote rm origin</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote add origin git@github.com:dingdingqiuqiu/Leetcode.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>直接修改config文件</p>
-<p>  git文件夹，找到config，编辑，把就的项目地址替换成新的。</p>
-</li>
-</ol>
-<h3 id="Git基本使用"><a href="#Git基本使用" class="headerlink" title="Git基本使用"></a>Git基本使用</h3><blockquote>
-<p>该部分介绍基本够用，更详细的介绍在<a href="https://dingdingqiuqiu.github.io/2024/10/08/git%E6%89%8B%E5%86%8C/#more">dingdingqiuqiu-git手册</a></p>
-</blockquote>
-<h4 id="首次使用"><a href="#首次使用" class="headerlink" title="首次使用"></a>首次使用</h4><p>配置<code>Git</code>的全局账户名和电子邮箱</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;P4yl04d&quot;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.email &quot;1501608414@qq.com&quot;</span><br></pre></td></tr></table></figure>
-<p>使用以下命令检验配置结果</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.name</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.email</span><br></pre></td></tr></table></figure>
-<p>修改默认编辑器为<code>nvim</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global core.editor nvim</span><br></pre></td></tr></table></figure>
-<p><code>merge</code>时修改冲突文件工具<code>mergetool</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global merge.tool vimdiff</span><br><span class="line">git config --global merge.conflictstyle diff3</span><br><span class="line">git config --global mergetool.prompt false</span><br><span class="line"><span class="meta prompt_"> </span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">让git mergetool不再生成备份文件(*.orig)</span>  </span><br><span class="line">git config --global mergetool.keepBackup false</span><br></pre></td></tr></table></figure>
-<h4 id="修改远程库"><a href="#修改远程库" class="headerlink" title="修改远程库"></a>修改远程库</h4><p>参考文档：</p>
-<p><a href="https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories">官方文档</a> （推荐）</p>
-<p><a href="https://zhuanlan.zhihu.com/p/571015337">linux下，git配置github</a> (讲的很细，也推荐)</p>
-<p>拉取库</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/dingdingqiuqiu/OS_NJU_Jsut2try</span><br></pre></td></tr></table></figure>
-<p>修改库</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd OS_NJU_Jsut2try</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mv /home/P4yl04d/Documents/OS_NJU_Jsut2try_my/* .</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git add .</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git commit -m &quot;M32_C90_unsigned_BUG_try&quot;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote -v</span><br><span class="line"># 回显：</span><br><span class="line"># origin  https://github.com/dingdingqiuqiu/OS_NJU_Jsut2try (fetch)</span><br><span class="line"># origin  https://github.com/dingdingqiuqiu/OS_NJU_Jsut2try (push)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git push -u origin mian</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><code>git push -u origin main</code> 命令会将本地分支 <code>main</code> 推送到远程仓库 <code>origin</code> 中的 <code>main</code> 分支。如果您想将本地分支推送到远程仓库的其他分支，可以使用以下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git push -u &lt;remote&gt; &lt;local_branch&gt;:&lt;remote_branch&gt;</span><br></pre></td></tr></table></figure>
-<p>这个命令会将本地分支 <code>&lt;local_branch&gt;</code> 推送到远程仓库 <code>&lt;remote&gt;</code> 中的 <code>&lt;remote_branch&gt;</code> 分支。例如，如果您想将本地分支 <code>dev</code> 推送到远程仓库 <code>origin</code> 中的 <code>develop</code> 分支，可以使用以下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git push -u origin dev:develop</span><br></pre></td></tr></table></figure>
-</blockquote>
-<h4 id="本地文件上传库"><a href="#本地文件上传库" class="headerlink" title="本地文件上传库"></a>本地文件上传库</h4><p>参考文档：<br><a href="https://www.freecodecamp.org/news/introduction-to-git-and-github/#how-to-start-using-git-and-github">How to use git</a></p>
-<p><a href="https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories">官方文档</a> (推荐)</p>
-<p>首先在<code>Github</code>上创建新仓库（不添加READ.MD文件）,官方这里也有介绍，我解释下每一句的意思。</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212663&authkey=%21ANiKrfTOh3bHFkY&width=1854&height=902" width="1854" height="" /></p>
-<p>首先在本地创建文件夹用于上传文件到<code>Github</code>中的仓库  </p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /home/P4yl04d/Documents                    </span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mkdir Leetcode</span><br></pre></td></tr></table></figure>
-<p>进入文件夹，并对其初始化</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 进入文件夹</span><br><span class="line">cd Leetcode</span><br><span class="line"></span><br><span class="line"># 创建README.md文件，并写入仓库名字</span><br><span class="line">echo &quot;# Leetcode&quot; &gt;&gt; README.md</span><br><span class="line"></span><br><span class="line"># 对文件夹进行初始化，主要是在该文件夹中创建.git文件，记录版本变化</span><br><span class="line"># rm -rf .git可撤销初始化操作</span><br><span class="line">git init</span><br><span class="line"></span><br><span class="line"># 添加README.md文件到”预提交“处</span><br><span class="line">git add README.md</span><br><span class="line"></span><br><span class="line"># 进行实际提交命令，参数m用来标记提交信息</span><br><span class="line">git commit -m &quot;first commit&quot;</span><br><span class="line"></span><br><span class="line"># 把默认分支master**重命名**为main，让新版本被添加时处于main分支下</span><br><span class="line">git branch -M main</span><br><span class="line"></span><br><span class="line"># 添加一个名为origin的远程分支到git仓库</span><br><span class="line">git remote add origin git@github.com:dingdingqiuqiu/Leetcode.git</span><br><span class="line"></span><br><span class="line"># 把本地仓库的改变推送到远程仓库origin</span><br><span class="line"># -u参数将当前分支的上游分支(upstream branch)设置成origin/main</span><br><span class="line">#这允许您将来使用 git push 时无需指定远程名称和分支名称。</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
-<p><code>checkout</code>代表切换到<code>master</code>分支，<code>-b</code>参数代表如果不存在<code>master</code>分支，那就创建一个<code>master</code>分支。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git checkout -b master</span><br></pre></td></tr></table></figure>
-<h4 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a>Debug</h4><p>在某次<code>git push</code>后</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212824&authkey=%21ANiKrfTOh3bHFkY&width=796&height=199" width="796" height=" " /></p>
-<p>进入<code>.ssh</code>文件夹，新建<code>config</code>文件，输入以下内容即可</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212826&authkey=%21ANiKrfTOh3bHFkY&width=1213&height=762" width="1213" height="" /></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">Hostname ssh.github.com</span><br><span class="line">Port 443</span><br><span class="line">User git</span><br></pre></td></tr></table></figure>
-<p><code>Arch</code>也碰到了相同的问题，同样方法解决即可</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212827&authkey=%21ANiKrfTOh3bHFkY&width=1896&height=986" width="1896" height=" " /></p>
-<p>参考文档:<a href="https://blog.csdn.net/m0_62159662/article/details/125156695?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_utm_term~default-1-125156695-blog-127533568.235^v39^pc_relevant_default_base&amp;spm=1001.2101.3001.4242.2&amp;utm_relevant_index=4">ssh -T git@github.com ssh: connect to host github.com port 22: Connection refused 会报错_this key is not known by any other names.-CSDN博客</a></p>
-]]></content>
-      <categories>
-        <category>环境搭建</category>
-        <category>开发环境</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Blog多平台同步</title>
     <url>/2023/11/20/Blog%E5%A4%9A%E5%B9%B3%E5%8F%B0%E5%90%8C%E6%AD%A5/</url>
     <content><![CDATA[<p>本文主要记录了博客搭建的过程以及如何利用<code>git</code>实现多平台博客同步<br><span id="more"></span></p>
@@ -713,8 +613,108 @@
         <category>开发环境</category>
       </categories>
       <tags>
-        <tag>Git</tag>
         <tag>博客搭建</tag>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Arch配置Git自动登录验证</title>
+    <url>/2023/11/10/Arch%E9%85%8D%E7%BD%AEGit%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81/</url>
+    <content><![CDATA[<p>本文主要实现了<code>Archlinux</code>环境下<code>git push</code>指令免密登录的配置<br>介绍了<code>git</code>相关操作<br><span id="more"></span></p>
+<h3 id="Arch配置Git自动登录验证"><a href="#Arch配置Git自动登录验证" class="headerlink" title="Arch配置Git自动登录验证"></a>Arch配置Git自动登录验证</h3><p>参考文档：</p>
+<p><a href="https://zhuanlan.zhihu.com/p/571015337">核心参考文档</a> 本文思路基本和该文一致，相当于这篇文章的详细版</p>
+<p><a href="https://www.cnblogs.com/apocelipes/p/14491762.html">图解如何在Linux上配置git自动登录验证 </a> (了解)</p>
+<blockquote>
+<p>实际使用下来不如SSH免密登录，因为http免密登录需要储存凭证程序，而使用储存凭证程序需要与‘’Secret Service”建立联系，国内网络连接被拒……更推荐下面这片文章中的SSH免密登录</p>
+</blockquote>
+<p><a href="https://cloud.tencent.com/developer/article/1861466">GitHub不再支持密码验证解决方案：SSH免密与Token登录配置</a> (推荐)</p>
+<p><a href="https://blog.csdn.net/qq_38163309/article/details/105335097">github配置SSH免密登录</a> (更针对目前的Github版本，在Github上导入密钥可以参考这篇)</p>
+<p><a href="https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/about-authentication-to-github">github关于身份验证的官方文档</a></p>
+<p>为什么要配置git自动登录验证？</p>
+<blockquote>
+<p>官方已经停用了在终端中利用git通过账户名密码的方式登录github</p>
+</blockquote>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212664&authkey=%21ANiKrfTOh3bHFkY&width=1898&height=178" width="1898" height="" /></p>
+<blockquote>
+<p>因此配置SSH免密登录和Token登录是必要的</p>
+</blockquote>
+<h3 id="配置方式"><a href="#配置方式" class="headerlink" title="配置方式"></a>配置方式</h3><p>生成<code>ssh-key</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C 1501608414@qq.com  </span><br></pre></td></tr></table></figure>
+<p><code>ENTER</code>后会回显密钥储存位置，进入该位置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /root/.ssh/</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ls</span><br></pre></td></tr></table></figure>
+<p>可以看到有两个文件<code>id_rsa</code>（私钥）和<code>id_rsa.pub</code>（公钥）</p>
+<p>把公钥导入<code>Github</code>中的<code>Settings</code>中的<code>SSH and GPG keys</code>即可。</p>
+<h3 id="git修改远程仓库地址"><a href="#git修改远程仓库地址" class="headerlink" title="git修改远程仓库地址"></a>git修改远程仓库地址</h3><p>方法有三种：</p>
+<ol>
+<li><p>修改命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote set-url --push origin git@github.com:dingdingqiuqiu/Leetcode.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>先删后加</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote rm origin</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote add origin git@github.com:dingdingqiuqiu/Leetcode.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>直接修改config文件</p>
+<p>  git文件夹，找到config，编辑，把就的项目地址替换成新的。</p>
+</li>
+</ol>
+<h3 id="Git基本使用"><a href="#Git基本使用" class="headerlink" title="Git基本使用"></a>Git基本使用</h3><blockquote>
+<p>该部分介绍基本够用，更详细的介绍在<a href="https://dingdingqiuqiu.github.io/2024/10/08/git%E6%89%8B%E5%86%8C/#more">dingdingqiuqiu-git手册</a></p>
+</blockquote>
+<h4 id="首次使用"><a href="#首次使用" class="headerlink" title="首次使用"></a>首次使用</h4><p>配置<code>Git</code>的全局账户名和电子邮箱</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;P4yl04d&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.email &quot;1501608414@qq.com&quot;</span><br></pre></td></tr></table></figure>
+<p>使用以下命令检验配置结果</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.name</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.email</span><br></pre></td></tr></table></figure>
+<p>修改默认编辑器为<code>nvim</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global core.editor nvim</span><br></pre></td></tr></table></figure>
+<p><code>merge</code>时修改冲突文件工具<code>mergetool</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global merge.tool vimdiff</span><br><span class="line">git config --global merge.conflictstyle diff3</span><br><span class="line">git config --global mergetool.prompt false</span><br><span class="line"><span class="meta prompt_"> </span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">让git mergetool不再生成备份文件(*.orig)</span>  </span><br><span class="line">git config --global mergetool.keepBackup false</span><br></pre></td></tr></table></figure>
+<h4 id="修改远程库"><a href="#修改远程库" class="headerlink" title="修改远程库"></a>修改远程库</h4><p>参考文档：</p>
+<p><a href="https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories">官方文档</a> （推荐）</p>
+<p><a href="https://zhuanlan.zhihu.com/p/571015337">linux下，git配置github</a> (讲的很细，也推荐)</p>
+<p>拉取库</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/dingdingqiuqiu/OS_NJU_Jsut2try</span><br></pre></td></tr></table></figure>
+<p>修改库</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd OS_NJU_Jsut2try</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mv /home/P4yl04d/Documents/OS_NJU_Jsut2try_my/* .</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git add .</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git commit -m &quot;M32_C90_unsigned_BUG_try&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote -v</span><br><span class="line"># 回显：</span><br><span class="line"># origin  https://github.com/dingdingqiuqiu/OS_NJU_Jsut2try (fetch)</span><br><span class="line"># origin  https://github.com/dingdingqiuqiu/OS_NJU_Jsut2try (push)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git push -u origin mian</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>git push -u origin main</code> 命令会将本地分支 <code>main</code> 推送到远程仓库 <code>origin</code> 中的 <code>main</code> 分支。如果您想将本地分支推送到远程仓库的其他分支，可以使用以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git push -u &lt;remote&gt; &lt;local_branch&gt;:&lt;remote_branch&gt;</span><br></pre></td></tr></table></figure>
+<p>这个命令会将本地分支 <code>&lt;local_branch&gt;</code> 推送到远程仓库 <code>&lt;remote&gt;</code> 中的 <code>&lt;remote_branch&gt;</code> 分支。例如，如果您想将本地分支 <code>dev</code> 推送到远程仓库 <code>origin</code> 中的 <code>develop</code> 分支，可以使用以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git push -u origin dev:develop</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="本地文件上传库"><a href="#本地文件上传库" class="headerlink" title="本地文件上传库"></a>本地文件上传库</h4><p>参考文档：<br><a href="https://www.freecodecamp.org/news/introduction-to-git-and-github/#how-to-start-using-git-and-github">How to use git</a></p>
+<p><a href="https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories">官方文档</a> (推荐)</p>
+<p>首先在<code>Github</code>上创建新仓库（不添加READ.MD文件）,官方这里也有介绍，我解释下每一句的意思。</p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212663&authkey=%21ANiKrfTOh3bHFkY&width=1854&height=902" width="1854" height="" /></p>
+<p>首先在本地创建文件夹用于上传文件到<code>Github</code>中的仓库  </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /home/P4yl04d/Documents                    </span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mkdir Leetcode</span><br></pre></td></tr></table></figure>
+<p>进入文件夹，并对其初始化</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 进入文件夹</span><br><span class="line">cd Leetcode</span><br><span class="line"></span><br><span class="line"># 创建README.md文件，并写入仓库名字</span><br><span class="line">echo &quot;# Leetcode&quot; &gt;&gt; README.md</span><br><span class="line"></span><br><span class="line"># 对文件夹进行初始化，主要是在该文件夹中创建.git文件，记录版本变化</span><br><span class="line"># rm -rf .git可撤销初始化操作</span><br><span class="line">git init</span><br><span class="line"></span><br><span class="line"># 添加README.md文件到”预提交“处</span><br><span class="line">git add README.md</span><br><span class="line"></span><br><span class="line"># 进行实际提交命令，参数m用来标记提交信息</span><br><span class="line">git commit -m &quot;first commit&quot;</span><br><span class="line"></span><br><span class="line"># 把默认分支master**重命名**为main，让新版本被添加时处于main分支下</span><br><span class="line">git branch -M main</span><br><span class="line"></span><br><span class="line"># 添加一个名为origin的远程分支到git仓库</span><br><span class="line">git remote add origin git@github.com:dingdingqiuqiu/Leetcode.git</span><br><span class="line"></span><br><span class="line"># 把本地仓库的改变推送到远程仓库origin</span><br><span class="line"># -u参数将当前分支的上游分支(upstream branch)设置成origin/main</span><br><span class="line">#这允许您将来使用 git push 时无需指定远程名称和分支名称。</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+<p><code>checkout</code>代表切换到<code>master</code>分支，<code>-b</code>参数代表如果不存在<code>master</code>分支，那就创建一个<code>master</code>分支。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git checkout -b master</span><br></pre></td></tr></table></figure>
+<h4 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a>Debug</h4><p>在某次<code>git push</code>后</p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212824&authkey=%21ANiKrfTOh3bHFkY&width=796&height=199" width="796" height=" " /></p>
+<p>进入<code>.ssh</code>文件夹，新建<code>config</code>文件，输入以下内容即可</p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212826&authkey=%21ANiKrfTOh3bHFkY&width=1213&height=762" width="1213" height="" /></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">Hostname ssh.github.com</span><br><span class="line">Port 443</span><br><span class="line">User git</span><br></pre></td></tr></table></figure>
+<p><code>Arch</code>也碰到了相同的问题，同样方法解决即可</p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212827&authkey=%21ANiKrfTOh3bHFkY&width=1896&height=986" width="1896" height=" " /></p>
+<p>参考文档:<a href="https://blog.csdn.net/m0_62159662/article/details/125156695?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_utm_term~default-1-125156695-blog-127533568.235^v39^pc_relevant_default_base&amp;spm=1001.2101.3001.4242.2&amp;utm_relevant_index=4">ssh -T git@github.com ssh: connect to host github.com port 22: Connection refused 会报错_this key is not known by any other names.-CSDN博客</a></p>
+]]></content>
+      <categories>
+        <category>环境搭建</category>
+        <category>开发环境</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -956,8 +956,8 @@
 ]]></content>
       <categories>
         <category>OS</category>
-        <category>Reserve</category>
         <category>asm</category>
+        <category>Reserve</category>
         <category>Linux</category>
         <category>Book</category>
         <category>CSAPP</category>
@@ -967,6 +967,19 @@
         <tag>asm</tag>
         <tag>CSAPP</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>CPP拾遗-输入输出</title>
+    <url>/2024/03/17/CPP%E6%8B%BE%E9%81%97-%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/</url>
+    <content><![CDATA[<p>本文主要讲解C++中数据流相关概念以及std::getline()函数的使用</p>
+<span id="more"></span>
+<h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>从控制台输入一对逗号分割的数据，将这对数据分别赋值给变量a和变量b。</p>
+<p>代码实现如下</p>
+<p><img src="../../../../Pictures/Blog/CPP拾遗-输入输出/image-20240317204249396.png" alt="image-20240317204249396"></p>
+<h3 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h3><p>利用字符串数字间转换的方法分割数字，求和操作。</p>
+<p><img src="../../../../Pictures/Blog/CPP拾遗-输入输出/image-20240317222341961.png" alt="image-20240317222341961"></p>
+<p>应该注意的是<code>getline(cin,str)</code>使用时常常遇到一些bug,这是因为输入没有没清空，可以通过在<code>getline(cin,str)</code>前添加<code>getchar()</code>或者<code>cin.ignore()</code>来解决。</p>
+]]></content>
   </entry>
   <entry>
     <title>Bufbomb栈溢出炸弹实验</title>
@@ -1101,34 +1114,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CPP拾遗-输入输出</title>
-    <url>/2024/03/17/CPP%E6%8B%BE%E9%81%97-%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/</url>
-    <content><![CDATA[<p>本文主要讲解C++中数据流相关概念以及std::getline()函数的使用</p>
-<span id="more"></span>
-<h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>从控制台输入一对逗号分割的数据，将这对数据分别赋值给变量a和变量b。</p>
-<p>代码实现如下</p>
-<p><img src="../../../../Pictures/Blog/CPP拾遗-输入输出/image-20240317204249396.png" alt="image-20240317204249396"></p>
-<h3 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h3><p>利用字符串数字间转换的方法分割数字，求和操作。</p>
-<p><img src="../../../../Pictures/Blog/CPP拾遗-输入输出/image-20240317222341961.png" alt="image-20240317222341961"></p>
-<p>应该注意的是<code>getline(cin,str)</code>使用时常常遇到一些bug,这是因为输入没有没清空，可以通过在<code>getline(cin,str)</code>前添加<code>getchar()</code>或者<code>cin.ignore()</code>来解决。</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>Frida使用</title>
-    <url>/2023/11/18/Frida%E4%BD%BF%E7%94%A8/</url>
-    <content><![CDATA[<p>本文主要讲解自动化逆向工具<code>Frida</code>的使用，长期更新，计划采用理论加实战。<br><span id="more"></span></p>
-<h3 id="Frida使用"><a href="#Frida使用" class="headerlink" title="Frida使用"></a>Frida使用</h3><p>c:\users\lenovo\appdata\local\pip\cache\wheels\fb\7a\50\0944b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">PS C:\Users\lenovo\Desktop&gt; pip install frida-tools</span><br><span class="line">Collecting frida-tools</span><br><span class="line">  Downloading frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>.tar.gz (<span class="number">200</span> kB)</span><br><span class="line">     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">200</span>.<span class="number">5</span>/<span class="number">200</span>.<span class="number">5</span> kB <span class="number">158</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">  Installing build dependencies ... done</span><br><span class="line">  Getting requirements to build wheel ... done</span><br><span class="line">  Preparing metadata (pyproject.toml) ... done</span><br><span class="line">Collecting colorama&lt;<span class="number">1</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">0</span>.<span class="number">2</span>.<span class="number">7</span> (from frida-tools)</span><br><span class="line">  Downloading colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span>-py2.py3-none-any.whl (<span class="number">25</span> kB)</span><br><span class="line">Collecting frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> from https://files.pythonhosted.org/packages/<span class="number">53</span>/ab/<span class="number">8351</span>fd5bb7c6879e3c47c8f7d23be757d43b0585660ded476d9c9e0f1d89/frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata</span><br><span class="line">  Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata (<span class="number">2</span>.<span class="number">1</span> kB)</span><br><span class="line">Collecting prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> from https://files.pythonhosted.org/packages/<span class="number">1</span>f/<span class="number">9</span>d/be9b01085bbd67a71c4b6aa02518fade8104e7a2224e5de5e947811d7176/prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata (<span class="number">6</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> from https://files.pythonhosted.org/packages/<span class="number">43</span>/<span class="number">88</span>/<span class="number">29</span>adf0b44ba6ac85045e63734ae0997d3c58d8b1a91c914d240828d0d73d/Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata (<span class="number">2</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting wcwidth (from prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span>-&gt;frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> wcwidth from https://files.pythonhosted.org/packages/<span class="built_in">cd</span>/af/fb045bb3d3daedf28e1bedd771674f73de9e06664a48b1579e14d4120158/wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata</span><br><span class="line">  Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata (<span class="number">14</span> kB)</span><br><span class="line">Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl (<span class="number">32</span>.<span class="number">6</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">32</span>.<span class="number">6</span>/<span class="number">32</span>.<span class="number">6</span> MB <span class="number">218</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl (<span class="number">385</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">385</span>.<span class="number">5</span>/<span class="number">385</span>.<span class="number">5</span> kB <span class="number">300</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl (<span class="number">1</span>.<span class="number">2</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">1</span>.<span class="number">2</span>/<span class="number">1</span>.<span class="number">2</span> MB <span class="number">217</span>.<span class="number">3</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl (<span class="number">105</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">105</span>.<span class="number">2</span>/<span class="number">105</span>.<span class="number">2</span> kB <span class="number">1</span>.<span class="number">2</span> MB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Building wheels <span class="keyword">for</span> collected packages: frida-tools</span><br><span class="line">  Building wheel <span class="keyword">for</span> frida-tools (pyproject.toml) ... done</span><br><span class="line">  Created wheel <span class="keyword">for</span> frida-tools: filename=frida_tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>-py3-none-any.whl size=<span class="number">209506</span> sha256=<span class="number">4</span>a80e4fa6d17f8c097e0b880f90cab15b4f2565be290ec3afbbb81168413eb95</span><br><span class="line">  Stored <span class="keyword">in</span> directory: c:\users\lenovo\appdata\local\pip\cache\wheels\fb\<span class="number">7</span>a\<span class="number">50</span>\<span class="number">0944</span>b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</span><br><span class="line">Successfully built frida-tools</span><br><span class="line">Installing collected packages: wcwidth, pygments, prompt-toolkit, frida, colorama, frida-tools</span><br><span class="line">Successfully installed colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span> frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span> frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span> prompt-toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span> pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span> wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span></span><br><span class="line"></span><br><span class="line">[notice] A new release of pip is available: <span class="number">23</span>.<span class="number">2</span>.<span class="number">1</span> -&gt; <span class="number">23</span>.<span class="number">3</span>.<span class="number">1</span></span><br><span class="line">[notice] To update, run: python.exe -m pip install --upgrade pip</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Reserve</category>
-        <category>Android</category>
-      </categories>
-      <tags>
-        <tag>安卓逆向</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CS61b食用指南</title>
     <url>/2024/03/14/CS61b%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97/</url>
     <content><![CDATA[<p>本文是对CS61b资源的总结和汉化，同时记录自己的学习过程。</p>
@@ -1221,6 +1206,21 @@
 <h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2>]]></content>
   </entry>
   <entry>
+    <title>Frida使用</title>
+    <url>/2023/11/18/Frida%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<p>本文主要讲解自动化逆向工具<code>Frida</code>的使用，长期更新，计划采用理论加实战。<br><span id="more"></span></p>
+<h3 id="Frida使用"><a href="#Frida使用" class="headerlink" title="Frida使用"></a>Frida使用</h3><p>c:\users\lenovo\appdata\local\pip\cache\wheels\fb\7a\50\0944b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">PS C:\Users\lenovo\Desktop&gt; pip install frida-tools</span><br><span class="line">Collecting frida-tools</span><br><span class="line">  Downloading frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>.tar.gz (<span class="number">200</span> kB)</span><br><span class="line">     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">200</span>.<span class="number">5</span>/<span class="number">200</span>.<span class="number">5</span> kB <span class="number">158</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">  Installing build dependencies ... done</span><br><span class="line">  Getting requirements to build wheel ... done</span><br><span class="line">  Preparing metadata (pyproject.toml) ... done</span><br><span class="line">Collecting colorama&lt;<span class="number">1</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">0</span>.<span class="number">2</span>.<span class="number">7</span> (from frida-tools)</span><br><span class="line">  Downloading colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span>-py2.py3-none-any.whl (<span class="number">25</span> kB)</span><br><span class="line">Collecting frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> frida&lt;<span class="number">17</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">16</span>.<span class="number">0</span>.<span class="number">9</span> from https://files.pythonhosted.org/packages/<span class="number">53</span>/ab/<span class="number">8351</span>fd5bb7c6879e3c47c8f7d23be757d43b0585660ded476d9c9e0f1d89/frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata</span><br><span class="line">  Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl.metadata (<span class="number">2</span>.<span class="number">1</span> kB)</span><br><span class="line">Collecting prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span> from https://files.pythonhosted.org/packages/<span class="number">1</span>f/<span class="number">9</span>d/be9b01085bbd67a71c4b6aa02518fade8104e7a2224e5de5e947811d7176/prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl.metadata (<span class="number">6</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> (from frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> pygments&lt;<span class="number">3</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">2</span> from https://files.pythonhosted.org/packages/<span class="number">43</span>/<span class="number">88</span>/<span class="number">29</span>adf0b44ba6ac85045e63734ae0997d3c58d8b1a91c914d240828d0d73d/Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata</span><br><span class="line">  Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl.metadata (<span class="number">2</span>.<span class="number">5</span> kB)</span><br><span class="line">Collecting wcwidth (from prompt-toolkit&lt;<span class="number">4</span>.<span class="number">0</span>.<span class="number">0</span>,&gt;=<span class="number">2</span>.<span class="number">0</span>.<span class="number">0</span>-&gt;frida-tools)</span><br><span class="line">  Obtaining dependency information <span class="keyword">for</span> wcwidth from https://files.pythonhosted.org/packages/<span class="built_in">cd</span>/af/fb045bb3d3daedf28e1bedd771674f73de9e06664a48b1579e14d4120158/wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata</span><br><span class="line">  Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl.metadata (<span class="number">14</span> kB)</span><br><span class="line">Downloading frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span>-cp37-abi3-win_amd64.whl (<span class="number">32</span>.<span class="number">6</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">32</span>.<span class="number">6</span>/<span class="number">32</span>.<span class="number">6</span> MB <span class="number">218</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading prompt_toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span>-py3-none-any.whl (<span class="number">385</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">385</span>.<span class="number">5</span>/<span class="number">385</span>.<span class="number">5</span> kB <span class="number">300</span>.<span class="number">2</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading Pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span>-py3-none-any.whl (<span class="number">1</span>.<span class="number">2</span> MB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">1</span>.<span class="number">2</span>/<span class="number">1</span>.<span class="number">2</span> MB <span class="number">217</span>.<span class="number">3</span> kB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Downloading wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span>-py2.py3-none-any.whl (<span class="number">105</span> kB)</span><br><span class="line">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="number">105</span>.<span class="number">2</span>/<span class="number">105</span>.<span class="number">2</span> kB <span class="number">1</span>.<span class="number">2</span> MB/s eta <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">Building wheels <span class="keyword">for</span> collected packages: frida-tools</span><br><span class="line">  Building wheel <span class="keyword">for</span> frida-tools (pyproject.toml) ... done</span><br><span class="line">  Created wheel <span class="keyword">for</span> frida-tools: filename=frida_tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span>-py3-none-any.whl size=<span class="number">209506</span> sha256=<span class="number">4</span>a80e4fa6d17f8c097e0b880f90cab15b4f2565be290ec3afbbb81168413eb95</span><br><span class="line">  Stored <span class="keyword">in</span> directory: c:\users\lenovo\appdata\local\pip\cache\wheels\fb\<span class="number">7</span>a\<span class="number">50</span>\<span class="number">0944</span>b1c7a77e594e0a66e9a1f6925dd6b262887f31358fe26a</span><br><span class="line">Successfully built frida-tools</span><br><span class="line">Installing collected packages: wcwidth, pygments, prompt-toolkit, frida, colorama, frida-tools</span><br><span class="line">Successfully installed colorama-<span class="number">0</span>.<span class="number">4</span>.<span class="number">6</span> frida-<span class="number">16</span>.<span class="number">1</span>.<span class="number">6</span> frida-tools-<span class="number">12</span>.<span class="number">3</span>.<span class="number">0</span> prompt-toolkit-<span class="number">3</span>.<span class="number">0</span>.<span class="number">41</span> pygments-<span class="number">2</span>.<span class="number">16</span>.<span class="number">1</span> wcwidth-<span class="number">0</span>.<span class="number">2</span>.<span class="number">10</span></span><br><span class="line"></span><br><span class="line">[notice] A new release of pip is available: <span class="number">23</span>.<span class="number">2</span>.<span class="number">1</span> -&gt; <span class="number">23</span>.<span class="number">3</span>.<span class="number">1</span></span><br><span class="line">[notice] To update, run: python.exe -m pip install --upgrade pip</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Reserve</category>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>安卓逆向</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>IDA_v8.3指北</title>
     <url>/2023/12/09/IDA-v8-3%E6%8C%87%E5%8C%97/</url>
     <content><![CDATA[<p>本文基于IDA_Pro_8.3版本，记录使用过程中的一些问题，以及一些关于IDA的基本操作</p>
@@ -1259,15 +1259,6 @@
       </categories>
       <tags>
         <tag>IDA</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java前后端项目部署运行</title>
-    <url>/2024/09/22/Java%E5%89%8D%E5%90%8E%E7%AB%AF%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E8%BF%90%E8%A1%8C/</url>
-    <content><![CDATA[<span id="more"></span>
-]]></content>
-      <tags>
-        <tag>项目实战</tag>
       </tags>
   </entry>
   <entry>
@@ -1357,6 +1348,15 @@
       <tags>
         <tag>哈希表</tag>
         <tag>链表</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java前后端项目部署运行</title>
+    <url>/2024/09/22/Java%E5%89%8D%E5%90%8E%E7%AB%AF%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E8%BF%90%E8%A1%8C/</url>
+    <content><![CDATA[<span id="more"></span>
+]]></content>
+      <tags>
+        <tag>项目实战</tag>
       </tags>
   </entry>
   <entry>
@@ -1502,95 +1502,6 @@ x_2 = -\frac{\theta_0 + \theta_1 x_1}{\theta_2}</script><p>对应以下代码</p
       <tags>
         <tag>机器学习</tag>
       </tags>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/2024/10/27/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%20-%20%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E8%A1%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C%EF%BC%88%E4%B8%80%EF%BC%89/</url>
-    <content><![CDATA[<h3 id="第三关，添加和删除字段"><a href="#第三关，添加和删除字段" class="headerlink" title="第三关，添加和删除字段"></a>第三关，添加和删除字段</h3><p>任务描述<br>本关任务：分别在表的最后一列、第一列和指定列后添加新的字段，并删除表中的指定字段。</p>
-<p>相关知识<br>为了完成本关任务，你需要掌握：<br>1.如何在指定位置添加新的字段，<br>2.如何删除指定的字段。</p>
-<p>添加字段<br>因为甲方的业务需求是不停变化的，所以在数据库操作中，添加字段可是常有的事。一个完整的字段包括：字段名、数据类型和完整性约束。</p>
-<p>语法规则为： ALTER TABLE 表名 ADD 新字段名 数据类型 [约束条件] [FIRST|AFTER] 已存在字段名; 。<br>以下是在 MySQL 中常用的约束。</p>
-<p>NOT NULL 约束：确保某列不能有 NULL 值。</p>
-<p>DEFAULT 约束：当某列没有指定值时，为该列提供默认值。</p>
-<p>UNIQUE 约束：确保某列中的所有值是不同的。</p>
-<p>PRIMARY Key 约束：唯一标识数据库表中的各行/记录。</p>
-<p>CHECK 约束：CHECK 约束确保某列中的所有值满足一定条件。</p>
-<p>在表的最后一列添加字段<br>只要不做[FIRST|AFTER]的位置说明，在添加字段时MySQL会默认把新字段加入到表的最后一列。</p>
-<p>举个例子：<br>现在我们要把字段prod_country添加到表Mall_products的最后一列。表结构如下：</p>
-<p>输入命令：<br>ALTER TABLE Mall_products ADD prod_country varchar(30);<br>执行结果如下所示：</p>
-<p>在表的第一列添加字段<br>如果我们想在第一列添加新的字段，只需做FIRST的位置说明。</p>
-<p>举个例子：<br>现在我们要把字段prod_country添加到表Mall_products的第一列。</p>
-<p>输入命令：<br>ALTER TABLE Mall_products ADD prod_country varchar(30) FIRST;<br>执行结果如下所示：</p>
-<p>在表的指定列后添加字段<br>如果我们想在某一列后面添加新的字段，只需做AFTER的位置说明，然后注明你想让它添加在哪个字段的后面即可。</p>
-<p>举个例子：<br>现在我们要把字段prod_country添加到表Mall_products的 prod_name字段的后面。</p>
-<p>输入命令：<br>ALTER TABLE Mall_products ADD prod_country varchar(30) AFTER prod_name;<br>执行结果如下所示：</p>
-<p>总之，想要添加新的字段，记住绿色框里的语法规则就能记住三种位置的添加方式。<br>删除字段<br>有添加的需求就会有删除的需求。删除一个字段就是将数据表中的某个字段从表中移除。</p>
-<p>语法规则为： ALTER TABLE 表名 DROP 字段名; 。<br>举个例子：<br>现在我们要把字段prod_price从表Mall_products中删除。表结构如上图结果所示。</p>
-<p>输入命令：<br>ALTER TABLE Mall_products DROP prod_price;<br>执行结果如下所示：</p>
-<p>字段prod_price成功删除！</p>
-<p>接下来你们可以自行体验一下了！</p>
-<p>编程要求<br>根据提示，在右侧编辑器补充代码:</p>
-<p>在数据表tb_emp的Name字段后添加字段Country，数据格式为varchar(20)；</p>
-<p>删除数据表tb_emp中的字段Salary。</p>
-<p>数据表结构如下:</p>
-<p>测试说明<br>我会对你编写的代码进行测试，最终结果会如下图所示：</p>
-<p>如果我们想在第一列添加新的字段，只需做FIRST的位置说明。</p>
-<p>举个例子：<br>现在我们要把字段prod_country添加到表Mall_products的第一列。</p>
-<p>输入命令：<br>ALTER TABLE Mall_products ADD prod_country varchar(30) FIRST;</p>
-<p>开始你的任务吧，祝你成功！</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">USE Company;</span><br><span class="line"></span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"># 现在我们要把字段prod_country添加到表Mall_products的最后一列。</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> Mall_products <span class="keyword">ADD</span> prod_country <span class="type">varchar</span>(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line">########## <span class="keyword">add</span> the <span class="keyword">column</span> ##########</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">delete</span> the <span class="keyword">column</span> ##########</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"></span><br><span class="line"><span class="keyword">DESCRIBE</span> tb_emp;</span><br></pre></td></tr></table></figure>
-<h3 id="1-在-tb-emp-表的-Name-字段后添加-Country-字段"><a href="#1-在-tb-emp-表的-Name-字段后添加-Country-字段" class="headerlink" title="1. 在 tb_emp 表的 Name 字段后添加 Country 字段"></a>1. 在 <code>tb_emp</code> 表的 <code>Name</code> 字段后添加 <code>Country</code> 字段</h3><p>要在 <code>Name</code> 字段后添加 <code>Country</code> 字段，并将其数据类型设置为 <code>varchar(20)</code>，可以使用 <code>AFTER</code> 关键字指定位置：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp <span class="keyword">ADD</span> Country <span class="type">VARCHAR</span>(<span class="number">20</span>) AFTER Name;</span><br></pre></td></tr></table></figure>
-<h3 id="2-删除-tb-emp-表中的-Salary-字段"><a href="#2-删除-tb-emp-表中的-Salary-字段" class="headerlink" title="2. 删除 tb_emp 表中的 Salary 字段"></a>2. 删除 <code>tb_emp</code> 表中的 <code>Salary</code> 字段</h3><p>要删除 <code>tb_emp</code> 表中的 <code>Salary</code> 字段，可以使用以下命令：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp <span class="keyword">DROP</span> <span class="keyword">COLUMN</span> Salary;</span><br></pre></td></tr></table></figure>
-<p>这</p>
-<h3 id="第四关"><a href="#第四关" class="headerlink" title="第四关"></a>第四关</h3><p>根据提示，在右侧编辑器补充代码:</p>
-<p>将数据表tb_emp的Name字段移至第一列，数据格式不变；</p>
-<p>将DeptId字段移至Salary字段的后边，数据格式不变。</p>
-<p>数据表结构如下:</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp MODIFY <span class="keyword">COLUMN</span> Name <span class="type">VARCHAR</span>(<span class="number">50</span>) <span class="keyword">FIRST</span>;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp MODIFY <span class="keyword">COLUMN</span> DeptId <span class="type">INT</span> AFTER Salary;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="第五关：删除表的外键约束"><a href="#第五关：删除表的外键约束" class="headerlink" title="第五关：删除表的外键约束"></a>第五关：删除表的外键约束</h3><p>编程要求<br>我们已经为你建立了主表tb_dept和子表tb_emp，在表tb_emp上添加了名称为emp_dept的外键约束，外键名称为DeptId，依赖于表tb_dept的主键Id，下面那是两张表的结构展示：</p>
-<p>请你根据提示，在右侧编辑器Begin-End中补充代码:</p>
-<p>删除数据表tb_emp的外键约束emp_dept。<br>测试说明<br>我会对你编写的代码进行测试，最终结果会如下图所示：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">USE Company;</span><br><span class="line"></span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"></span><br><span class="line">########## <span class="keyword">delete</span> the <span class="keyword">foreign</span> key ##########</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp <span class="keyword">DROP</span> <span class="keyword">FOREIGN</span> KEY emp_dept;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tb_emp \G;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-  </entry>
-  <entry>
-    <title>MySQl-单表查询</title>
-    <url>/2024/10/28/MySQl-%E5%8D%95%E8%A1%A8%E6%9F%A5%E8%AF%A2/</url>
-    <content><![CDATA[<p>本文记录单表查询常用语句，依据头歌作业书写，对应MySql单表查询部分。</p>
-<span id="more"></span>
-<h2 id="单表查询（3）"><a href="#单表查询（3）" class="headerlink" title="单表查询（3）"></a>单表查询（3）</h2><h3 id="第1关："><a href="#第1关：" class="headerlink" title="第1关："></a>第1关：</h3><p>语法：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 字段名 <span class="keyword">FROM</span> 表名 <span class="keyword">ORDER</span> <span class="keyword">BY</span> 字段名 [<span class="keyword">ASC</span>[<span class="keyword">DESC</span>]];</span><br></pre></td></tr></table></figure>
-<p>ASC 升序关键字<br>DESC 降序关键字</p>
-<p>查询学生成绩表中1班同学的所有信息并以成绩降序的方式显示结果。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">########## 查询<span class="number">1</span>班同学的所有信息以成绩降序的方式显示结果 ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_score <span class="keyword">WHERE</span> CLASS_ID<span class="operator">=</span><span class="number">1</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> score <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="第2关：分组查询"><a href="#第2关：分组查询" class="headerlink" title="第2关：分组查询"></a>第2关：分组查询</h3><p>语法：</p>
-<p>分组查询的关键字是Group By，查询的是每个分组中 首次出现的一条记录。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 字段名 <span class="keyword">FROM</span> 表名 <span class="keyword">GROUP</span> <span class="keyword">BY</span> 字段名;</span><br></pre></td></tr></table></figure>
-<p>在右侧编辑器Begin-End处补充代码，对班级表中的班级名称进行分组查询。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">########## 对班级名称进行分组查询 ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_class <span class="keyword">GROUP</span> <span class="keyword">BY</span> CLASS_ID;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>表名区分大小写</p>
-</blockquote>
-<h3 id="第3关：使用-LIMIT-限制查询结果的数量"><a href="#第3关：使用-LIMIT-限制查询结果的数量" class="headerlink" title="第3关：使用 LIMIT 限制查询结果的数量"></a>第3关：使用 LIMIT 限制查询结果的数量</h3><p>LIMIT的使用<br>在我们查询大量数据结果时，会返回很多条数据，有需要的记录可能就其中的一条或者几条。比如，实现分页功能，若每页显示10条记录，每次查询就只需要10条记录。<br>在MySQL中，提供了LIMIT关键字，用来限制查询结果的数量。</p>
-<p>语法：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 字段名 <span class="keyword">FROM</span> 表名 LIMIT [<span class="keyword">OFFSET</span>,] 记录数;</span><br></pre></td></tr></table></figure>
-<p>参数说明：</p>
-<ul>
-<li><p>第一个参数，OFFSET，可选参数，表示偏移量，如果不指定默认值为0，表示从查询结果的第一条记录开始，若偏移量为1，则从查询结果中的第二条记录开始，以此类推。</p>
-</li>
-<li><p>第二个参数，记录数，表示返回查询结果的条数。</p>
-</li>
-</ul>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">########## 查询班级中第<span class="number">2</span>名到第<span class="number">5</span>名的学生信息 ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_score <span class="keyword">ORDER</span> <span class="keyword">BY</span> score <span class="keyword">DESC</span> LIMIT <span class="number">1</span>,<span class="number">4</span>;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>注意查询第2-5名学生时偏移量为1</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
   </entry>
   <entry>
     <title>Neovim使用</title>
@@ -1791,6 +1702,287 @@ x_2 = -\frac{\theta_0 + \theta_1 x_1}{\theta_2}</script><p>对应以下代码</p
       </tags>
   </entry>
   <entry>
+    <title>MySQl-数据库和表的基本操作</title>
+    <url>/2024/10/28/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%20-%20%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E8%A1%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</url>
+    <content><![CDATA[<p>本文记录数据库和表的基本操作，包括数据的插入，更新，删除等操作。</p>
+<span id="more"></span>
+<h2 id="MySQl-数据库和表的基本操作（一）"><a href="#MySQl-数据库和表的基本操作（一）" class="headerlink" title="MySQl-数据库和表的基本操作（一）"></a>MySQl-数据库和表的基本操作（一）</h2><h3 id="第三关，添加和删除字段"><a href="#第三关，添加和删除字段" class="headerlink" title="第三关，添加和删除字段"></a>第三关，添加和删除字段</h3><p>任务描述<br>本关任务：分别在表的最后一列、第一列和指定列后添加新的字段，并删除表中的指定字段。</p>
+<p>相关知识<br>为了完成本关任务，你需要掌握：<br>1.如何在指定位置添加新的字段，<br>2.如何删除指定的字段。</p>
+<p>添加字段<br>因为甲方的业务需求是不停变化的，所以在数据库操作中，添加字段可是常有的事。一个完整的字段包括：字段名、数据类型和完整性约束。</p>
+<p>语法规则为： ALTER TABLE 表名 ADD 新字段名 数据类型 [约束条件] [FIRST|AFTER] 已存在字段名; 。<br>以下是在 MySQL 中常用的约束。</p>
+<p>NOT NULL 约束：确保某列不能有 NULL 值。</p>
+<p>DEFAULT 约束：当某列没有指定值时，为该列提供默认值。</p>
+<p>UNIQUE 约束：确保某列中的所有值是不同的。</p>
+<p>PRIMARY Key 约束：唯一标识数据库表中的各行/记录。</p>
+<p>CHECK 约束：CHECK 约束确保某列中的所有值满足一定条件。</p>
+<p>在表的最后一列添加字段<br>只要不做[FIRST|AFTER]的位置说明，在添加字段时MySQL会默认把新字段加入到表的最后一列。</p>
+<p>举个例子：<br>现在我们要把字段prod_country添加到表Mall_products的最后一列。表结构如下：</p>
+<p>输入命令：<br>ALTER TABLE Mall_products ADD prod_country varchar(30);<br>执行结果如下所示：</p>
+<p>在表的第一列添加字段<br>如果我们想在第一列添加新的字段，只需做FIRST的位置说明。</p>
+<p>举个例子：<br>现在我们要把字段prod_country添加到表Mall_products的第一列。</p>
+<p>输入命令：<br>ALTER TABLE Mall_products ADD prod_country varchar(30) FIRST;<br>执行结果如下所示：</p>
+<p>在表的指定列后添加字段<br>如果我们想在某一列后面添加新的字段，只需做AFTER的位置说明，然后注明你想让它添加在哪个字段的后面即可。</p>
+<p>举个例子：<br>现在我们要把字段prod_country添加到表Mall_products的 prod_name字段的后面。</p>
+<p>输入命令：<br>ALTER TABLE Mall_products ADD prod_country varchar(30) AFTER prod_name;<br>执行结果如下所示：</p>
+<p>总之，想要添加新的字段，记住绿色框里的语法规则就能记住三种位置的添加方式。<br>删除字段<br>有添加的需求就会有删除的需求。删除一个字段就是将数据表中的某个字段从表中移除。</p>
+<p>语法规则为： ALTER TABLE 表名 DROP 字段名; 。<br>举个例子：<br>现在我们要把字段prod_price从表Mall_products中删除。表结构如上图结果所示。</p>
+<p>输入命令：<br>ALTER TABLE Mall_products DROP prod_price;<br>执行结果如下所示：</p>
+<p>字段prod_price成功删除！</p>
+<p>接下来你们可以自行体验一下了！</p>
+<p>编程要求<br>根据提示，在右侧编辑器补充代码:</p>
+<p>在数据表tb_emp的Name字段后添加字段Country，数据格式为varchar(20)；</p>
+<p>删除数据表tb_emp中的字段Salary。</p>
+<p>数据表结构如下:</p>
+<p>测试说明<br>我会对你编写的代码进行测试，最终结果会如下图所示：</p>
+<p>如果我们想在第一列添加新的字段，只需做FIRST的位置说明。</p>
+<p>举个例子：<br>现在我们要把字段prod_country添加到表Mall_products的第一列。</p>
+<p>输入命令：<br>ALTER TABLE Mall_products ADD prod_country varchar(30) FIRST;</p>
+<p>开始你的任务吧，祝你成功！</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">USE Company;</span><br><span class="line"></span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"># 现在我们要把字段prod_country添加到表Mall_products的最后一列。</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> Mall_products <span class="keyword">ADD</span> prod_country <span class="type">varchar</span>(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line">########## <span class="keyword">add</span> the <span class="keyword">column</span> ##########</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">delete</span> the <span class="keyword">column</span> ##########</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"></span><br><span class="line"><span class="keyword">DESCRIBE</span> tb_emp;</span><br></pre></td></tr></table></figure>
+<h3 id="1-在-tb-emp-表的-Name-字段后添加-Country-字段"><a href="#1-在-tb-emp-表的-Name-字段后添加-Country-字段" class="headerlink" title="1. 在 tb_emp 表的 Name 字段后添加 Country 字段"></a>1. 在 <code>tb_emp</code> 表的 <code>Name</code> 字段后添加 <code>Country</code> 字段</h3><p>要在 <code>Name</code> 字段后添加 <code>Country</code> 字段，并将其数据类型设置为 <code>varchar(20)</code>，可以使用 <code>AFTER</code> 关键字指定位置：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp <span class="keyword">ADD</span> Country <span class="type">VARCHAR</span>(<span class="number">20</span>) AFTER Name;</span><br></pre></td></tr></table></figure>
+<h3 id="2-删除-tb-emp-表中的-Salary-字段"><a href="#2-删除-tb-emp-表中的-Salary-字段" class="headerlink" title="2. 删除 tb_emp 表中的 Salary 字段"></a>2. 删除 <code>tb_emp</code> 表中的 <code>Salary</code> 字段</h3><p>要删除 <code>tb_emp</code> 表中的 <code>Salary</code> 字段，可以使用以下命令：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp <span class="keyword">DROP</span> <span class="keyword">COLUMN</span> Salary;</span><br></pre></td></tr></table></figure>
+<p>这</p>
+<h3 id="第四关"><a href="#第四关" class="headerlink" title="第四关"></a>第四关</h3><p>根据提示，在右侧编辑器补充代码:</p>
+<p>将数据表tb_emp的Name字段移至第一列，数据格式不变；</p>
+<p>将DeptId字段移至Salary字段的后边，数据格式不变。</p>
+<p>数据表结构如下:</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp MODIFY <span class="keyword">COLUMN</span> Name <span class="type">VARCHAR</span>(<span class="number">50</span>) <span class="keyword">FIRST</span>;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp MODIFY <span class="keyword">COLUMN</span> DeptId <span class="type">INT</span> AFTER Salary;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="第五关：删除表的外键约束"><a href="#第五关：删除表的外键约束" class="headerlink" title="第五关：删除表的外键约束"></a>第五关：删除表的外键约束</h3><p>编程要求<br>我们已经为你建立了主表tb_dept和子表tb_emp，在表tb_emp上添加了名称为emp_dept的外键约束，外键名称为DeptId，依赖于表tb_dept的主键Id，下面那是两张表的结构展示：</p>
+<p>请你根据提示，在右侧编辑器Begin-End中补充代码:</p>
+<p>删除数据表tb_emp的外键约束emp_dept。<br>测试说明<br>我会对你编写的代码进行测试，最终结果会如下图所示：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">USE Company;</span><br><span class="line"></span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"></span><br><span class="line">########## <span class="keyword">delete</span> the <span class="keyword">foreign</span> key ##########</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tb_emp <span class="keyword">DROP</span> <span class="keyword">FOREIGN</span> KEY emp_dept;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tb_emp \G;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="MySQl-数据库和表的基本操作（二）"><a href="#MySQl-数据库和表的基本操作（二）" class="headerlink" title="MySQl-数据库和表的基本操作（二）"></a>MySQl-数据库和表的基本操作（二）</h2><h3 id="第1关：插入数据"><a href="#第1关：插入数据" class="headerlink" title="第1关：插入数据"></a>第1关：插入数据</h3><h4 id="插入语句"><a href="#插入语句" class="headerlink" title="插入语句"></a>插入语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> 表名 (字段名) <span class="keyword">VALUES</span> (内容);</span><br></pre></td></tr></table></figure>
+<h4 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h4><p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VjVXp4emJoa25WRXNWV0tENl9YWnZBQkd6dzhvRUhFTEVqWXNBNG96R0xjM3c_ZT1INHBmYUg.jpg" alt="image-20241029153918727"></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">USE Company;</span><br><span class="line"></span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"></span><br><span class="line">########## bundle <span class="keyword">insert</span> the <span class="keyword">value</span> </span><br><span class="line"><span class="keyword">INSERT</span> tb_emp (Id,Name,DeptId,Salary) <span class="keyword">VALUES</span> (<span class="number">1</span>,<span class="string">'Nancy'</span>,<span class="number">301</span>,<span class="number">2300.00</span>),(<span class="number">2</span>,<span class="string">'Tod'</span>,<span class="number">303</span>,<span class="number">5600.00</span>),(<span class="number">3</span>,<span class="string">'Carly'</span>,<span class="number">301</span>,<span class="number">3200.00</span>);</span><br><span class="line"></span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_emp;</span><br></pre></td></tr></table></figure>
+<h3 id="第2关：更新数据"><a href="#第2关：更新数据" class="headerlink" title="第2关：更新数据"></a>第2关：更新数据</h3><h4 id="更新语句"><a href="#更新语句" class="headerlink" title="更新语句"></a>更新语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> 表名 <span class="keyword">SET</span> 字段名<span class="operator">=</span>内容 <span class="keyword">WHERE</span> 限制条件;</span><br></pre></td></tr></table></figure>
+<h4 id="应用-1"><a href="#应用-1" class="headerlink" title="应用"></a>应用</h4><p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VXNE5RZzd1RVJCQ25rN052bld2R2NjQjF4N2JnX0NRVXdXQmpSQ2RySHdQWFE_ZT1jazh2N0s.jpg" alt="image-20241029155914738"></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">USE Company;</span><br><span class="line"></span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"></span><br><span class="line">########## <span class="keyword">update</span> the <span class="keyword">value</span> ##########</span><br><span class="line"><span class="keyword">UPDATE</span> tb_emp <span class="keyword">SET</span> Name<span class="operator">=</span><span class="string">'Tracy'</span>,DeptId<span class="operator">=</span><span class="number">302</span>,Salary<span class="operator">=</span><span class="number">4300.00</span> <span class="keyword">WHERE</span> Id<span class="operator">=</span><span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_emp;</span><br></pre></td></tr></table></figure>
+<h3 id="第3关：删除数据"><a href="#第3关：删除数据" class="headerlink" title="第3关：删除数据"></a>第3关：删除数据</h3><h4 id="删除语句"><a href="#删除语句" class="headerlink" title="删除语句"></a>删除语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> 表名 <span class="keyword">WHERE</span> 限制条件;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> TRUNCATE TABLE 语句也可以用来删除表中的所有记录。但是与 DELETE 不同的是，TRUNCATE TABLE 语句直接删除的是表，而不是表中的内容，删除结束后还会重新创建一个表。所以它的执行速度会比 DELETE 语句快。 语法为：<code>TRUNCATE TABLE 表名;</code></p>
+</blockquote>
+<h4 id="应用-2"><a href="#应用-2" class="headerlink" title="应用"></a>应用</h4><p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VSYmY1MUxqaVQ5T3BzY1hyYlo3RFJvQnl3SUpaX0NGNTBxRFpiSjQwNDFubkE_ZT1keE96MFg.jpg" alt="image-20241029160607922"></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">USE Company;</span><br><span class="line"></span><br><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> tb_emp <span class="keyword">WHERE</span> Salary<span class="operator">&gt;</span><span class="number">3000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_emp;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>MySQL数据库-使用聚合函数查询</title>
+    <url>/2024/10/29/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%BD%BF%E7%94%A8%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0%E6%9F%A5%E8%AF%A2/</url>
+    <content><![CDATA[<span id="more"></span>
+]]></content>
+  </entry>
+  <entry>
+    <title>SQL多表查询</title>
+    <url>/2024/10/13/SQL%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/</url>
+    <content><![CDATA[<p>本文主要记录数据库实验作业的完成过程，供期末复习使用。</p>
+<span id="more"></span>
+<p>在这之前</p>
+<p><a href="https://blog.csdn.net/weixin_44867329/article/details/137777665">https://blog.csdn.net/weixin_44867329/article/details/137777665</a></p>
+<h2 id="数据库实验三-数据查询二"><a href="#数据库实验三-数据查询二" class="headerlink" title="数据库实验三 数据查询二"></a>数据库实验三 数据查询二</h2><p><a href="https://blog.csdn.net/weixin_66547608/article/details/131141175">https://blog.csdn.net/weixin_66547608/article/details/131141175</a></p>
+<h3 id="第一题："><a href="#第一题：" class="headerlink" title="第一题："></a>第一题：</h3><p>统计每本书借阅的次数,显示书名和借阅次数（借阅次数命名为<code>jycs</code>),按借阅次数降序排列,借阅次数相同的按书名降序排列。</p>
+<p>错误</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> book.sm,<span class="built_in">count</span>(borrow.jyrq)<span class="keyword">as</span> jycs <span class="keyword">FROM</span> book,borrow <span class="keyword">GROUP</span> <span class="keyword">BY</span> sm <span class="keyword">ORDER</span> <span class="keyword">BY</span> jycs <span class="keyword">desc</span>,book.sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<p><code>group by</code>用法：</p>
+<p>正确</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> sm,<span class="built_in">count</span>(sm)<span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm <span class="keyword">group</span> <span class="keyword">by</span> sm <span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h3><p>统计借阅次数在2次以上的图书的借阅的次数,显示书名和借阅次数，按借阅次数降序排列,借阅次数相同的按书名降序排列</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> sm,<span class="built_in">count</span>(sm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm <span class="keyword">group</span> <span class="keyword">by</span> sm <span class="keyword">having</span>(jycs<span class="operator">&gt;=</span><span class="number">2</span>) <span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<p>正确：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> sm,<span class="built_in">count</span>(sm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm <span class="keyword">GROUP</span> <span class="keyword">BY</span> sm <span class="keyword">HAVING</span>(jycs<span class="operator">&gt;=</span><span class="number">2</span>) <span class="keyword">ORDER</span> <span class="keyword">BY</span> jysc <span class="keyword">desc</span>,sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="第三题"><a href="#第三题" class="headerlink" title="第三题"></a>第三题</h3><p>统计每个出版社的图书的借阅次数,显示出版社的名称和借阅次数，按借阅次数降序排列,借阅次数相同的按出版社降序排列</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> cbs,<span class="built_in">count</span>(cbs) <span class="keyword">as</span> jycs </span><br><span class="line"><span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> cbs</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,cbs <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="第四题"><a href="#第四题" class="headerlink" title="第四题"></a>第四题</h3><p>统计每位读者借阅的次数,显示姓名和借阅次数,按借阅次数降序排列，借阅次数相同的按姓名降序排列</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> xm,<span class="built_in">count</span>(xm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> reader <span class="keyword">on</span> borrow.dzzh<span class="operator">=</span>reader.dzzh </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> xm</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,xm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="第五题"><a href="#第五题" class="headerlink" title="第五题"></a>第五题</h3><p>统计研究生读者借阅的次数,显示姓名和借阅次数，按借阅次数降序排列，借阅次数相同的按姓名降序排列</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> xm,<span class="built_in">count</span>(xm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> reader <span class="keyword">on</span> borrow.dzzh<span class="operator">=</span>reader.dzzh <span class="keyword">where</span> sf<span class="operator">=</span><span class="string">'研究生'</span><span class="keyword">group</span> <span class="keyword">by</span> xm <span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,xm <span class="keyword">desc</span>;开始你的任务吧，祝你成功！</span><br><span class="line"></span><br><span class="line">use library;</span><br><span class="line">#代码开始</span><br><span class="line">#答案<span class="number">1</span></span><br><span class="line"><span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> cbs<span class="operator">=</span>"上海古籍出版社" <span class="keyword">and</span> sm<span class="operator">!=</span>"李白全集";</span><br><span class="line">#答案<span class="number">2</span></span><br><span class="line"><span class="keyword">select</span> sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj<span class="operator">&gt;</span>(<span class="keyword">select</span> <span class="built_in">avg</span>(sj) <span class="keyword">from</span> book);</span><br><span class="line">#答案<span class="number">2</span></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj<span class="operator">=</span>(<span class="keyword">select</span> <span class="built_in">max</span>(sj) <span class="keyword">from</span> book);</span><br><span class="line"> </span><br><span class="line">#答案<span class="number">3</span></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj<span class="operator">=</span>(<span class="keyword">select</span> <span class="built_in">min</span>(sj) <span class="keyword">from</span> book);</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> #代码结束</span><br><span class="line">任务描述</span><br><span class="line">本关任务： 第一题 查询曾经借过图书的读者的读者证号和姓名 第二题 查询曾经没有被借阅的图书的条形码和书名 第三题 查询与孙思旺借过相同图书的读者的读者证号和姓名，按读者证号升序排列 第四题 查询借阅过李白全集的读者所借过的其他图书的书名 按书名升序排列</span><br><span class="line"></span><br><span class="line">开始你的任务吧，祝你成功！</span><br><span class="line"></span><br><span class="line"> use library;</span><br><span class="line">#代码开始</span><br><span class="line">#题目<span class="number">1</span></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow);</span><br><span class="line">#题目<span class="number">2</span></span><br><span class="line"><span class="keyword">select</span> txm,sm <span class="keyword">from</span> book <span class="keyword">where</span> book.txm <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow);</span><br><span class="line"> </span><br><span class="line">#题目<span class="number">3</span></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span><br><span class="line"><span class="keyword">where</span> txm <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow </span><br><span class="line"><span class="keyword">where</span> borrow.dzzh<span class="operator">=</span>(<span class="keyword">select</span> dzzh <span class="keyword">from</span> reader </span><br><span class="line"><span class="keyword">where</span> xm<span class="operator">=</span><span class="string">'孙思旺'</span>))) </span><br><span class="line"><span class="keyword">and</span> dzzh<span class="operator">!=</span><span class="string">'006'</span> <span class="keyword">order</span> <span class="keyword">by</span> dzzh <span class="keyword">asc</span>;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">#题目<span class="number">4</span></span><br><span class="line"> <span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> book.txm <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow</span><br><span class="line"><span class="keyword">where</span> borrow.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span><br><span class="line"><span class="keyword">where</span> borrow.txm<span class="operator">=</span>(<span class="keyword">select</span> txm <span class="keyword">from</span> book <span class="keyword">where</span> sm<span class="operator">=</span>"李白全集")))</span><br><span class="line"><span class="keyword">and</span> sm<span class="operator">!=</span>"李白全集" <span class="keyword">order</span> <span class="keyword">by</span> sm <span class="keyword">asc</span>;</span><br><span class="line"> </span><br><span class="line"> #代码结束</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务描述"><a href="#任务描述" class="headerlink" title="任务描述"></a>任务描述</h4><p>本关任务：根据图书数据表进行子查询</p>
+<h4 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h4><p>为了完成本关任务，你需要掌握：子查询</p>
+<p>子查询</p>
+<p>在SELECT语句中，一个查询语句完全嵌套在另一个查询语句的WHERE或HAVING的条件短语中，称为子查询或嵌套查询。 通常把条件短语中的查询成为子查询，父查询则使用子查询的查询结果作为查询条件。</p>
+<h4 id="任务要求"><a href="#任务要求" class="headerlink" title="任务要求"></a>任务要求</h4><p>第一题 查询与李白全集同一个出版社的图书的书名（不包括李白全集） 第二题 查询高于图书的平均售价(sj)的图书的书名和售价 第三题 查询售价最高的图书的条形码、书名和售价 第四题 查询售价最低的图书的条形码、书名和售价</p>
+<hr>
+<p>开始你的任务吧，祝你成功！</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">use library;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#代码开始</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> cbs=<span class="string">"上海古籍出版社"</span> <span class="keyword">and</span> sm!=<span class="string">"李白全集"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj&gt;(<span class="function"><span class="keyword">select</span> <span class="title">avg</span>(<span class="params">sj</span>) <span class="keyword">from</span> book)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj=(<span class="function"><span class="keyword">select</span> <span class="title">max</span>(<span class="params">sj</span>) <span class="keyword">from</span> book)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj=(<span class="function"><span class="keyword">select</span> <span class="title">min</span>(<span class="params">sj</span>) <span class="keyword">from</span> book)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="meta">#代码结束</span></span><br></pre></td></tr></table></figure>
+<h4 id="任务描述-1"><a href="#任务描述-1" class="headerlink" title="任务描述"></a>任务描述</h4><p>本关任务： 第一题 查询曾经借过图书的读者的读者证号和姓名 第二题 查询曾经没有被借阅的图书的条形码和书名 第三题 查询与孙思旺借过相同图书的读者的读者证号和姓名，按读者证号升序排列 第四题 查询借阅过李白全集的读者所借过的其他图书的书名 按书名升序排列</p>
+<p>开始你的任务吧，祝你成功！</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"> use library;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#代码开始</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.<span class="function">dzzh <span class="title">in</span> (<span class="params"><span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> txm,sm <span class="keyword">from</span> book <span class="keyword">where</span> book.<span class="function">txm <span class="keyword">not</span> <span class="title">in</span> (<span class="params"><span class="keyword">select</span> txm <span class="keyword">from</span> borrow</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.<span class="function">dzzh <span class="title">in</span> (<span class="params"><span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> txm <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> borrow.dzzh=(<span class="keyword">select</span> dzzh <span class="keyword">from</span> reader </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> xm=<span class="string">'孙思旺'</span></span>))) </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">and</span> dzzh!</span>=<span class="string">'006'</span> order <span class="keyword">by</span> dzzh asc;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> book.<span class="function">txm <span class="title">in</span> (<span class="params"><span class="keyword">select</span> txm <span class="keyword">from</span> borrow</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> borrow.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> borrow.txm=(<span class="keyword">select</span> txm <span class="keyword">from</span> book <span class="keyword">where</span> sm=<span class="string">"李白全集"</span></span>)))</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">and</span> sm!</span>=<span class="string">"李白全集"</span> order <span class="keyword">by</span> sm asc;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="meta">#代码结束</span></span><br></pre></td></tr></table></figure>
+<h2 id="MySQL数据库-连接查询"><a href="#MySQL数据库-连接查询" class="headerlink" title="MySQL数据库 - 连接查询"></a><strong>MySQL数据库 - 连接查询</strong></h2><p><a href="https://blog.csdn.net/weixin_44867329/article/details/139355889">https://blog.csdn.net/weixin_44867329/article/details/139355889</a></p>
+<p>任务描述<br>本关任务：使用内连接查询数据表中学生姓名和对应的班级。</p>
+<p>相关知识<br>为了完成本关任务，你需要掌握：<br>1.什么是内连接查询；<br>2.如何使用内连接查询。</p>
+<p>内连接查询<br>仅将两个表中满足连接条件的行组合起来作为结果集，称为内连接；</p>
+<p>关键字：[inner] join …  on。</p>
+<p>语法：</p>
+<p>表1 [inner] join 表2 on 表1.字段=表2.字段<br>语法解释：</p>
+<p>从表1中取出每一条记录，去表2中与所有的记录进行匹配，匹配必须是某个条件在表1中与表2中相同，最终才会保留结果，否则不保留。inner 关键字可省略不写；on 表示连接条件：条件字段就是代表相同的业务含义（如下面两张表中的 employee.dept_id 和 department.id），大多数情况下为两张表中的主外键关系。<br>内连接查询的使用<br>现在我们有两张表，数据如下：<br>employee表数据：</p>
+<p>id    name    dept_id<br>1    Nancy    4<br>2    Tod    2<br>3    Carly    1<br>4    Allen    2<br>5    Mary    (null)<br>department表数据：</p>
+<p>id    name<br>1    开发部<br>2    测试部<br>3    运维部<br>4    销售部<br>现在想要查询出员工姓名以及其对应的部门名称，我们就使用内连接来进行查询。</p>
+<p>我们可以将关联查询思路分为三步：<br>1.确定所连接的表，<br>2.确定所要查询的字段，<br>3.确定连接条件与连接方式。</p>
+<p>其中，没有部门的员工和部门没有员工的部门都没有被查出来，这就是内连接的特点，只查询在连接表中有对应的记录，其中dept.id=emp.dept_id是连接条件。</p>
+<p>编程要求<br>在右侧编辑器补充代码，查询数据表中学生姓名以及对应的班级名称，将其对应的列名分别另命名为studentName和className。</p>
+<p>我们为你提供了两张表，内容如下：</p>
+<p>tb_student表数据：</p>
+<p>id    name    class_id<br>1    Emma    2<br>2    Mary    4<br>3    Allen    (null)<br>4    Kevin    1<br>5    Rose    2<br>6    James    1<br>tb_class表数据：</p>
+<p>id    name<br>1    软件1631<br>2    软件1632<br>3    测试1631<br>4    测试1632<br>测试说明<br>平台会对你编写的代码进行测试：</p>
+<p>预期输出：</p>
+<p> studentName    className<br>    Kevin       软件1631<br>    James       软件1631<br>    Emma        软件1632<br>    Rose        软件1632<br>    Mary        测试1632<br>开始你的任务吧，祝你成功！</p>
+<p>第一关</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">########## 查询数据表中学生姓名和对应的班级 ##########</span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"><span class="keyword">select</span> tb_student.name <span class="keyword">as</span> studentName,tb_class.name <span class="keyword">as</span> className </span><br><span class="line"><span class="keyword">from</span> tb_student <span class="keyword">inner</span> <span class="keyword">join</span> tb_class </span><br><span class="line"><span class="keyword">on</span> tb_student.class_id<span class="operator">=</span>tb_class.id</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>第二关：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">########## 使用左外连接查询所有学生姓名和对应的班级 ##########</span><br><span class="line"> </span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"> #studentName列在左，className列在右</span><br><span class="line"><span class="keyword">select</span> tb_student.name <span class="keyword">as</span> studentName,tb_class.name <span class="keyword">as</span> className</span><br><span class="line"><span class="keyword">from</span> tb_class <span class="keyword">right</span> <span class="keyword">join</span> tb_student #class表右插入student表，student表在左边，以在左边的为name（emma<span class="operator">-</span>mary<span class="operator">-</span>allen<span class="operator">-</span>kevin<span class="operator">-</span>rose<span class="operator">-</span>james）为优先顺序先排（先放），</span><br><span class="line">#然后将class表根据id号相等后连接</span><br><span class="line"><span class="keyword">on</span> tb_class.id<span class="operator">=</span>tb_student.class_id;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"> </span><br><span class="line">########## 使用右外连接查询所有学生姓名和对应的班级 ##########</span><br><span class="line"> </span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line">#studentName列在左，className列在右</span><br><span class="line"><span class="keyword">select</span> tb_student.name <span class="keyword">as</span> studentName,tb_class.name <span class="keyword">as</span> className </span><br><span class="line"><span class="keyword">from</span> tb_class <span class="keyword">left</span> <span class="keyword">join</span> tb_student#class表左插入student表，class表在左边，以在左边表的name（<span class="number">1631</span><span class="number">-1632</span><span class="number">-1631</span><span class="number">-1632</span>）为顺序，根据class与student表的id号相等，连接</span><br><span class="line"><span class="keyword">on</span> tb_class.id<span class="operator">=</span>tb_student.class_id;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>第三关</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">########## 查询所有班级里分数在<span class="number">90</span>分以上的学生的姓名和学生的成绩以及学生所在的班级 ##########</span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"><span class="keyword">select</span> s1.name <span class="keyword">as</span> studentName,score,s2.name <span class="keyword">as</span> className </span><br><span class="line"><span class="keyword">from</span> tb_student <span class="keyword">as</span> s1,tb_class <span class="keyword">as</span> s2 </span><br><span class="line"><span class="keyword">where</span> s1.class_id<span class="operator">=</span>s2.id <span class="keyword">and</span> s1.score<span class="operator">&gt;</span><span class="number">90</span> </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> score <span class="keyword">desc</span> ;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>第四关</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"> </span><br><span class="line">#<span class="number">1.</span>查询表中<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>年级中分别男女的总人数</span><br><span class="line"><span class="keyword">select</span> gradeId,sex,<span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> student </span><br><span class="line"><span class="keyword">where</span> gradeid <span class="keyword">in</span> (<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>) <span class="keyword">group</span> <span class="keyword">by</span> gradeid,sex;</span><br><span class="line"> </span><br><span class="line"><span class="comment">-- 方法2</span></span><br><span class="line"><span class="keyword">select</span> gradeId,sex,<span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> student </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> gradeid,sex <span class="keyword">having</span> gradeid <span class="keyword">in</span> (<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>VPS搭建</title>
+    <url>/2023/11/19/VPS%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<p>本文是<code>VPS</code>搭建教程<br><span id="more"></span></p>
+<h1 id="最近更新"><a href="#最近更新" class="headerlink" title="最近更新"></a>最近更新</h1><p><strong>最初放弃机场尝试自建节点是由于玩双人成行时EA平台上好友列表加载不出来，怀疑是机场节点问题，后面搭建到一半发现用全局直连开TUN模式可以解决这个问题，遂放弃，有必要的话再考虑自建吧，先写到这</strong></p>
+<blockquote>
+<p>一定要用<strong>DIRECT</strong>模式，其他节点好友列表均加载不出来，EA在线状态也显示不在线，具体原因未知</p>
+</blockquote>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212622&authkey=%21ANiKrfTOh3bHFkY&width=1070&height=758" width="1070" height="" /></p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><p><a href="https://www.youtube.com/watch?v=g21MJc7SG_c&amp;t=400s">【科学上网一键搭建系列一】新手如何免费开启VPS一站式入门教学，零基础必看视频，助你一学就会，快速上手，以后基操不再求人。</a></p>
+<blockquote>
+<p><code>Youtube</code>上的一则视频，侧重VPS的选择</p>
+</blockquote>
+<p><a href="https://www.youtube.com/watch?v=s90feRmdr9A&amp;t=6s">最新零基础保姆级小白节点搭建教学-不良林</a></p>
+<blockquote>
+<p><code>Youtube</code>上的一则视频，侧重具体搭建过程</p>
+</blockquote>
+<h3 id="VPS选择"><a href="#VPS选择" class="headerlink" title="VPS选择"></a>VPS选择</h3><p>1.<strong>VULTR</strong></p>
+<blockquote>
+<p>支持小时收费            更换IP免费            推荐美西机房</p>
+</blockquote>
+<p>注册（这里我用的<code>github</code>邮箱，密码要大于十个字符（不必与<code>Github</code>密码一致<strong>@github</strong>））</p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212627&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=980" width="1920" height="" /></p>
+<p>右上角<code>Deploy</code>选择<code>Deploy New Server</code>,进入以后,<code>Server</code>和<code>CPU</code>选最基础的即可</p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212625&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" /></p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212623&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" /></p>
+<p>位置这里选择，纽约的比洛杉矶便宜一些，系统选择<code>CentOS7</code>即可，注意把自动备份关掉，省点钱可以。</p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212626&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" /></p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212624&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" /></p>
+<h3 id="搭建教学"><a href="#搭建教学" class="headerlink" title="搭建教学"></a>搭建教学</h3><h4 id="Finalshell下载"><a href="#Finalshell下载" class="headerlink" title="Finalshell下载"></a><code>Finalshell</code>下载</h4><p><a href="http://www.hostbuf.com/downloads/finalshell_install.exe"><code>Finalshell</code>多平台下载地址</a></p>
+]]></content>
+      <categories>
+        <category>环境搭建</category>
+        <category>开发环境</category>
+      </categories>
+      <tags>
+        <tag>VPS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>git手册</title>
+    <url>/2024/10/08/git%E6%89%8B%E5%86%8C/</url>
+    <content><![CDATA[<p>结合他人blog或视频以及自己平时使用git的一些经验写成的一篇实用向git手册。</p>
+<span id="more"></span>
+<p>参考视频：<a href="https://www.bilibili.com/video/BV1Sp421o7U4">十分钟速通git核心指令</a></p>
+<blockquote>
+<p>博主分支部分有些错误，在本文已修正。</p>
+</blockquote>
+<p>基础环境配置参见：<a href="https://dingdingqiuqiu.github.io/2023/11/10/Arch%E9%85%8D%E7%BD%AEGit%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81/#more">Arch配置Git自动登录验证</a></p>
+<h3 id="拉取远程仓库并合并"><a href="#拉取远程仓库并合并" class="headerlink" title="拉取远程仓库并合并"></a>拉取远程仓库并合并</h3><blockquote>
+<p>git fetch,git merge,git pull</p>
+</blockquote>
+<p><code>git fetch</code>命令拉取远程仓库最新代码，<code>git merge</code>执行合并。<code>git pull</code>拉取并自动合并。注意，<code>git merge</code>时可能会有<code>merge conflict</code>。为了避免合并时的冲突，可以先<code>git fetch</code>再<code>git merge</code>合并，这样根据IDE的报错修改特定冲突部分。</p>
+<h3 id="状态查询"><a href="#状态查询" class="headerlink" title="状态查询"></a>状态查询</h3><blockquote>
+<p>git log,git status</p>
+</blockquote>
+<p><code>git log</code>用来查看所有提交，<code>git status</code>用来查看本地文件夹的状态，<code>git diff</code>用来对比不同分支/提交的文件差异。</p>
+<h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><blockquote>
+<p>git branch</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git checkout -b new_branch</span><br></pre></td></tr></table></figure>
+<p>通过以上命令在本地新建分支<code>new_branch</code>，该分支中文件在当前分支的基础上进行，同时自动进入<code>new_branch</code>分支。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git branch -vv</span><br></pre></td></tr></table></figure>
+<p>查看本地所有branch以及其与远程branch的绑定</p>
+<p>进行一定开发后add,commit………然后：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git push -u origin new_branch</span><br></pre></td></tr></table></figure>
+<p>将本地<code>new_branch</code>分支推送到远程<code>new_branch</code>，此时在远程新建了<code>new_branch</code>分支，并使用<code>-u</code>参数记住了该本地分支下次<code>git push/git pull</code>时需要推送/拉取的远程分支。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git switch main</span><br></pre></td></tr></table></figure>
+<p>本地切换到main分支。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git fetch origin new_branch</span><br></pre></td></tr></table></figure>
+<p>拉取远程的<code>new_branch</code>分支。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git merge origin/new_branch</span><br></pre></td></tr></table></figure>
+<p>合并本地<code>main</code>分支和远程<code>new_branch</code>分支</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git push origin</span><br></pre></td></tr></table></figure>
+<p>将本地<code>main</code>分支的修改推送到远程仓库</p>
+<h3 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h3><blockquote>
+<p>git的文件冲突解决方式比较智能，有时会因为错误的合并策略导致再次合并时不能重新合并，这是因为已经检测到合并过了，此时对要并入的文件略微添加注释即可重新合并。这是因为合并时会根据文件内容，合并历史，文件历史综合考虑合并策略。</p>
+</blockquote>
+<p>合并时提示有冲突可以使用<code>mergetool</code>解决冲突。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git mergetool filename</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>若不加文件名，自动打开冲突文件</p>
+</blockquote>
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1XYiq30zod2xxZG?embed=1&width=1274&height=817" width="1274" height=" " /></p>
+<p>vimdiff使用</p>
+<p>配置：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global merge.tool vimdiff</span><br><span class="line">git config --global merge.conflictstyle diff3</span><br><span class="line">git config --global mergetool.prompt false</span><br><span class="line"><span class="meta prompt_"> </span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">让git mergetool不再生成备份文件(*.orig)</span>  </span><br><span class="line">git config --global mergetool.keepBackup false</span><br></pre></td></tr></table></figure>
+<p>键入以下命令启动</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git mergetool</span><br></pre></td></tr></table></figure>
+<p>上面三个窗口分别是本地文件(LOCAL)，共同上游（BASE），远程文件(REMOTE)。下面的窗口为MERGED窗口(即合并后的窗口/有冲突的窗口)</p>
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1bYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " /></p>
+<p>光标标移动到MERGED窗口，以下命令可以获取上面窗口的内容(也可根据个人需求自行修改MERGED窗口内容)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">:diffget REMOTE # 获取REMOTE的修改到MERGED文件, 忽略大小写</span><br><span class="line">:diffg REMOTE # 获取REMOTE的修改到MERGED文件, 忽略大小写</span><br><span class="line">:diffg BASE # get from base</span><br><span class="line">:diffg LOCAL # get from local</span><br></pre></td></tr></table></figure>
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1fYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " /></p>
+<p>上面这张图片键入命令无效，要求有一条白线(没有白线可以换成输入模式输入点内容自动白线)，如下：</p>
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1jYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " /></p>
+<p>还有一些其他命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">]c      # nect difference</span><br><span class="line">[c      # previous difference</span><br><span class="line">zo      # open folded text</span><br><span class="line">zc      # close folded text</span><br><span class="line">zr      # open all folds</span><br><span class="line">zm      # close all folds</span><br><span class="line">:diffupdate     # re-scan the file for difference</span><br><span class="line">do      # diff obtain</span><br><span class="line">dp      # diff put</span><br></pre></td></tr></table></figure>
+<p>解决冲突完成后<code>git comit</code>提交即可。</p>
+<h3 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h3><blockquote>
+<p>项目复制</p>
+</blockquote>
+<p>在<code>github</code>上<code>fork</code>别人的远程仓库之后，相当于你自己新建了一个自己的远程仓库，只不过内容都是别人的远程仓库里的内容。你可以对自己<code>fork</code>到的仓库进行任意操作。例如，<code>git clone</code>到本地后，进行若干修改/提交，<code>git push</code>到的远程仓库为你的远程仓库。如果想让代码合并到原作者的远程仓库，需要向原作者申请<code>Pull requests</code>，原作者同意后即可合并到原作者的远程仓库。这即为开源项目的贡献流程。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>MySQl-单表查询</title>
+    <url>/2024/10/28/MySQl-%E5%8D%95%E8%A1%A8%E6%9F%A5%E8%AF%A2/</url>
+    <content><![CDATA[<p>本文记录单表查询常用语句，依据头歌作业书写，对应MySql单表查询部分。</p>
+<span id="more"></span>
+<h2 id="单表查询（3）"><a href="#单表查询（3）" class="headerlink" title="单表查询（3）"></a>单表查询（3）</h2><h3 id="第1关："><a href="#第1关：" class="headerlink" title="第1关："></a>第1关：</h3><p>语法：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 字段名 <span class="keyword">FROM</span> 表名 <span class="keyword">ORDER</span> <span class="keyword">BY</span> 字段名 [<span class="keyword">ASC</span>[<span class="keyword">DESC</span>]];</span><br></pre></td></tr></table></figure>
+<p>ASC 升序关键字<br>DESC 降序关键字</p>
+<p>查询学生成绩表中1班同学的所有信息并以成绩降序的方式显示结果。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">########## 查询<span class="number">1</span>班同学的所有信息以成绩降序的方式显示结果 ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_score <span class="keyword">WHERE</span> CLASS_ID<span class="operator">=</span><span class="number">1</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> score <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="第2关：分组查询"><a href="#第2关：分组查询" class="headerlink" title="第2关：分组查询"></a>第2关：分组查询</h3><p>语法：</p>
+<p>分组查询的关键字是Group By，查询的是每个分组中 首次出现的一条记录。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 字段名 <span class="keyword">FROM</span> 表名 <span class="keyword">GROUP</span> <span class="keyword">BY</span> 字段名;</span><br></pre></td></tr></table></figure>
+<p>在右侧编辑器Begin-End处补充代码，对班级表中的班级名称进行分组查询。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">########## 对班级名称进行分组查询 ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_class <span class="keyword">GROUP</span> <span class="keyword">BY</span> CLASS_ID;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>表名区分大小写</p>
+</blockquote>
+<h3 id="第3关：使用-LIMIT-限制查询结果的数量"><a href="#第3关：使用-LIMIT-限制查询结果的数量" class="headerlink" title="第3关：使用 LIMIT 限制查询结果的数量"></a>第3关：使用 LIMIT 限制查询结果的数量</h3><p>LIMIT的使用<br>在我们查询大量数据结果时，会返回很多条数据，有需要的记录可能就其中的一条或者几条。比如，实现分页功能，若每页显示10条记录，每次查询就只需要10条记录。<br>在MySQL中，提供了LIMIT关键字，用来限制查询结果的数量。</p>
+<p>语法：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 字段名 <span class="keyword">FROM</span> 表名 LIMIT [<span class="keyword">OFFSET</span>,] 记录数;</span><br></pre></td></tr></table></figure>
+<p>参数说明：</p>
+<ul>
+<li><p>第一个参数，OFFSET，可选参数，表示偏移量，如果不指定默认值为0，表示从查询结果的第一条记录开始，若偏移量为1，则从查询结果中的第二条记录开始，以此类推。</p>
+</li>
+<li><p>第二个参数，记录数，表示返回查询结果的条数。</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">########## 查询班级中第<span class="number">2</span>名到第<span class="number">5</span>名的学生信息 ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_score <span class="keyword">ORDER</span> <span class="keyword">BY</span> score <span class="keyword">DESC</span> LIMIT <span class="number">1</span>,<span class="number">4</span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意查询第2-5名学生时偏移量为1</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Neovim与Tmux快捷键设置</title>
     <url>/2024/09/15/Neovim%E4%B8%8ETmux%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%AE%BE%E7%BD%AE/</url>
     <content><![CDATA[<p>本文主要对个人的vim以及tmux的快捷键进行了简单统一的映射，仅个人所用。</p>
@@ -1867,175 +2059,6 @@ x_2 = -\frac{\theta_0 + \theta_1 x_1}{\theta_2}</script><p>对应以下代码</p
       </tags>
   </entry>
   <entry>
-    <title>VPS搭建</title>
-    <url>/2023/11/19/VPS%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[<p>本文是<code>VPS</code>搭建教程<br><span id="more"></span></p>
-<h1 id="最近更新"><a href="#最近更新" class="headerlink" title="最近更新"></a>最近更新</h1><p><strong>最初放弃机场尝试自建节点是由于玩双人成行时EA平台上好友列表加载不出来，怀疑是机场节点问题，后面搭建到一半发现用全局直连开TUN模式可以解决这个问题，遂放弃，有必要的话再考虑自建吧，先写到这</strong></p>
-<blockquote>
-<p>一定要用<strong>DIRECT</strong>模式，其他节点好友列表均加载不出来，EA在线状态也显示不在线，具体原因未知</p>
-</blockquote>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212622&authkey=%21ANiKrfTOh3bHFkY&width=1070&height=758" width="1070" height="" /></p>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><p><a href="https://www.youtube.com/watch?v=g21MJc7SG_c&amp;t=400s">【科学上网一键搭建系列一】新手如何免费开启VPS一站式入门教学，零基础必看视频，助你一学就会，快速上手，以后基操不再求人。</a></p>
-<blockquote>
-<p><code>Youtube</code>上的一则视频，侧重VPS的选择</p>
-</blockquote>
-<p><a href="https://www.youtube.com/watch?v=s90feRmdr9A&amp;t=6s">最新零基础保姆级小白节点搭建教学-不良林</a></p>
-<blockquote>
-<p><code>Youtube</code>上的一则视频，侧重具体搭建过程</p>
-</blockquote>
-<h3 id="VPS选择"><a href="#VPS选择" class="headerlink" title="VPS选择"></a>VPS选择</h3><p>1.<strong>VULTR</strong></p>
-<blockquote>
-<p>支持小时收费            更换IP免费            推荐美西机房</p>
-</blockquote>
-<p>注册（这里我用的<code>github</code>邮箱，密码要大于十个字符（不必与<code>Github</code>密码一致<strong>@github</strong>））</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212627&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=980" width="1920" height="" /></p>
-<p>右上角<code>Deploy</code>选择<code>Deploy New Server</code>,进入以后,<code>Server</code>和<code>CPU</code>选最基础的即可</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212625&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" /></p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212623&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" /></p>
-<p>位置这里选择，纽约的比洛杉矶便宜一些，系统选择<code>CentOS7</code>即可，注意把自动备份关掉，省点钱可以。</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212626&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" /></p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212624&authkey=%21ANiKrfTOh3bHFkY&width=1920&height=924" width="1920" height="" /></p>
-<h3 id="搭建教学"><a href="#搭建教学" class="headerlink" title="搭建教学"></a>搭建教学</h3><h4 id="Finalshell下载"><a href="#Finalshell下载" class="headerlink" title="Finalshell下载"></a><code>Finalshell</code>下载</h4><p><a href="http://www.hostbuf.com/downloads/finalshell_install.exe"><code>Finalshell</code>多平台下载地址</a></p>
-]]></content>
-      <categories>
-        <category>环境搭建</category>
-        <category>开发环境</category>
-      </categories>
-      <tags>
-        <tag>VPS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SQL多表查询</title>
-    <url>/2024/10/13/SQL%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/</url>
-    <content><![CDATA[<p>本文主要记录数据库实验作业的完成过程，供期末复习使用。</p>
-<span id="more"></span>
-<p>在这之前</p>
-<p><a href="https://blog.csdn.net/weixin_44867329/article/details/137777665">https://blog.csdn.net/weixin_44867329/article/details/137777665</a></p>
-<h2 id="数据库实验三-数据查询二"><a href="#数据库实验三-数据查询二" class="headerlink" title="数据库实验三 数据查询二"></a>数据库实验三 数据查询二</h2><p><a href="https://blog.csdn.net/weixin_66547608/article/details/131141175">https://blog.csdn.net/weixin_66547608/article/details/131141175</a></p>
-<h3 id="第一题："><a href="#第一题：" class="headerlink" title="第一题："></a>第一题：</h3><p>统计每本书借阅的次数,显示书名和借阅次数（借阅次数命名为<code>jycs</code>),按借阅次数降序排列,借阅次数相同的按书名降序排列。</p>
-<p>错误</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> book.sm,<span class="built_in">count</span>(borrow.jyrq)<span class="keyword">as</span> jycs <span class="keyword">FROM</span> book,borrow <span class="keyword">GROUP</span> <span class="keyword">BY</span> sm <span class="keyword">ORDER</span> <span class="keyword">BY</span> jycs <span class="keyword">desc</span>,book.sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
-<p><code>group by</code>用法：</p>
-<p>正确</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> sm,<span class="built_in">count</span>(sm)<span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm <span class="keyword">group</span> <span class="keyword">by</span> sm <span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h3><p>统计借阅次数在2次以上的图书的借阅的次数,显示书名和借阅次数，按借阅次数降序排列,借阅次数相同的按书名降序排列</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> sm,<span class="built_in">count</span>(sm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm <span class="keyword">group</span> <span class="keyword">by</span> sm <span class="keyword">having</span>(jycs<span class="operator">&gt;=</span><span class="number">2</span>) <span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
-<p>正确：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> sm,<span class="built_in">count</span>(sm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm <span class="keyword">GROUP</span> <span class="keyword">BY</span> sm <span class="keyword">HAVING</span>(jycs<span class="operator">&gt;=</span><span class="number">2</span>) <span class="keyword">ORDER</span> <span class="keyword">BY</span> jysc <span class="keyword">desc</span>,sm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="第三题"><a href="#第三题" class="headerlink" title="第三题"></a>第三题</h3><p>统计每个出版社的图书的借阅次数,显示出版社的名称和借阅次数，按借阅次数降序排列,借阅次数相同的按出版社降序排列</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> cbs,<span class="built_in">count</span>(cbs) <span class="keyword">as</span> jycs </span><br><span class="line"><span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> book <span class="keyword">on</span> book.txm<span class="operator">=</span>borrow.txm </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> cbs</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,cbs <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="第四题"><a href="#第四题" class="headerlink" title="第四题"></a>第四题</h3><p>统计每位读者借阅的次数,显示姓名和借阅次数,按借阅次数降序排列，借阅次数相同的按姓名降序排列</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> xm,<span class="built_in">count</span>(xm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> reader <span class="keyword">on</span> borrow.dzzh<span class="operator">=</span>reader.dzzh </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> xm</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,xm <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="第五题"><a href="#第五题" class="headerlink" title="第五题"></a>第五题</h3><p>统计研究生读者借阅的次数,显示姓名和借阅次数，按借阅次数降序排列，借阅次数相同的按姓名降序排列</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> xm,<span class="built_in">count</span>(xm) <span class="keyword">as</span> jycs <span class="keyword">from</span> borrow <span class="keyword">left</span> <span class="keyword">join</span> reader <span class="keyword">on</span> borrow.dzzh<span class="operator">=</span>reader.dzzh <span class="keyword">where</span> sf<span class="operator">=</span><span class="string">'研究生'</span><span class="keyword">group</span> <span class="keyword">by</span> xm <span class="keyword">order</span> <span class="keyword">by</span> jycs <span class="keyword">desc</span>,xm <span class="keyword">desc</span>;开始你的任务吧，祝你成功！</span><br><span class="line"></span><br><span class="line">use library;</span><br><span class="line">#代码开始</span><br><span class="line">#答案<span class="number">1</span></span><br><span class="line"><span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> cbs<span class="operator">=</span>"上海古籍出版社" <span class="keyword">and</span> sm<span class="operator">!=</span>"李白全集";</span><br><span class="line">#答案<span class="number">2</span></span><br><span class="line"><span class="keyword">select</span> sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj<span class="operator">&gt;</span>(<span class="keyword">select</span> <span class="built_in">avg</span>(sj) <span class="keyword">from</span> book);</span><br><span class="line">#答案<span class="number">2</span></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj<span class="operator">=</span>(<span class="keyword">select</span> <span class="built_in">max</span>(sj) <span class="keyword">from</span> book);</span><br><span class="line"> </span><br><span class="line">#答案<span class="number">3</span></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj<span class="operator">=</span>(<span class="keyword">select</span> <span class="built_in">min</span>(sj) <span class="keyword">from</span> book);</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> #代码结束</span><br><span class="line">任务描述</span><br><span class="line">本关任务： 第一题 查询曾经借过图书的读者的读者证号和姓名 第二题 查询曾经没有被借阅的图书的条形码和书名 第三题 查询与孙思旺借过相同图书的读者的读者证号和姓名，按读者证号升序排列 第四题 查询借阅过李白全集的读者所借过的其他图书的书名 按书名升序排列</span><br><span class="line"></span><br><span class="line">开始你的任务吧，祝你成功！</span><br><span class="line"></span><br><span class="line"> use library;</span><br><span class="line">#代码开始</span><br><span class="line">#题目<span class="number">1</span></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow);</span><br><span class="line">#题目<span class="number">2</span></span><br><span class="line"><span class="keyword">select</span> txm,sm <span class="keyword">from</span> book <span class="keyword">where</span> book.txm <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow);</span><br><span class="line"> </span><br><span class="line">#题目<span class="number">3</span></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span><br><span class="line"><span class="keyword">where</span> txm <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow </span><br><span class="line"><span class="keyword">where</span> borrow.dzzh<span class="operator">=</span>(<span class="keyword">select</span> dzzh <span class="keyword">from</span> reader </span><br><span class="line"><span class="keyword">where</span> xm<span class="operator">=</span><span class="string">'孙思旺'</span>))) </span><br><span class="line"><span class="keyword">and</span> dzzh<span class="operator">!=</span><span class="string">'006'</span> <span class="keyword">order</span> <span class="keyword">by</span> dzzh <span class="keyword">asc</span>;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">#题目<span class="number">4</span></span><br><span class="line"> <span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> book.txm <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow</span><br><span class="line"><span class="keyword">where</span> borrow.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span><br><span class="line"><span class="keyword">where</span> borrow.txm<span class="operator">=</span>(<span class="keyword">select</span> txm <span class="keyword">from</span> book <span class="keyword">where</span> sm<span class="operator">=</span>"李白全集")))</span><br><span class="line"><span class="keyword">and</span> sm<span class="operator">!=</span>"李白全集" <span class="keyword">order</span> <span class="keyword">by</span> sm <span class="keyword">asc</span>;</span><br><span class="line"> </span><br><span class="line"> #代码结束</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h4 id="任务描述"><a href="#任务描述" class="headerlink" title="任务描述"></a>任务描述</h4><p>本关任务：根据图书数据表进行子查询</p>
-<h4 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h4><p>为了完成本关任务，你需要掌握：子查询</p>
-<p>子查询</p>
-<p>在SELECT语句中，一个查询语句完全嵌套在另一个查询语句的WHERE或HAVING的条件短语中，称为子查询或嵌套查询。 通常把条件短语中的查询成为子查询，父查询则使用子查询的查询结果作为查询条件。</p>
-<h4 id="任务要求"><a href="#任务要求" class="headerlink" title="任务要求"></a>任务要求</h4><p>第一题 查询与李白全集同一个出版社的图书的书名（不包括李白全集） 第二题 查询高于图书的平均售价(sj)的图书的书名和售价 第三题 查询售价最高的图书的条形码、书名和售价 第四题 查询售价最低的图书的条形码、书名和售价</p>
-<hr>
-<p>开始你的任务吧，祝你成功！</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">use library;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#代码开始</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> cbs=<span class="string">"上海古籍出版社"</span> <span class="keyword">and</span> sm!=<span class="string">"李白全集"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj&gt;(<span class="function"><span class="keyword">select</span> <span class="title">avg</span>(<span class="params">sj</span>) <span class="keyword">from</span> book)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj=(<span class="function"><span class="keyword">select</span> <span class="title">max</span>(<span class="params">sj</span>) <span class="keyword">from</span> book)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#答案3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> txm,sm,sj <span class="keyword">from</span> book <span class="keyword">where</span> sj=(<span class="function"><span class="keyword">select</span> <span class="title">min</span>(<span class="params">sj</span>) <span class="keyword">from</span> book)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="meta">#代码结束</span></span><br></pre></td></tr></table></figure>
-<h4 id="任务描述-1"><a href="#任务描述-1" class="headerlink" title="任务描述"></a>任务描述</h4><p>本关任务： 第一题 查询曾经借过图书的读者的读者证号和姓名 第二题 查询曾经没有被借阅的图书的条形码和书名 第三题 查询与孙思旺借过相同图书的读者的读者证号和姓名，按读者证号升序排列 第四题 查询借阅过李白全集的读者所借过的其他图书的书名 按书名升序排列</p>
-<p>开始你的任务吧，祝你成功！</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"> use library;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#代码开始</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.<span class="function">dzzh <span class="title">in</span> (<span class="params"><span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> txm,sm <span class="keyword">from</span> book <span class="keyword">where</span> book.<span class="function">txm <span class="keyword">not</span> <span class="title">in</span> (<span class="params"><span class="keyword">select</span> txm <span class="keyword">from</span> borrow</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> dzzh,xm <span class="keyword">from</span> reader <span class="keyword">where</span> reader.<span class="function">dzzh <span class="title">in</span> (<span class="params"><span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> txm <span class="keyword">in</span> (<span class="keyword">select</span> txm <span class="keyword">from</span> borrow </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> borrow.dzzh=(<span class="keyword">select</span> dzzh <span class="keyword">from</span> reader </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> xm=<span class="string">'孙思旺'</span></span>))) </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">and</span> dzzh!</span>=<span class="string">'006'</span> order <span class="keyword">by</span> dzzh asc;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#题目4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="keyword">select</span> sm <span class="keyword">from</span> book <span class="keyword">where</span> book.<span class="function">txm <span class="title">in</span> (<span class="params"><span class="keyword">select</span> txm <span class="keyword">from</span> borrow</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> borrow.dzzh <span class="keyword">in</span> (<span class="keyword">select</span> dzzh <span class="keyword">from</span> borrow </span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function"><span class="keyword">where</span> borrow.txm=(<span class="keyword">select</span> txm <span class="keyword">from</span> book <span class="keyword">where</span> sm=<span class="string">"李白全集"</span></span>)))</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">and</span> sm!</span>=<span class="string">"李白全集"</span> order <span class="keyword">by</span> sm asc;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="meta">#代码结束</span></span><br></pre></td></tr></table></figure>
-<h2 id="MySQL数据库-连接查询"><a href="#MySQL数据库-连接查询" class="headerlink" title="MySQL数据库 - 连接查询"></a><strong>MySQL数据库 - 连接查询</strong></h2><p><a href="https://blog.csdn.net/weixin_44867329/article/details/139355889">https://blog.csdn.net/weixin_44867329/article/details/139355889</a></p>
-<p>任务描述<br>本关任务：使用内连接查询数据表中学生姓名和对应的班级。</p>
-<p>相关知识<br>为了完成本关任务，你需要掌握：<br>1.什么是内连接查询；<br>2.如何使用内连接查询。</p>
-<p>内连接查询<br>仅将两个表中满足连接条件的行组合起来作为结果集，称为内连接；</p>
-<p>关键字：[inner] join …  on。</p>
-<p>语法：</p>
-<p>表1 [inner] join 表2 on 表1.字段=表2.字段<br>语法解释：</p>
-<p>从表1中取出每一条记录，去表2中与所有的记录进行匹配，匹配必须是某个条件在表1中与表2中相同，最终才会保留结果，否则不保留。inner 关键字可省略不写；on 表示连接条件：条件字段就是代表相同的业务含义（如下面两张表中的 employee.dept_id 和 department.id），大多数情况下为两张表中的主外键关系。<br>内连接查询的使用<br>现在我们有两张表，数据如下：<br>employee表数据：</p>
-<p>id    name    dept_id<br>1    Nancy    4<br>2    Tod    2<br>3    Carly    1<br>4    Allen    2<br>5    Mary    (null)<br>department表数据：</p>
-<p>id    name<br>1    开发部<br>2    测试部<br>3    运维部<br>4    销售部<br>现在想要查询出员工姓名以及其对应的部门名称，我们就使用内连接来进行查询。</p>
-<p>我们可以将关联查询思路分为三步：<br>1.确定所连接的表，<br>2.确定所要查询的字段，<br>3.确定连接条件与连接方式。</p>
-<p>其中，没有部门的员工和部门没有员工的部门都没有被查出来，这就是内连接的特点，只查询在连接表中有对应的记录，其中dept.id=emp.dept_id是连接条件。</p>
-<p>编程要求<br>在右侧编辑器补充代码，查询数据表中学生姓名以及对应的班级名称，将其对应的列名分别另命名为studentName和className。</p>
-<p>我们为你提供了两张表，内容如下：</p>
-<p>tb_student表数据：</p>
-<p>id    name    class_id<br>1    Emma    2<br>2    Mary    4<br>3    Allen    (null)<br>4    Kevin    1<br>5    Rose    2<br>6    James    1<br>tb_class表数据：</p>
-<p>id    name<br>1    软件1631<br>2    软件1632<br>3    测试1631<br>4    测试1632<br>测试说明<br>平台会对你编写的代码进行测试：</p>
-<p>预期输出：</p>
-<p> studentName    className<br>    Kevin       软件1631<br>    James       软件1631<br>    Emma        软件1632<br>    Rose        软件1632<br>    Mary        测试1632<br>开始你的任务吧，祝你成功！</p>
-<p>第一关</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">########## 查询数据表中学生姓名和对应的班级 ##########</span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"><span class="keyword">select</span> tb_student.name <span class="keyword">as</span> studentName,tb_class.name <span class="keyword">as</span> className </span><br><span class="line"><span class="keyword">from</span> tb_student <span class="keyword">inner</span> <span class="keyword">join</span> tb_class </span><br><span class="line"><span class="keyword">on</span> tb_student.class_id<span class="operator">=</span>tb_class.id</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>第二关：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">########## 使用左外连接查询所有学生姓名和对应的班级 ##########</span><br><span class="line"> </span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"> #studentName列在左，className列在右</span><br><span class="line"><span class="keyword">select</span> tb_student.name <span class="keyword">as</span> studentName,tb_class.name <span class="keyword">as</span> className</span><br><span class="line"><span class="keyword">from</span> tb_class <span class="keyword">right</span> <span class="keyword">join</span> tb_student #class表右插入student表，student表在左边，以在左边的为name（emma<span class="operator">-</span>mary<span class="operator">-</span>allen<span class="operator">-</span>kevin<span class="operator">-</span>rose<span class="operator">-</span>james）为优先顺序先排（先放），</span><br><span class="line">#然后将class表根据id号相等后连接</span><br><span class="line"><span class="keyword">on</span> tb_class.id<span class="operator">=</span>tb_student.class_id;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"> </span><br><span class="line">########## 使用右外连接查询所有学生姓名和对应的班级 ##########</span><br><span class="line"> </span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line">#studentName列在左，className列在右</span><br><span class="line"><span class="keyword">select</span> tb_student.name <span class="keyword">as</span> studentName,tb_class.name <span class="keyword">as</span> className </span><br><span class="line"><span class="keyword">from</span> tb_class <span class="keyword">left</span> <span class="keyword">join</span> tb_student#class表左插入student表，class表在左边，以在左边表的name（<span class="number">1631</span><span class="number">-1632</span><span class="number">-1631</span><span class="number">-1632</span>）为顺序，根据class与student表的id号相等，连接</span><br><span class="line"><span class="keyword">on</span> tb_class.id<span class="operator">=</span>tb_student.class_id;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">########## <span class="keyword">End</span> ##########</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>第三关</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">########## 查询所有班级里分数在<span class="number">90</span>分以上的学生的姓名和学生的成绩以及学生所在的班级 ##########</span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"><span class="keyword">select</span> s1.name <span class="keyword">as</span> studentName,score,s2.name <span class="keyword">as</span> className </span><br><span class="line"><span class="keyword">from</span> tb_student <span class="keyword">as</span> s1,tb_class <span class="keyword">as</span> s2 </span><br><span class="line"><span class="keyword">where</span> s1.class_id<span class="operator">=</span>s2.id <span class="keyword">and</span> s1.score<span class="operator">&gt;</span><span class="number">90</span> </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> score <span class="keyword">desc</span> ;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>第四关</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">USE School;</span><br><span class="line"> </span><br><span class="line">#请在此处添加实现代码</span><br><span class="line">########## <span class="keyword">Begin</span> ##########</span><br><span class="line"> </span><br><span class="line">#<span class="number">1.</span>查询表中<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>年级中分别男女的总人数</span><br><span class="line"><span class="keyword">select</span> gradeId,sex,<span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> student </span><br><span class="line"><span class="keyword">where</span> gradeid <span class="keyword">in</span> (<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>) <span class="keyword">group</span> <span class="keyword">by</span> gradeid,sex;</span><br><span class="line"> </span><br><span class="line"><span class="comment">-- 方法2</span></span><br><span class="line"><span class="keyword">select</span> gradeId,sex,<span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> student </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> gradeid,sex <span class="keyword">having</span> gradeid <span class="keyword">in</span> (<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-  </entry>
-  <entry>
-    <title>git手册</title>
-    <url>/2024/10/08/git%E6%89%8B%E5%86%8C/</url>
-    <content><![CDATA[<p>结合他人blog或视频以及自己平时使用git的一些经验写成的一篇实用向git手册。</p>
-<span id="more"></span>
-<p>参考视频：<a href="https://www.bilibili.com/video/BV1Sp421o7U4">十分钟速通git核心指令</a></p>
-<blockquote>
-<p>博主分支部分有些错误，在本文已修正。</p>
-</blockquote>
-<p>基础环境配置参见：<a href="https://dingdingqiuqiu.github.io/2023/11/10/Arch%E9%85%8D%E7%BD%AEGit%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81/#more">Arch配置Git自动登录验证</a></p>
-<h3 id="拉取远程仓库并合并"><a href="#拉取远程仓库并合并" class="headerlink" title="拉取远程仓库并合并"></a>拉取远程仓库并合并</h3><blockquote>
-<p>git fetch,git merge,git pull</p>
-</blockquote>
-<p><code>git fetch</code>命令拉取远程仓库最新代码，<code>git merge</code>执行合并。<code>git pull</code>拉取并自动合并。注意，<code>git merge</code>时可能会有<code>merge conflict</code>。为了避免合并时的冲突，可以先<code>git fetch</code>再<code>git merge</code>合并，这样根据IDE的报错修改特定冲突部分。</p>
-<h3 id="状态查询"><a href="#状态查询" class="headerlink" title="状态查询"></a>状态查询</h3><blockquote>
-<p>git log,git status</p>
-</blockquote>
-<p><code>git log</code>用来查看所有提交，<code>git status</code>用来查看本地文件夹的状态，<code>git diff</code>用来对比不同分支/提交的文件差异。</p>
-<h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><blockquote>
-<p>git branch</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git checkout -b new_branch</span><br></pre></td></tr></table></figure>
-<p>通过以上命令在本地新建分支<code>new_branch</code>，该分支中文件在当前分支的基础上进行，同时自动进入<code>new_branch</code>分支。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git branch -vv</span><br></pre></td></tr></table></figure>
-<p>查看本地所有branch以及其与远程branch的绑定</p>
-<p>进行一定开发后add,commit………然后：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git push -u origin new_branch</span><br></pre></td></tr></table></figure>
-<p>将本地<code>new_branch</code>分支推送到远程<code>new_branch</code>，此时在远程新建了<code>new_branch</code>分支，并使用<code>-u</code>参数记住了该本地分支下次<code>git push/git pull</code>时需要推送/拉取的远程分支。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git switch main</span><br></pre></td></tr></table></figure>
-<p>本地切换到main分支。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git fetch origin new_branch</span><br></pre></td></tr></table></figure>
-<p>拉取远程的<code>new_branch</code>分支。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git merge origin/new_branch</span><br></pre></td></tr></table></figure>
-<p>合并本地<code>main</code>分支和远程<code>new_branch</code>分支</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git push origin</span><br></pre></td></tr></table></figure>
-<p>将本地<code>main</code>分支的修改推送到远程仓库</p>
-<h3 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h3><blockquote>
-<p>git的文件冲突解决方式比较智能，有时会因为错误的合并策略导致再次合并时不能重新合并，这是因为已经检测到合并过了，此时对要并入的文件略微添加注释即可重新合并。这是因为合并时会根据文件内容，合并历史，文件历史综合考虑合并策略。</p>
-</blockquote>
-<p>合并时提示有冲突可以使用<code>mergetool</code>解决冲突。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git mergetool filename</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>若不加文件名，自动打开冲突文件</p>
-</blockquote>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1XYiq30zod2xxZG?embed=1&width=1274&height=817" width="1274" height=" " /></p>
-<p>vimdiff使用</p>
-<p>配置：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global merge.tool vimdiff</span><br><span class="line">git config --global merge.conflictstyle diff3</span><br><span class="line">git config --global mergetool.prompt false</span><br><span class="line"><span class="meta prompt_"> </span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">让git mergetool不再生成备份文件(*.orig)</span>  </span><br><span class="line">git config --global mergetool.keepBackup false</span><br></pre></td></tr></table></figure>
-<p>键入以下命令启动</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git mergetool</span><br></pre></td></tr></table></figure>
-<p>上面三个窗口分别是本地文件(LOCAL)，共同上游（BASE），远程文件(REMOTE)。下面的窗口为MERGED窗口(即合并后的窗口/有冲突的窗口)</p>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1bYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " /></p>
-<p>光标标移动到MERGED窗口，以下命令可以获取上面窗口的内容(也可根据个人需求自行修改MERGED窗口内容)</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">:diffget REMOTE # 获取REMOTE的修改到MERGED文件, 忽略大小写</span><br><span class="line">:diffg REMOTE # 获取REMOTE的修改到MERGED文件, 忽略大小写</span><br><span class="line">:diffg BASE # get from base</span><br><span class="line">:diffg LOCAL # get from local</span><br></pre></td></tr></table></figure>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1fYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " /></p>
-<p>上面这张图片键入命令无效，要求有一条白线(没有白线可以换成输入模式输入点内容自动白线)，如下：</p>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7m1jYiq30zod2xxZG?embed=1&width=1920&height=1032" width="1920" height=" " /></p>
-<p>还有一些其他命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">]c      # nect difference</span><br><span class="line">[c      # previous difference</span><br><span class="line">zo      # open folded text</span><br><span class="line">zc      # close folded text</span><br><span class="line">zr      # open all folds</span><br><span class="line">zm      # close all folds</span><br><span class="line">:diffupdate     # re-scan the file for difference</span><br><span class="line">do      # diff obtain</span><br><span class="line">dp      # diff put</span><br></pre></td></tr></table></figure>
-<p>解决冲突完成后<code>git comit</code>提交即可。</p>
-<h3 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h3><blockquote>
-<p>项目复制</p>
-</blockquote>
-<p>在<code>github</code>上<code>fork</code>别人的远程仓库之后，相当于你自己新建了一个自己的远程仓库，只不过内容都是别人的远程仓库里的内容。你可以对自己<code>fork</code>到的仓库进行任意操作。例如，<code>git clone</code>到本地后，进行若干修改/提交，<code>git push</code>到的远程仓库为你的远程仓库。如果想让代码合并到原作者的远程仓库，需要向原作者申请<code>Pull requests</code>，原作者同意后即可合并到原作者的远程仓库。这即为开源项目的贡献流程。</p>
-]]></content>
-  </entry>
-  <entry>
     <title>linux环境中matplotlib画图缺少字体</title>
     <url>/2024/09/15/linux%E7%8E%AF%E5%A2%83%E4%B8%ADmatplotlib%E7%94%BB%E5%9B%BE%E7%BC%BA%E5%B0%91%E5%AD%97%E4%BD%93/</url>
     <content><![CDATA[<p>本文主要解决linux环境下画图没中文字体的问题<br><span id="more"></span></p>
@@ -2071,41 +2094,6 @@ x_2 = -\frac{\theta_0 + \theta_1 x_1}{\theta_2}</script><p>对应以下代码</p
 ]]></content>
       <tags>
         <tag>机器学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>mysql连接不上3306端口</title>
-    <url>/2024/09/23/mysql%E8%BF%9E%E6%8E%A5%E4%B8%8D%E4%B8%8A3306%E7%AB%AF%E5%8F%A3/</url>
-    <content><![CDATA[<p>经过多次尝试，发现是安装时配置出现了问题，密码选项哪里不要选推荐的配置，选传统密码选项即可。不然解决连不上3306端口的问题以后还会被禁止登录。</p>
-<span id="more"></span>
-<p>可以参考这篇的<a href="https://blog.csdn.net/weixin_47406082/article/details/131867849">配置</a></p>
-<p><strong>注意</strong></p>
-<p>1.自定义安装可以指定sql安装位置。</p>
-<p>2.密码策略选择传统，否则极有可能出现下面两种报错。</p>
-<blockquote>
-<p>启动MySQL报错:ERROR 2003 (HY000): Can’t connect to MySQL server on ‘localhost’ (10061)</p>
-<p>ERROR 1045 (28000): Access denied for user ‘root‘@‘localhost‘ (using password: NO/YES)</p>
-</blockquote>
-]]></content>
-  </entry>
-  <entry>
-    <title>tensorflow使用警告</title>
-    <url>/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/</url>
-    <content><![CDATA[<p>本文主要对一篇英文回答进行翻译，练练英语能力。<br>同时尝试解决<code>tensorflow</code>使用时的警告问题。</p>
-<span id="more"></span>
-<p>原回答：<a href="https://stackoverflow.com/questions/77338229/tensorflow-2-14-0-with-cuda-not-registering-cuda">https://stackoverflow.com/questions/77338229/tensorflow-2-14-0-with-cuda-not-registering-cuda</a></p>
-<h3 id="本机环境"><a href="#本机环境" class="headerlink" title="本机环境"></a>本机环境</h3><p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwPYiq30zod2xxZG?embed=1&width=958&height=614" width="958" height="" /></p>
-<h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><blockquote>
-<p>实际上并不能算作严重的问题，警告而已</p>
-<p>本文目的主要是练练英语</p>
-</blockquote>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwTYiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height="" /></p>
-<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwXYiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height="" /></p>
-<h3 id="警告翻译"><a href="#警告翻译" class="headerlink" title="警告翻译"></a>警告翻译</h3><p>开练英语…….</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.282338</span>: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:<span class="number">485</span>] Unable to <span class="keyword">register</span> cuFFT factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuFFT when one has already been registered</span><br><span class="line"><span class="comment">// </span></span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.351321</span>: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:<span class="number">8454</span>] Unable to <span class="keyword">register</span> cuDNN factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuDNN when one has already been registered</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.372352</span>: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:<span class="number">1452</span>] Unable to <span class="keyword">register</span> cuBLAS factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuBLAS when one has already been registered</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.508856</span>: I tensorflow/core/platform/cpu_feature_guard.cc:<span class="number">210</span>] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.</span><br><span class="line">To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">05.940357</span>: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:<span class="number">38</span>] TF-TRT Warning: Could not find TensorRT</span><br><span class="line">WARNING: All <span class="built_in">log</span> messages before <span class="title function_">absl::InitializeLog</span><span class="params">()</span> is called are written to STDERR</span><br><span class="line">I0000 00:00:1726156987.392321  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.582220  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.582324  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">Num GPUs Available:  1</span><br><span class="line">I0000 00:00:1726156987.588599  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.588689  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.588756  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156988.000957  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156988.001057  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">2024-09-13 00:03:08.001094: I tensorflow/core/common_runtime/gpu/gpu_device.cc:2112] Could not identify NUMA node of platform GPU id 0, defaulting to 0.  Your kernel may not have been built with NUMA support.</span><br><span class="line">I0000 00:00:1726156988.001174  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">2024-09-13 00:03:08.001553: I tensorflow/core/common_runtime/gpu/gpu_device.cc:2021] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 1767 MB memory:  -&gt; device: 0, name: NVIDIA GeForce RTX 3050 Laptop GPU, pci bus id: 0000:01:00.0, compute capability: 8.6</span><br><span class="line">tf.<span class="title function_">Tensor</span><span class="params">(</span></span><br><span class="line"><span class="params">[[<span class="number">1.</span> <span class="number">3.</span>]</span></span><br><span class="line"><span class="params"> [<span class="number">3.</span> <span class="number">7.</span>]], shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32)</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>English</tag>
       </tags>
   </entry>
   <entry>
@@ -2334,6 +2322,61 @@ x_2 = -\frac{\theta_0 + \theta_1 x_1}{\theta_2}</script><p>对应以下代码</p
 ]]></content>
   </entry>
   <entry>
+    <title>tensorflow使用警告</title>
+    <url>/2024/09/12/tensorflow%E4%BD%BF%E7%94%A8%E8%AD%A6%E5%91%8A/</url>
+    <content><![CDATA[<p>本文主要对一篇英文回答进行翻译，练练英语能力。<br>同时尝试解决<code>tensorflow</code>使用时的警告问题。</p>
+<span id="more"></span>
+<p>原回答：<a href="https://stackoverflow.com/questions/77338229/tensorflow-2-14-0-with-cuda-not-registering-cuda">https://stackoverflow.com/questions/77338229/tensorflow-2-14-0-with-cuda-not-registering-cuda</a></p>
+<h3 id="本机环境"><a href="#本机环境" class="headerlink" title="本机环境"></a>本机环境</h3><p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwPYiq30zod2xxZG?embed=1&width=958&height=614" width="958" height="" /></p>
+<h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><blockquote>
+<p>实际上并不能算作严重的问题，警告而已</p>
+<p>本文目的主要是练练英语</p>
+</blockquote>
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwTYiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height="" /></p>
+<p><img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwXYiq30zod2xxZG?embed=1&width=958&height=1018" width="958" height="" /></p>
+<h3 id="警告翻译"><a href="#警告翻译" class="headerlink" title="警告翻译"></a>警告翻译</h3><p>开练英语…….</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.282338</span>: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:<span class="number">485</span>] Unable to <span class="keyword">register</span> cuFFT factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuFFT when one has already been registered</span><br><span class="line"><span class="comment">// </span></span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.351321</span>: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:<span class="number">8454</span>] Unable to <span class="keyword">register</span> cuDNN factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuDNN when one has already been registered</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.372352</span>: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:<span class="number">1452</span>] Unable to <span class="keyword">register</span> cuBLAS factory: Attempting to <span class="keyword">register</span> factory <span class="keyword">for</span> plugin cuBLAS when one has already been registered</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">04.508856</span>: I tensorflow/core/platform/cpu_feature_guard.cc:<span class="number">210</span>] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.</span><br><span class="line">To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.</span><br><span class="line"><span class="number">2024</span><span class="number">-09</span><span class="number">-13</span> <span class="number">00</span>:<span class="number">03</span>:<span class="number">05.940357</span>: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:<span class="number">38</span>] TF-TRT Warning: Could not find TensorRT</span><br><span class="line">WARNING: All <span class="built_in">log</span> messages before <span class="title function_">absl::InitializeLog</span><span class="params">()</span> is called are written to STDERR</span><br><span class="line">I0000 00:00:1726156987.392321  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.582220  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.582324  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">Num GPUs Available:  1</span><br><span class="line">I0000 00:00:1726156987.588599  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.588689  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156987.588756  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156988.000957  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">I0000 00:00:1726156988.001057  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">2024-09-13 00:03:08.001094: I tensorflow/core/common_runtime/gpu/gpu_device.cc:2112] Could not identify NUMA node of platform GPU id 0, defaulting to 0.  Your kernel may not have been built with NUMA support.</span><br><span class="line">I0000 00:00:1726156988.001174  125977 cuda_executor.cc:1001] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node</span><br><span class="line">Your kernel may have been built without NUMA support.</span><br><span class="line">2024-09-13 00:03:08.001553: I tensorflow/core/common_runtime/gpu/gpu_device.cc:2021] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 1767 MB memory:  -&gt; device: 0, name: NVIDIA GeForce RTX 3050 Laptop GPU, pci bus id: 0000:01:00.0, compute capability: 8.6</span><br><span class="line">tf.<span class="title function_">Tensor</span><span class="params">(</span></span><br><span class="line"><span class="params">[[<span class="number">1.</span> <span class="number">3.</span>]</span></span><br><span class="line"><span class="params"> [<span class="number">3.</span> <span class="number">7.</span>]], shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32)</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>English</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>编译原理</title>
+    <url>/2024/03/29/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<p>本文主要是对编译语言各个部分的导航。</p>
+<span id="more"></span>
+<p>词法分析，语法分析，语义分析，抽象语法树生成</p>
+<p>说明什么的都在这里了：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:dingdingqiuqiu/PL0.git</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>计算机系统基础NJU</title>
+    <url>/2023/11/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80NJU/</url>
+    <content><![CDATA[<p>本文是对《计算机系统基础》一书中第一章C语言中字面量数据类型认定实验的复现,主要涉及C语言字面量数据类型，gcc编译32位程序两个知识点。重点在于计算机在进行比较时不会先看正负号认定数据类型，而是根据数据绝对值的大小认定。<br><span id="more"></span></p>
+<h2 id="c语言数值常量的类型"><a href="#c语言数值常量的类型" class="headerlink" title="c语言数值常量的类型"></a>c语言数值常量的类型</h2><p>安装<code>gcc</code>多平台编译工具</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pacman -S gcc-multilib    </span><br></pre></td></tr></table></figure>
+<p>安装32位程序所需的<code>libc</code>库</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pacman -S lib32-glibc lib32-gcc-libs</span><br></pre></td></tr></table></figure>
+<p>实验代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="number">-2147483648</span>&gt;<span class="number">2147483647</span>)</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;false!!!&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;true!!!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实验结果</p>
+<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212635&authkey=%21ANiKrfTOh3bHFkY&width=1914&height=374" width="1914" height="" /></p>
+<p>关键点在于理解计算机先不管符号，根据<code>2127483648</code>确定类型为<code>unsigned int</code>，再加上符号，对<code>0x80000000</code>进行补码转换又得到<code>0x80000000</code>，由于先前已经确定<code>unsigned int</code>类型，所以比较时，以<code>2147483648(0x80000000)</code>和<code>2147483647(0x7fffffff)</code>比较，满足大于条件，输出<code>false</code>。</p>
+<p>参考下文：</p>
+<p><a href="https://blog.csdn.net/gzxb1995/article/details/104334278">计算机系统基础读书笔记摘要</a></p>
+]]></content>
+      <categories>
+        <category>OS</category>
+        <category>date</category>
+      </categories>
+      <tags>
+        <tag>C语言字面量的数据类型</tag>
+        <tag>gcc编译32位程序</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>编译原理(一).词法分析</title>
     <url>/2024/03/29/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E4%B8%80-%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<p>本文介绍了正则表达式</p>
@@ -2400,38 +2443,18 @@ x_2 = -\frac{\theta_0 + \theta_1 x_1}{\theta_2}</script><p>对应以下代码</p
 ]]></content>
   </entry>
   <entry>
-    <title>计算机系统基础NJU</title>
-    <url>/2023/11/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80NJU/</url>
-    <content><![CDATA[<p>本文是对《计算机系统基础》一书中第一章C语言中字面量数据类型认定实验的复现,主要涉及C语言字面量数据类型，gcc编译32位程序两个知识点。重点在于计算机在进行比较时不会先看正负号认定数据类型，而是根据数据绝对值的大小认定。<br><span id="more"></span></p>
-<h2 id="c语言数值常量的类型"><a href="#c语言数值常量的类型" class="headerlink" title="c语言数值常量的类型"></a>c语言数值常量的类型</h2><p>安装<code>gcc</code>多平台编译工具</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pacman -S gcc-multilib    </span><br></pre></td></tr></table></figure>
-<p>安装32位程序所需的<code>libc</code>库</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pacman -S lib32-glibc lib32-gcc-libs</span><br></pre></td></tr></table></figure>
-<p>实验代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="number">-2147483648</span>&gt;<span class="number">2147483647</span>)</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;false!!!&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;true!!!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>实验结果</p>
-<p><img src="https://onedrive.live.com/embed?resid=FBD44A0636A4242E%212635&authkey=%21ANiKrfTOh3bHFkY&width=1914&height=374" width="1914" height="" /></p>
-<p>关键点在于理解计算机先不管符号，根据<code>2127483648</code>确定类型为<code>unsigned int</code>，再加上符号，对<code>0x80000000</code>进行补码转换又得到<code>0x80000000</code>，由于先前已经确定<code>unsigned int</code>类型，所以比较时，以<code>2147483648(0x80000000)</code>和<code>2147483647(0x7fffffff)</code>比较，满足大于条件，输出<code>false</code>。</p>
-<p>参考下文：</p>
-<p><a href="https://blog.csdn.net/gzxb1995/article/details/104334278">计算机系统基础读书笔记摘要</a></p>
-]]></content>
-      <categories>
-        <category>OS</category>
-        <category>date</category>
-      </categories>
-      <tags>
-        <tag>C语言字面量的数据类型</tag>
-        <tag>gcc编译32位程序</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>编译原理</title>
-    <url>/2024/03/29/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</url>
-    <content><![CDATA[<p>本文主要是对编译语言各个部分的导航。</p>
+    <title>mysql连接不上3306端口</title>
+    <url>/2024/09/23/mysql%E8%BF%9E%E6%8E%A5%E4%B8%8D%E4%B8%8A3306%E7%AB%AF%E5%8F%A3/</url>
+    <content><![CDATA[<p>经过多次尝试，发现是安装时配置出现了问题，密码选项哪里不要选推荐的配置，选传统密码选项即可。不然解决连不上3306端口的问题以后还会被禁止登录。</p>
 <span id="more"></span>
-<p>词法分析，语法分析，语义分析，抽象语法树生成</p>
-<p>说明什么的都在这里了：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:dingdingqiuqiu/PL0.git</span><br></pre></td></tr></table></figure>
+<p>可以参考这篇的<a href="https://blog.csdn.net/weixin_47406082/article/details/131867849">配置</a></p>
+<p><strong>注意</strong></p>
+<p>1.自定义安装可以指定sql安装位置。</p>
+<p>2.密码策略选择传统，否则极有可能出现下面两种报错。</p>
+<blockquote>
+<p>启动MySQL报错:ERROR 2003 (HY000): Can’t connect to MySQL server on ‘localhost’ (10061)</p>
+<p>ERROR 1045 (28000): Access denied for user ‘root‘@‘localhost‘ (using password: NO/YES)</p>
+</blockquote>
 ]]></content>
   </entry>
 </search>
