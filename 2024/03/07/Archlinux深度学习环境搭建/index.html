@@ -20,17 +20,22 @@
     var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="本文主要介绍了Archlinux下本地深度学习环境的搭建">
+  <meta name="description" content="本文主要介绍了Archlinux下本地深度学习环境的搭建,搭建新环境时，一定要查下文末的表格，找到对应的tensorflow版本，这个及其容易出错。用服务器的RTX4090都下不来了最新(只能cuda12.4+tensorflow2.17)不能下2.18。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Archlinux深度学习环境搭建">
 <meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/03/07/Archlinux%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
 <meta property="og:site_name" content="DDqiuqiu">
-<meta property="og:description" content="本文主要介绍了Archlinux下本地深度学习环境的搭建">
+<meta property="og:description" content="本文主要介绍了Archlinux下本地深度学习环境的搭建,搭建新环境时，一定要查下文末的表格，找到对应的tensorflow版本，这个及其容易出错。用服务器的RTX4090都下不来了最新(只能cuda12.4+tensorflow2.17)不能下2.18。">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VaYjR4YkxyZmpoR3BxdXUyUkt6cnVBQkVVTF9TSGlJMENkMHhRdVctbnJzU0E_ZT1jVUJCYXA.png">
+<meta property="og:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VWUjlQcWtKZkhoR3ZuWi13d1ZYc29FQkctUkVlcVVzUzVuME5OSER3RjVBRWc_ZT1qVDZtMDI.png">
+<meta property="og:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VlTnVWckprN1FkTmpmQjVoNDR3Zm4wQmFHSDRPNFJrd2NCcFdZSWRfelFHQmc_ZT1iN2I3NjY.png">
+<meta property="og:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VkZHViam9TNzhCT2dsQTliS2dfdWpFQkVjX1dOb0VvUW5FTWpEVEw3SzVHSnc_ZT1xSDVPZXE.png">
 <meta property="article:published_time" content="2024-03-07T11:18:30.000Z">
-<meta property="article:modified_time" content="2024-09-12T15:56:19.029Z">
+<meta property="article:modified_time" content="2024-11-01T00:49:06.682Z">
 <meta property="article:author" content="P4yl04d">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VaYjR4YkxyZmpoR3BxdXUyUkt6cnVBQkVVTF9TSGlJMENkMHhRdVctbnJzU0E_ZT1jVUJCYXA.png">
 
 <link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/03/07/Archlinux%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
 
@@ -218,7 +223,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-09-12 23:56:19" itemprop="dateModified" datetime="2024-09-12T23:56:19+08:00">2024-09-12</time>
+                <time title="Modified: 2024-11-01 08:49:06" itemprop="dateModified" datetime="2024-11-01T08:49:06+08:00">2024-11-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -245,9 +250,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文主要介绍了Archlinux下本地深度学习环境的搭建</p>
+        <p>本文主要介绍了Archlinux下本地深度学习环境的搭建,搭建新环境时，一定要查下文末的表格，找到对应的<code>tensorflow</code>版本，这个及其容易出错。用服务器的RTX4090都下不来了最新(只能cuda12.4+tensorflow2.17)不能下2.18。</p>
 <span id="more"></span>
 <p>参考文章：<a target="_blank" rel="noopener" href="https://xland.cyou/p/arch-linux-configuration-driver-and-software/">Arch Linux 配置 — 驱动和软件安装</a></p>
+<h3 id="带深度学习环境的服务器配置"><a href="#带深度学习环境的服务器配置" class="headerlink" title="带深度学习环境的服务器配置"></a>带深度学习环境的服务器配置</h3><p>查看所有虚拟环境名</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda info --envs</span><br></pre></td></tr></table></figure>
+<p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VaYjR4YkxyZmpoR3BxdXUyUkt6cnVBQkVVTF9TSGlJMENkMHhRdVctbnJzU0E_ZT1jVUJCYXA.png" alt="image-20241101081825095"></p>
+<p>conda初始化</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda init bash</span><br></pre></td></tr></table></figure>
+<p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VWUjlQcWtKZkhoR3ZuWi13d1ZYc29FQkctUkVlcVVzUzVuME5OSER3RjVBRWc_ZT1qVDZtMDI.png" alt="image-20241101081927412"></p>
+<p>重进<code>shell</code>后激活</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda activate tensorflow</span><br></pre></td></tr></table></figure>
+<p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VlTnVWckprN1FkTmpmQjVoNDR3Zm4wQmFHSDRPNFJrd2NCcFdZSWRfelFHQmc_ZT1iN2I3NjY.png" alt="image-20241101082303178"></p>
+<p>即可执行相应深度学习训练任务</p>
+<p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VkZHViam9TNzhCT2dsQTliS2dfdWpFQkVjX1dOb0VvUW5FTWpEVEw3SzVHSnc_ZT1xSDVPZXE.png" alt="image-20241101082648052"></p>
+<h3 id="wsl环境配置"><a href="#wsl环境配置" class="headerlink" title="wsl环境配置"></a>wsl环境配置</h3><p>nvidia-smi:查看当前版本</p>
+<p>cuda</p>
+<p><a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-toolkit-archive">https://developer.nvidia.com/cuda-toolkit-archive</a></p>
+<p>cudnn</p>
+<p><a target="_blank" rel="noopener" href="https://developer.nvidia.com/cudnn-archive">https://developer.nvidia.com/cudnn-archive</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i cudnn-local-repo-ubuntu2204-8.9.7.29_1.0-1_amd64.deb</span><br><span class="line">sudo <span class="built_in">cp</span> /var/cudnn-local-repo-ubuntu2204-8.9.7/cudnn-*-keyring.gpg /usr/share/keyrings/</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get -y install cudnn-cuda-12</span><br></pre></td></tr></table></figure>
+<p>tensorflow(版本对照):</p>
+<p><a target="_blank" rel="noopener" href="https://tensorflow.google.cn/install/source">https://tensorflow.google.cn/install/source</a></p>
 <h3 id="显卡安装"><a href="#显卡安装" class="headerlink" title="显卡安装"></a>显卡安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S nvidia-open-dkms nvidia-settings lib32-nvidia-utils <span class="comment"># 必须安装</span></span><br></pre></td></tr></table></figure>
 <p>安装好驱动后，编辑<code>/etc/mkinitcpio.conf</code>，删去<code>HOOKS</code>那一项中得<code>kms</code>，阻止内核启动时加载<code>nouveau</code>。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># HOOKS=(base udev autodetect modconf keyboard keymap kms consolefont block filesystems fsck)  # 更改前</span><br><span class="line">HOOKS=(base udev autodetect modconf keyboard keymap consolefont block filesystems fsck)  # 更改后</span><br></pre></td></tr></table></figure>
@@ -325,6 +349,7 @@
 <h4 id="退出虚拟环境"><a href="#退出虚拟环境" class="headerlink" title="退出虚拟环境"></a>退出虚拟环境</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deactivate</span><br></pre></td></tr></table></figure>
 <h3 id="tensorflow安装"><a href="#tensorflow安装" class="headerlink" title="tensorflow安装"></a>tensorflow安装</h3><p>以下查询版本对应，务必下载对应版本的cuda和cudnn</p>
 <p><a target="_blank" rel="noopener" href="https://tensorflow.google.cn/install/source">https://tensorflow.google.cn/install/source</a></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_tensorflow</span>():</span><br><span class="line">    <span class="comment"># 打印 TensorFlow 版本</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;TensorFlow version:&quot;</span>, tf.__version__)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 检查是否有可用的 GPU</span></span><br><span class="line">    gpus = tf.config.list_physical_devices(<span class="string">&#x27;GPU&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> gpus:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Num GPUs Available: <span class="subst">&#123;<span class="built_in">len</span>(gpus)&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> i, gpu <span class="keyword">in</span> <span class="built_in">enumerate</span>(gpus):</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;GPU <span class="subst">&#123;i&#125;</span>: <span class="subst">&#123;gpu&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;No GPUs available.&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 打印一些其他配置</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Num CPUs Available:&quot;</span>, tf.config.list_physical_devices(<span class="string">&#x27;CPU&#x27;</span>))</span><br><span class="line">    <span class="comment"># 查看 CUDA 版本</span></span><br><span class="line">    cuda_version = tf.sysconfig.get_build_info()[<span class="string">&#x27;cuda_version&#x27;</span>]</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;CUDA version:&quot;</span>, cuda_version)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 查看 cuDNN 版本</span></span><br><span class="line">    cudnn_version = tf.sysconfig.get_build_info()[<span class="string">&#x27;cudnn_version&#x27;</span>]</span><br><span class="line">    <span class="comment"># 测试一个简单的运算</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        a = tf.constant([[<span class="number">1.0</span>, <span class="number">2.0</span>], [<span class="number">3.0</span>, <span class="number">4.0</span>]])</span><br><span class="line">        b = tf.constant([[<span class="number">5.0</span>, <span class="number">6.0</span>], [<span class="number">7.0</span>, <span class="number">8.0</span>]])</span><br><span class="line">        c = tf.matmul(a, b)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;TensorFlow computation result (a @ b):&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(c.numpy())</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Error during computation:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    test_tensorflow()</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -405,7 +430,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E5%8D%A1%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">显卡安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E6%98%BE%E5%92%8C%E7%8B%AC%E6%98%BE%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">核显和独显动态切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda-amp-amp-cudnn"><span class="nav-number">3.</span> <span class="nav-text">cuda&amp;&amp;cudnn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">4.</span> <span class="nav-text">python虚拟环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA"><span class="nav-number">4.1.</span> <span class="nav-text">虚拟环境创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E6%BF%80%E6%B4%BB"><span class="nav-number">4.2.</span> <span class="nav-text">虚拟环境激活</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">4.3.</span> <span class="nav-text">退出虚拟环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorflow%E5%AE%89%E8%A3%85"><span class="nav-number">5.</span> <span class="nav-text">tensorflow安装</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">带深度学习环境的服务器配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wsl%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">wsl环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E5%8D%A1%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">显卡安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E6%98%BE%E5%92%8C%E7%8B%AC%E6%98%BE%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2"><span class="nav-number">4.</span> <span class="nav-text">核显和独显动态切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda-amp-amp-cudnn"><span class="nav-number">5.</span> <span class="nav-text">cuda&amp;&amp;cudnn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">6.</span> <span class="nav-text">python虚拟环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA"><span class="nav-number">6.1.</span> <span class="nav-text">虚拟环境创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E6%BF%80%E6%B4%BB"><span class="nav-number">6.2.</span> <span class="nav-text">虚拟环境激活</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">6.3.</span> <span class="nav-text">退出虚拟环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorflow%E5%AE%89%E8%A3%85"><span class="nav-number">7.</span> <span class="nav-text">tensorflow安装</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -419,14 +444,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">

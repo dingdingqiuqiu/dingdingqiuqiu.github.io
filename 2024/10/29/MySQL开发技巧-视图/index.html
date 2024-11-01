@@ -20,19 +20,25 @@
     var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="本文记录单表查询常用语句，依据头歌作业书写，对应MySql单表查询部分。">
+  <meta name="description" content="本文基于头歌平台-MySQL开发技巧-视图学习相关知识，并做记录。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQl-单表查询">
-<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/10/28/MySQl-%E5%8D%95%E8%A1%A8%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:title" content="MySQL开发技巧-视图">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/10/29/MySQL%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7-%E8%A7%86%E5%9B%BE/index.html">
 <meta property="og:site_name" content="DDqiuqiu">
-<meta property="og:description" content="本文记录单表查询常用语句，依据头歌作业书写，对应MySql单表查询部分。">
+<meta property="og:description" content="本文基于头歌平台-MySQL开发技巧-视图学习相关知识，并做记录。">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2024-10-28T12:20:17.000Z">
-<meta property="article:modified_time" content="2024-10-29T07:34:21.871Z">
+<meta property="og:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VZMkVKQWM1RjhSUHFHblJ4dmlydjk4QmFDTkNfUHhhWXRrT1hIazB0UktWQ0E_ZT1wVVZkM3k.jpg">
+<meta property="og:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VlWmpvc0hkMk9KT2g1OTVjVmRZendnQllrRHpnNHFqSnZTbi1tTEF6WFJrX1E_ZT1OUXUyMU4.jpg">
+<meta property="og:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VTWWEzSVMtWUN4UGlmYUoxTGJvZURjQjA3ZjBneEpsVmhucFBreWxmVjlYRHc_ZT1BTEFsY0g.jpg">
+<meta property="og:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VVZlk1bkpxc05aS3RFby03VkQzZ0hBQlZ1aGtKbnBsTkwwSEZvT0J4YmtWbVE_ZT1MenBaS0Y.jpg">
+<meta property="og:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VYWWZOclppS1Q1SHJ2WmIyOVFXTWlvQkhUTkstcGhQSkdXMWU2dFhWT29weEE_ZT1oTVExNGQ.jpg">
+<meta property="article:published_time" content="2024-10-29T09:03:44.000Z">
+<meta property="article:modified_time" content="2024-10-29T10:39:02.351Z">
 <meta property="article:author" content="P4yl04d">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VZMkVKQWM1RjhSUHFHblJ4dmlydjk4QmFDTkNfUHhhWXRrT1hIazB0UktWQ0E_ZT1wVVZkM3k.jpg">
 
-<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/10/28/MySQl-%E5%8D%95%E8%A1%A8%E6%9F%A5%E8%AF%A2/">
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/10/29/MySQL%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7-%E8%A7%86%E5%9B%BE/">
 
 
 <script id="page-configurations">
@@ -45,7 +51,7 @@
   };
 </script>
 
-  <title>MySQl-单表查询 | DDqiuqiu</title>
+  <title>MySQL开发技巧-视图 | DDqiuqiu</title>
   
 
 
@@ -300,7 +306,7 @@ mjx-container[display="true"] + br {
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/10/28/MySQl-%E5%8D%95%E8%A1%A8%E6%9F%A5%E8%AF%A2/">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/10/29/MySQL%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7-%E8%A7%86%E5%9B%BE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -313,7 +319,7 @@ mjx-container[display="true"] + br {
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          MySQl-单表查询
+          MySQL开发技巧-视图
         </h1>
 
         <div class="post-meta">
@@ -322,16 +328,10 @@ mjx-container[display="true"] + br {
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2024-10-28 20:20:17" itemprop="dateCreated datePublished" datetime="2024-10-28T20:20:17+08:00">2024-10-28</time>
+              <time title="Created: 2024-10-29 17:03:44 / Modified: 18:39:02" itemprop="dateCreated datePublished" datetime="2024-10-29T17:03:44+08:00">2024-10-29</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-10-29 15:34:21" itemprop="dateModified" datetime="2024-10-29T15:34:21+08:00">2024-10-29</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -353,34 +353,55 @@ mjx-container[display="true"] + br {
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文记录单表查询常用语句，依据头歌作业书写，对应MySql单表查询部分。</p>
+        <p>本文基于头歌平台-MySQL开发技巧-视图学习相关知识，并做记录。</p>
 <span id="more"></span>
-<h2 id="单表查询（3）"><a href="#单表查询（3）" class="headerlink" title="单表查询（3）"></a>单表查询（3）</h2><h3 id="第1关："><a href="#第1关：" class="headerlink" title="第1关："></a>第1关：</h3><p>语法：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 字段名 <span class="keyword">FROM</span> 表名 <span class="keyword">ORDER</span> <span class="keyword">BY</span> 字段名 [<span class="keyword">ASC</span>[<span class="keyword">DESC</span>]];</span><br></pre></td></tr></table></figure>
-<p>ASC 升序关键字<br>DESC 降序关键字</p>
-<p>查询学生成绩表中1班同学的所有信息并以成绩降序的方式显示结果。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">########## 查询<span class="number">1</span>班同学的所有信息以成绩降序的方式显示结果 ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_score <span class="keyword">WHERE</span> CLASS_ID<span class="operator">=</span><span class="number">1</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> score <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="第2关：分组查询"><a href="#第2关：分组查询" class="headerlink" title="第2关：分组查询"></a>第2关：分组查询</h3><p>语法：</p>
-<p>分组查询的关键字是Group By，查询的是每个分组中 首次出现的一条记录。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 字段名 <span class="keyword">FROM</span> 表名 <span class="keyword">GROUP</span> <span class="keyword">BY</span> 字段名;</span><br></pre></td></tr></table></figure>
-<p>在右侧编辑器Begin-End处补充代码，对班级表中的班级名称进行分组查询。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">########## 对班级名称进行分组查询 ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_class <span class="keyword">GROUP</span> <span class="keyword">BY</span> CLASS_ID;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>表名区分大小写</p>
-</blockquote>
-<h3 id="第3关：使用-LIMIT-限制查询结果的数量"><a href="#第3关：使用-LIMIT-限制查询结果的数量" class="headerlink" title="第3关：使用 LIMIT 限制查询结果的数量"></a>第3关：使用 LIMIT 限制查询结果的数量</h3><p>LIMIT的使用<br>在我们查询大量数据结果时，会返回很多条数据，有需要的记录可能就其中的一条或者几条。比如，实现分页功能，若每页显示10条记录，每次查询就只需要10条记录。<br>在MySQL中，提供了LIMIT关键字，用来限制查询结果的数量。</p>
-<p>语法：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 字段名 <span class="keyword">FROM</span> 表名 LIMIT [<span class="keyword">OFFSET</span>,] 记录数;</span><br></pre></td></tr></table></figure>
+<h3 id="第1关：视图"><a href="#第1关：视图" class="headerlink" title="第1关：视图"></a>第1关：视图</h3><h4 id="创建视图"><a href="#创建视图" class="headerlink" title="创建视图"></a>创建视图</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> [<span class="keyword">OR</span> REPLACE] [ALGORITHM <span class="operator">=</span> {UNDEFINED <span class="operator">|</span> <span class="keyword">MERGE</span> <span class="operator">|</span> TEMPTABLE}] <span class="keyword">VIEW</span> view_name [(column_list)] <span class="keyword">AS</span> select_statement [<span class="keyword">WITH</span> [<span class="keyword">CASCADED</span> <span class="operator">|</span> <span class="keyword">LOCAL</span>] <span class="keyword">CHECK</span> OPTION]</span><br></pre></td></tr></table></figure>
 <p>参数说明：</p>
 <ul>
-<li><p>第一个参数，OFFSET，可选参数，表示偏移量，如果不指定默认值为0，表示从查询结果的第一条记录开始，若偏移量为1，则从查询结果中的第二条记录开始，以此类推。</p>
+<li><p>OR REPLACE：表示替换已有视图；</p>
 </li>
-<li><p>第二个参数，记录数，表示返回查询结果的条数。</p>
+<li><p>ALGORITHM：表示视图选择算法，默认算法是UNDEFINED(未定义的)： MySQL 自动选择要使用的算法 ；merge合并；temptable临时表；</p>
+</li>
+<li><p>column_list：可选参数，指定视图中各个属性的名词，默认情况下与select语句中查询的属性相同；</p>
+</li>
+<li><p>select_statement：表示select语句；</p>
+</li>
+<li><p>[WITH [CASCADED | LOCAL] CHECK OPTION]：表示视图在更新时保证在视图的权限范围之内；cascade是默认值，表示更新视图的时候，要满足视图和表的相关条件；local表示更新视图的时候，要满足该视图定义的一个条件即可。</p>
 </li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">########## 查询班级中第<span class="number">2</span>名到第<span class="number">5</span>名的学生信息 ##########</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tb_score <span class="keyword">ORDER</span> <span class="keyword">BY</span> score <span class="keyword">DESC</span> LIMIT <span class="number">1</span>,<span class="number">4</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="创建视图示例"><a href="#创建视图示例" class="headerlink" title="创建视图示例"></a>创建视图示例</h4><p>示例一：</p>
+<p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VZMkVKQWM1RjhSUHFHblJ4dmlydjk4QmFDTkNfUHhhWXRrT1hIazB0UktWQ0E_ZT1wVVZkM3k.jpg" alt="image-20241029172650778"></p>
+<p>示例二：</p>
+<p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VlWmpvc0hkMk9KT2g1OTVjVmRZendnQllrRHpnNHFqSnZTbi1tTEF6WFJrX1E_ZT1OUXUyMU4.jpg" alt="image-20241029173015508"></p>
+<p>以上两个示例可以看出，虽然两个视图的字段名不同，但是，数据是相同的，因为两个视图引用的是同一个表中的数据，并且，as后的创建视图的语句也相同。</p>
+<p>在实际开发中，用户可以根据自己的需求，通过视图的方式，获取基本表中自己需要的数据，这样既能满足用户的需求，也不会破坏基本表原来的结构，从而保证了基本表中数据的安全性。</p>
+<h4 id="操作视图"><a href="#操作视图" class="headerlink" title="操作视图"></a>操作视图</h4><p>视图是逻辑表，也就是说视图不是真实的表，但操作视图和操作普通表的语法是一样的。</p>
+<p>用户可以在视图中无条件地使用<code>select</code>语句查询数据。但使用<code>inser</code>、<code>update</code>和<code>delete</code>操作需要在创建视图时满足以下条件（满足以下条件的视图称为<strong>可更新视图</strong>）：</p>
+<ul>
+<li><p>from子句中只能引用有1个表（真实表或可更新视图）；</p>
+</li>
+<li><p>不能包含 with、distinct、group by、having、limit等子句；</p>
+</li>
+<li><p>不能使用复合查询，即不能使用union、intersect、except等集合操作；</p>
+</li>
+<li><p>select子句的字段列表不能包含聚合、窗口函数、集合返回函数。</p>
+</li>
+</ul>
+<p>我们仍使用之前示例中的数据来操作视图：</p>
+<p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VTWWEzSVMtWUN4UGlmYUoxTGJvZURjQjA3ZjBneEpsVmhucFBreWxmVjlYRHc_ZT1BTEFsY0g.jpg" alt="image-20241029174447708"></p>
 <blockquote>
-<p>注意查询第2-5名学生时偏移量为1</p>
+<p>注意这里因为使用了limit子句，因此创建的视图是不可更新的，我们修改会失败。</p>
+</blockquote>
+<h4 id="删除视图"><a href="#删除视图" class="headerlink" title="删除视图"></a>删除视图</h4><p>若视图不再被需要，我们可以将其删除，且视图的删除并不影响源表中的数据。</p>
+<p>删除视图的 SQL 如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">VIEW</span> view_name;</span><br></pre></td></tr></table></figure>
+<p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VVZlk1bkpxc05aS3RFby03VkQzZ0hBQlZ1aGtKbnBsTkwwSEZvT0J4YmtWbVE_ZT1MenBaS0Y.jpg" alt="image-20241029174644473"></p>
+<h4 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h4><p><img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VYWWZOclppS1Q1SHJ2WmIyOVFXTWlvQkhUTkstcGhQSkdXMWU2dFhWT29weEE_ZT1oTVExNGQ.jpg" alt="image-20241029174720465"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">use School;</span><br><span class="line"></span><br><span class="line">#<span class="number">1.</span>创建单表视图</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> stu_view <span class="keyword">AS</span> </span><br><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    math, </span><br><span class="line">    chinese, </span><br><span class="line">    (math <span class="operator">+</span> chinese) <span class="keyword">AS</span> "math+chinese" </span><br><span class="line"><span class="keyword">FROM</span> </span><br><span class="line">    student;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#<span class="number">2.</span>创建多表视图</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> stu_classes <span class="keyword">AS</span> </span><br><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    student.stu_id, </span><br><span class="line">    student.name, </span><br><span class="line">    stu_info.classes</span><br><span class="line"><span class="keyword">FROM</span> </span><br><span class="line">    student </span><br><span class="line"><span class="keyword">JOIN</span> </span><br><span class="line">    stu_info </span><br><span class="line"><span class="keyword">ON</span> </span><br><span class="line">    student.stu_id <span class="operator">=</span> stu_info.stu_id;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意创建单表视图时，定义一个<code>math+chese</code>之和字段的语句为<code>(math+chese) as "math+chinese"</code>注意这里的别名<strong>需要用引号括起来</strong>，不然包报错的。</p>
+<p>行之和直接加，列之和<code>SUM</code>函数。 </p>
+<p>创建多表视图时，连接操作是<code>JOIN 表名 ON 连接条件</code></p>
 </blockquote>
 
     </div>
@@ -397,12 +418,12 @@ mjx-container[display="true"] + br {
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/10/27/vscode-setting-bk/" rel="prev" title="vscode-setting-bk">
-      <i class="fa fa-chevron-left"></i> vscode-setting-bk
+    <a href="/2024/10/29/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%BD%BF%E7%94%A8%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0%E6%9F%A5%E8%AF%A2/" rel="prev" title="MySQL数据库-使用聚合函数查询">
+      <i class="fa fa-chevron-left"></i> MySQL数据库-使用聚合函数查询
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/10/28/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%20-%20%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E8%A1%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" rel="next" title="MySQl-数据库和表的基本操作">
-      MySQl-数据库和表的基本操作 <i class="fa fa-chevron-right"></i>
+    <a href="/2024/10/31/OS-%E8%BF%9B%E7%A8%8B%E5%AE%9E%E9%AA%8C/" rel="next" title="OS-进程实验">
+      OS-进程实验 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -462,7 +483,7 @@ mjx-container[display="true"] + br {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%A1%A8%E6%9F%A5%E8%AF%A2%EF%BC%883%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">单表查询（3）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC1%E5%85%B3%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">第1关：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC2%E5%85%B3%EF%BC%9A%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.2.</span> <span class="nav-text">第2关：分组查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC3%E5%85%B3%EF%BC%9A%E4%BD%BF%E7%94%A8-LIMIT-%E9%99%90%E5%88%B6%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C%E7%9A%84%E6%95%B0%E9%87%8F"><span class="nav-number">1.3.</span> <span class="nav-text">第3关：使用 LIMIT 限制查询结果的数量</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC1%E5%85%B3%EF%BC%9A%E8%A7%86%E5%9B%BE"><span class="nav-number">1.</span> <span class="nav-text">第1关：视图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE"><span class="nav-number">1.1.</span> <span class="nav-text">创建视图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.2.</span> <span class="nav-text">创建视图示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E8%A7%86%E5%9B%BE"><span class="nav-number">1.3.</span> <span class="nav-text">操作视图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%A7%86%E5%9B%BE"><span class="nav-number">1.4.</span> <span class="nav-text">删除视图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">1.5.</span> <span class="nav-text">应用</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

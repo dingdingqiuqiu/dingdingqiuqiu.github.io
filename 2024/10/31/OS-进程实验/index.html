@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文基于操作系统父子进程关系，进程间信号量机制的同步和模拟临界资源访问三个实验记录进程学习过程中的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OS-进程实验">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/10/31/OS-%E8%BF%9B%E7%A8%8B%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="本文基于操作系统父子进程关系，进程间信号量机制的同步和模拟临界资源访问三个实验记录进程学习过程中的问题。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-10-31T13:19:43.000Z">
+<meta property="article:modified_time" content="2024-10-31T13:26:39.251Z">
+<meta property="article:author" content="P4yl04d">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/10/31/OS-%E8%BF%9B%E7%A8%8B%E5%AE%9E%E9%AA%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>OS-进程实验 | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/10/31/OS-%E8%BF%9B%E7%A8%8B%E5%AE%9E%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OS-进程实验
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2024-10-31 21:19:43 / Modified: 21:26:39" itemprop="dateCreated datePublished" datetime="2024-10-31T21:19:43+08:00">2024-10-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文基于操作系统父子进程关系，进程间信号量机制的同步和模拟临界资源访问三个实验记录进程学习过程中的问题。</p>
+<span id="more"></span>
+<h3 id="模拟临界资源访问"><a href="#模拟临界资源访问" class="headerlink" title="模拟临界资源访问"></a>模拟临界资源访问</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/shm.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MY_SHMKEY 10071800        <span class="comment">// 定义共享内存的键</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MAX_BLOCK 1024            <span class="comment">// 定义最大块数</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MAX_CMD 8                 <span class="comment">// 定义最大命令长度</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 共享内存结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">shmbuf</span> {</span></span><br><span class="line">    <span class="type">int</span> top;                      <span class="comment">// 栈顶指针</span></span><br><span class="line">    <span class="type">int</span> <span class="built_in">stack</span>[MAX_BLOCK];         <span class="comment">// 用于存放块的数组</span></span><br><span class="line">} *shmptr, local;                 <span class="comment">// shmptr 指向共享内存，local 用于本地存储</span></span><br><span class="line"></span><br><span class="line"><span class="type">char</span> cmdbuf[MAX_CMD];             <span class="comment">// 命令缓冲区</span></span><br><span class="line"><span class="type">int</span> shmid, semid;                 <span class="comment">// 共享内存和信号量标识符</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数声明</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">sigend</span><span class="params">(<span class="type">int</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">relblock</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">int</span>  <span class="title function_">getblock</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">showhelp</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">showlist</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">getcmdline</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">    <span class="comment">// 创建共享内存</span></span><br><span class="line">    <span class="keyword">if</span>((shmid=shmget(MY_SHMKEY, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> shmbuf), IPC_CREAT|IPC_EXCL|<span class="number">0666</span>)) &lt; <span class="number">0</span>)</span><br><span class="line">    {<span class="comment">/* 如果共享内存已存在，作为客户端操作 */</span></span><br><span class="line">        shmid=shmget(MY_SHMKEY, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> shmbuf), <span class="number">0666</span>);</span><br><span class="line">        shmptr=(<span class="keyword">struct</span> shmbuf *)shmat(shmid, <span class="number">0</span>, <span class="number">0</span>); <span class="comment">// 连接到共享内存</span></span><br><span class="line">        local.top=<span class="number">-1</span>; <span class="comment">// 初始化本地栈顶指针</span></span><br><span class="line">        showhelp(); <span class="comment">// 显示帮助信息</span></span><br><span class="line">        getcmdline(); <span class="comment">// 获取命令行输入</span></span><br><span class="line">        <span class="keyword">while</span>(<span class="built_in">strcmp</span>(cmdbuf,<span class="string">"end\n"</span>)) <span class="comment">// 循环直到输入"end"</span></span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(cmdbuf,<span class="string">"get\n"</span>))</span><br><span class="line">                getblock(); <span class="comment">// 获取块</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(cmdbuf,<span class="string">"rel\n"</span>))</span><br><span class="line">                relblock(); <span class="comment">// 释放块</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(cmdbuf,<span class="string">"list\n"</span>))</span><br><span class="line">                showlist(); <span class="comment">// 列出所有获取的块</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(cmdbuf,<span class="string">"help\n"</span>))</span><br><span class="line">                showhelp(); <span class="comment">// 显示帮助信息</span></span><br><span class="line">            getcmdline(); <span class="comment">// 再次获取命令行输入</span></span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">else</span>        <span class="comment">/* 作为服务器操作 */</span></span><br><span class="line">    {</span><br><span class="line">        <span class="type">int</span> i;</span><br><span class="line">        shmptr=(<span class="keyword">struct</span> shmbuf *)shmat(shmid, <span class="number">0</span>, <span class="number">0</span>); <span class="comment">// 连接到共享内存</span></span><br><span class="line">        signal(SIGINT, sigend); <span class="comment">// 捕获中断信号</span></span><br><span class="line">        signal(SIGTERM, sigend); <span class="comment">// 捕获终止信号</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"NO OTHER OPERATION but press Ctrl+C or use kill to end.\n"</span>);</span><br><span class="line">        shmptr-&gt;top=MAX_BLOCK<span class="number">-1</span>; <span class="comment">// 初始化栈顶指针</span></span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;MAX_BLOCK; i++)</span><br><span class="line">            shmptr-&gt;<span class="built_in">stack</span>[i]=MAX_BLOCK-i; <span class="comment">// 初始化栈</span></span><br><span class="line">        sleep(<span class="number">1000000</span>);    <span class="comment">/* 永久睡眠，保持服务器运行 */</span></span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 信号处理函数，清理共享内存和信号量</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">sigend</span><span class="params">(<span class="type">int</span> sig)</span></span><br><span class="line">{</span><br><span class="line">    shmctl(shmid, IPC_RMID, <span class="number">0</span>); <span class="comment">// 删除共享内存</span></span><br><span class="line">    semctl(semid, IPC_RMID, <span class="number">0</span>); <span class="comment">// 删除信号量</span></span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 释放块的函数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">relblock</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">if</span>(local.top&lt;<span class="number">0</span>)</span><br><span class="line">    {</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"No block to release!"</span>);</span><br><span class="line">        <span class="keyword">return</span>; <span class="comment">// 没有可释放的块</span></span><br><span class="line">    }</span><br><span class="line">    shmptr-&gt;top++; <span class="comment">// 增加共享内存栈顶指针</span></span><br><span class="line">    shmptr-&gt;<span class="built_in">stack</span>[shmptr-&gt;top]=local.<span class="built_in">stack</span>[local.top--]; <span class="comment">// 释放块到共享内存</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取块的函数</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">getblock</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">if</span>(shmptr-&gt;top&lt;<span class="number">0</span>)</span><br><span class="line">    {</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"No free block to get!"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// 没有可获取的块</span></span><br><span class="line">    }</span><br><span class="line">    local.<span class="built_in">stack</span>[++local.top]=shmptr-&gt;<span class="built_in">stack</span>[shmptr-&gt;top]; <span class="comment">// 获取块到本地</span></span><br><span class="line">    shmptr-&gt;top--; <span class="comment">// 减少共享内存栈顶指针</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 显示帮助信息</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">showhelp</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\navailable COMMAND:\n\n"</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"help\tlist this help\n"</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"list\tlist all gotten block number\n"</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"get\tget a new block\n"</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"rel\trelease the last gotten block\n"</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"end\texit this program\n"</span>);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 列出所有获取的块</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">showlist</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"List all gotten block number:\n"</span>);</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;=local.top; i++)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d\t"</span>, local.<span class="built_in">stack</span>[i]); <span class="comment">// 打印获取的块</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取命令行输入</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">getcmdline</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n?&gt; "</span>);</span><br><span class="line">    fgets(cmdbuf, MAX_CMD<span class="number">-1</span>, <span class="built_in">stdin</span>); <span class="comment">// 读取命令</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/10/29/MySQL%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7-%E8%A7%86%E5%9B%BE/" rel="prev" title="MySQL开发技巧-视图">
+      <i class="fa fa-chevron-left"></i> MySQL开发技巧-视图
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E4%B8%B4%E7%95%8C%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE"><span class="nav-number">1.</span> <span class="nav-text">模拟临界资源访问</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = 'true';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
