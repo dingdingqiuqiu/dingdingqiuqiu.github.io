@@ -7,11 +7,64 @@ categories:
 - 开发环境
 ---
 
-本文主要介绍了Archlinux下本地深度学习环境的搭建
+本文主要介绍了Archlinux下本地深度学习环境的搭建,搭建新环境时，一定要查下文末的表格，找到对应的`tensorflow`版本，这个及其容易出错。用服务器的RTX4090都下不来了最新(只能cuda12.4+tensorflow2.17)不能下2.18。
 
 <!--more-->
 
 参考文章：[Arch Linux 配置 -- 驱动和软件安装](https://xland.cyou/p/arch-linux-configuration-driver-and-software/)
+
+### 带深度学习环境的服务器配置
+
+查看所有虚拟环境名
+
+```bash
+conda info --envs
+```
+
+![image-20241101081825095](https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VaYjR4YkxyZmpoR3BxdXUyUkt6cnVBQkVVTF9TSGlJMENkMHhRdVctbnJzU0E_ZT1jVUJCYXA.png)
+
+conda初始化
+
+```bash
+conda init bash
+```
+
+![image-20241101081927412](https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VWUjlQcWtKZkhoR3ZuWi13d1ZYc29FQkctUkVlcVVzUzVuME5OSER3RjVBRWc_ZT1qVDZtMDI.png)
+
+重进`shell`后激活
+
+```bash
+conda activate tensorflow
+```
+
+![image-20241101082303178](https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VlTnVWckprN1FkTmpmQjVoNDR3Zm4wQmFHSDRPNFJrd2NCcFdZSWRfelFHQmc_ZT1iN2I3NjY.png)
+
+即可执行相应深度学习训练任务
+
+![image-20241101082648052](https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VkZHViam9TNzhCT2dsQTliS2dfdWpFQkVjX1dOb0VvUW5FTWpEVEw3SzVHSnc_ZT1xSDVPZXE.png)
+
+### wsl环境配置
+
+nvidia-smi:查看当前版本
+
+cuda
+
+https://developer.nvidia.com/cuda-toolkit-archive
+
+cudnn
+
+https://developer.nvidia.com/cudnn-archive
+
+```bash
+sudo dpkg -i cudnn-local-repo-ubuntu2204-8.9.7.29_1.0-1_amd64.deb
+sudo cp /var/cudnn-local-repo-ubuntu2204-8.9.7/cudnn-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get -y install cudnn-cuda-12
+```
+
+tensorflow(版本对照):
+
+https://tensorflow.google.cn/install/source
 
 ### 显卡安装
 
@@ -264,3 +317,41 @@ deactivate
 以下查询版本对应，务必下载对应版本的cuda和cudnn
 
 https://tensorflow.google.cn/install/source
+
+```py
+import tensorflow as tf
+def test_tensorflow():
+    # 打印 TensorFlow 版本
+    print("TensorFlow version:", tf.__version__)
+    
+    # 检查是否有可用的 GPU
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        print(f"Num GPUs Available: {len(gpus)}")
+        for i, gpu in enumerate(gpus):
+            print(f"GPU {i}: {gpu}")
+    else:
+        print("No GPUs available.")
+
+    # 打印一些其他配置
+    print("Num CPUs Available:", tf.config.list_physical_devices('CPU'))
+    # 查看 CUDA 版本
+    cuda_version = tf.sysconfig.get_build_info()['cuda_version']
+    print("CUDA version:", cuda_version)
+
+    # 查看 cuDNN 版本
+    cudnn_version = tf.sysconfig.get_build_info()['cudnn_version']
+    # 测试一个简单的运算
+    try:
+        a = tf.constant([[1.0, 2.0], [3.0, 4.0]])
+        b = tf.constant([[5.0, 6.0], [7.0, 8.0]])
+        c = tf.matmul(a, b)
+        print("TensorFlow computation result (a @ b):")
+        print(c.numpy())
+    except Exception as e:
+        print("Error during computation:", e)
+
+if __name__ == "__main__":
+    test_tensorflow()
+```
+

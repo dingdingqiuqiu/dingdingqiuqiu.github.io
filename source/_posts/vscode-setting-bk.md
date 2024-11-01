@@ -24,18 +24,16 @@ categories:
 
 2. 配置环境变量
 
-   <img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1315&height=694" width="1315" height=" " />
+   <img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VVX1YyaE5zX1oxUHJuamtHTzRhaXRZQm0yR2t3LTd0VDBRRUVGYmxGb0Z6U3c_ZT15dHY4VFo.png" width="1315" height=" " />
 
 3. `vscode`下载`c/cpp`插件
 
 4. `ctrl-shift-p`，选中第一个`C/C++:Edit Configurations(UI)`
 
-   <img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1579&height=796" width="1579" height=" " />
+   <img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VZMW9rb0NxdjB4RXYwY3AyVVlVNG80QkpvRlVTTDExZ1ZXc2pHdWdNd3lxRFE_ZT1hVHhaM0k.png" width="1579" height=" " />5.配置信息如下：
 
-   5.配置信息如下：
+   <img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VUZ2ZHT0VCVXZ0Q21KMVdHZm5NUS0wQm1DQUxiY0tEdHVkdng0M2xvcHBDV2c_ZT0xTHhVTXU.png" width="1579" height=" " />
 
-   <img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1390&height=2584" width="1390" height=" " />
-   
    其实不用改啥东西了，几乎所有选项在配置好环境变量后vscode都能自动识别，这里主要做对照用。关键是要下载`mingw64`,不要下载任何其他乱七八糟的。
 
 ### VSCode_编辑配置
@@ -106,11 +104,11 @@ categories:
 }
 ```
 
-### 2.keybinding.jsoon
+#### 2.keybinding.json
 
 `ctrl-shift-p`,打开箭头指的这个`Preferences:Open Keyboard Shortcuts(JSON)`即可。
 
-<img src="https://1drv.ms/f/c/fbd44a0636a4242e/UgQuJKQ2BkrUIID7aQAAAAAAANiKrfTOh3bHFkY?width=1092&height=614" width="1092" height=" " />
+<img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VSeHJLS0gtX210T29DcnFUX1NYUW0wQlhoLVNLOW5XSVdFZ0lwS1QyWTg3TlE_ZT1MV0dMTnI.png" width="1092" height=" " />
 
 配置为：
 

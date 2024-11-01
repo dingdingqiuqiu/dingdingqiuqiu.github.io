@@ -17,7 +17,7 @@ categories:
 plt.rcParams['font.sans-serif']=['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 ```
-但会出现下面报错<img src="https://1drv.ms/i/s!Ai4kpDYGStT7mwrYiq30zod2xxZG?embed=1&width=958&height=865" width="958" height=" " />
+但会出现下面报错<img src="https://dlink.host/1drv/aHR0cHM6Ly8xZHJ2Lm1zL2kvYy9mYmQ0NGEwNjM2YTQyNDJlL0VTNGtwRFlHU3RRZ2dQdUtEUUFBQUFBQjJWNm54V242VUx4Q1BQQW80RjFBelE_ZT0zd3A2blc.png" width="958" height=" " />
 
 ### 解决方法
 
