@@ -756,7 +756,7 @@ show create table borrow;
 
 ## 实验八 视图
 
-### 第一关：建立基于单表的视图，在视图中插入、删除和修改记录
+### 第1关：建立基于单表的视图，在视图中插入、删除和修改记录
 
 #### 应用
 
@@ -858,5 +858,67 @@ WHERE gyxm = '王强' AND xsrq = '2015-6-3' AND name = '刘海东';
  #代码结束
 select * from xsdhytj;
 select * from xsdgytj;
+```
+
+## 实验十 用户管理和授权
+
+### 第1关：建立用户并授权
+
+#### 应用
+
+本关任务：建立用户admin,在所有机器上均可登录
+对所有数据库的数据表都有权限
+
+```sql
+ 
+ #代码开始
+ #建立用户
+create user admin@'%' identified by '123456';
+ #用户授权
+grant all on *.* to admin;
+ 
+ #测试
+ select host,user,Update_priv,Alter_priv from mysql.user where user='admin' ;
+ 
+```
+
+### 第2关：建立用户,授权其对数据表的查询
+
+建立用户user1,密码为888888，在本机(127.0.0.1)登录，对province数据库的jdxx数据表有查询权限
+
+```sql
+use province
+ #代码开始
+ #建立用户
+CREATE USER 'user1'@'127.0.0.1' IDENTIFIED BY '888888';
+ 
+ 
+ #用户授权
+ GRANT SELECT ON province.jdxx TO 'user1'@'127.0.0.1';
+ 
+ 
+ #代码结束
+select host,db,table_name,Table_priv   from mysql.tables_priv  where  user='user1';
+```
+
+### 第3关：建立用户，有部分权限
+
+本关任务：建立用户user2，在本机（127.0.0.1)登录，密码为666666.对数据库province库的所有数据表有所有的权限，对数据库library库的book表有查询的权限
+
+```sql
+ 
+#代码开始
+#建立用户
+CREATE USER 'user2'@'127.0.0.1' IDENTIFIED BY '666666';
+ 
+#用户授权
+GRANT ALL PRIVILEGES ON province.* TO 'user2'@'127.0.0.1';
+GRANT SELECT ON library.book TO 'user2'@'127.0.0.1';
+ 
+ 
+ 
+ #代码结束
+select host,db,user,Delete_priv,Index_priv from mysql.db where user='user2' ;
+select host,db,table_name,Table_priv   from mysql.tables_priv  where  user='user2';
 ```
 
