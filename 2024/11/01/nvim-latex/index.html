@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dingdingqiuqiu.github.io.git","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="由于计网研讨报告的需要，安装laxtex环境写下论文。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nvim+latex">
+<meta property="og:url" content="https://dingdingqiuqiu.github.io.git/2024/11/01/nvim-latex/index.html">
+<meta property="og:site_name" content="DDqiuqiu">
+<meta property="og:description" content="由于计网研讨报告的需要，安装laxtex环境写下论文。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-11-01T08:43:31.000Z">
+<meta property="article:modified_time" content="2024-11-02T15:29:32.018Z">
+<meta property="article:author" content="P4yl04d">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://dingdingqiuqiu.github.io.git/2024/11/01/nvim-latex/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>nvim+latex | DDqiuqiu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DDqiuqiu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://dingdingqiuqiu.github.io.git/2024/11/01/nvim-latex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="P4yl04d">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DDqiuqiu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          nvim+latex
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-11-01 16:43:31" itemprop="dateCreated datePublished" datetime="2024-11-01T16:43:31+08:00">2024-11-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-11-02 23:29:32" itemprop="dateModified" datetime="2024-11-02T23:29:32+08:00">2024-11-02</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>由于计网研讨报告的需要，安装laxtex环境写下论文。</p>
+<span id="more"></span>
+<blockquote>
+<p>环境: WSL2-ubuntu22</p>
+<p>nvim: 10.1</p>
+</blockquote>
+<h3 id="ubuntu安装Latex"><a href="#ubuntu安装Latex" class="headerlink" title="ubuntu安装Latex"></a>ubuntu安装Latex</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install texlive-full</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Pregenerating ConTeXt MarkIV format. This may take some time…</p>
+<p>会遇到上面这句话，一直按<enter>即可跳过，bug</enter></p>
+</blockquote>
+<h3 id="安装字体"><a href="#安装字体" class="headerlink" title="安装字体"></a>安装字体</h3><blockquote>
+<p>这一步可以跳过，如果没有字体缺失的话</p>
+<p>前两步没用，最后两个命令大大有用</p>
+<p>缺字体可以像机器学习画图时那样安装</p>
+</blockquote>
+<p>安装推荐字体</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install texlive-fonts-recommended</span><br></pre></td></tr></table></figure>
+<p>安装扩展字体</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install texlive-fonts-extra</span><br></pre></td></tr></table></figure>
+<p>更新字体映射</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo updmap-sys</span><br></pre></td></tr></table></figure>
+<p>下面两个命令解决了问题</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install fonts-noto-cjk</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install fonts-wqy-microhei fonts-wqy-zenhei</span><br></pre></td></tr></table></figure>
+<h3 id="windows安装Sioyekpdf阅读器"><a href="#windows安装Sioyekpdf阅读器" class="headerlink" title="windows安装Sioyekpdf阅读器"></a>windows安装<code>Sioyek</code>pdf阅读器</h3><p>sioyek官网：<a target="_blank" rel="noopener" href="https://sioyek.info">https://sioyek.info</a></p>
+<p>下载安装完成后将路径加入<code>Windows</code>中的<code>Path</code>环境变量。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D:\1soft\sioyek-release-windows\sioyek-release-windows</span><br></pre></td></tr></table></figure>
+<p>补充：应将其当加入<code>.zshrc</code>中的环境变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/mnt/d/1soft/sioyek-release-windows/sioyek-release-windows</span><br></pre></td></tr></table></figure>
+<h3 id="vim导入相关插件"><a href="#vim导入相关插件" class="headerlink" title="vim导入相关插件"></a>vim导入相关插件</h3><p><code>lazy-vim</code>插件管理器放插件的地方放入下列内容即可</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">-- latex配置</span></span><br><span class="line">{</span><br><span class="line">  <span class="string">"lervag/vimtex"</span>,</span><br><span class="line">  lazy = <span class="literal">false</span>,  <span class="comment">-- we don't want to lazy load VimTeX</span></span><br><span class="line">  <span class="comment">-- tag = "v2.15", -- uncomment to pin to a specific release</span></span><br><span class="line">  init = <span class="function"><span class="keyword">function</span><span class="params">()</span></span></span><br><span class="line">    vim.g.tex_flavor = <span class="string">'latex'</span></span><br><span class="line">    <span class="comment">-- 报错筛选</span></span><br><span class="line">    vim.g.vimtex_quickfix_open_on_warning = <span class="number">0</span></span><br><span class="line">    vim.g.vimtex_quickfix_ignore_filters = {</span><br><span class="line">      <span class="string">'Underfull \\hbox'</span>,</span><br><span class="line">      <span class="string">'Overfull \\hbox'</span>,</span><br><span class="line">      <span class="string">'LaTeX Warning: .\\+ float specifier changed to'</span>,</span><br><span class="line">      <span class="string">'LaTeX hooks Warning'</span>,</span><br><span class="line">      <span class="string">'Package siunitx Warning: Detected the "physics" package:'</span>,</span><br><span class="line">      <span class="string">'Package hyperref Warning: Token not allowed in a PDF string'</span>,</span><br><span class="line">      <span class="string">'Package fontspec Warning: Font "FandolSong-Regular" does not contain requested Script "CJK".'</span>,</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">-- vim.g.vimtex_view_general_viewer = 'zathura'</span></span><br><span class="line">    <span class="comment">-- vim.g.vimtex_view_method = 'zathura'</span></span><br><span class="line">    <span class="comment">-- vim.g.vimtex_view_enable_reverse_search = 1</span></span><br><span class="line">    <span class="comment">-- vim.g.vimtex_compiler_progname = 'nvr'</span></span><br><span class="line">    <span class="comment">-- VimTeX configuration goes here, e.g.</span></span><br><span class="line">    vim.g.vimtex_view_method = <span class="string">'sioyek'</span></span><br><span class="line">    vim.g.vimtex_view_sioyek_exe = <span class="string">'sioyek.exe'</span></span><br><span class="line">    <span class="comment">-- vim.g.vimtex_callback_progpath = 'wsl nvim'</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">},</span><br><span class="line">  <span class="string">"SirVer/ultisnips"</span>,</span><br><span class="line">  <span class="string">"honza/vim-snippets"</span>,</span><br><span class="line">  <span class="string">"sillybun/zyt-snippet"</span>,</span><br></pre></td></tr></table></figure>
+<h3 id="latexmkrc编译选项设置"><a href="#latexmkrc编译选项设置" class="headerlink" title="latexmkrc编译选项设置"></a>latexmkrc编译选项设置</h3><p>位置在<code>~/.latexmkrc</code>,键入以下内容即可。(以下内容主要针对中文大学学位毕业论文，请按需更改)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># .latexmkrc</span><br><span class="line"># 其他自定义选项</span><br><span class="line">$pdflatex = 'xelatex';</span><br><span class="line">$synctex = 1;</span><br></pre></td></tr></table></figure>
+<h3 id="跳转功能"><a href="#跳转功能" class="headerlink" title="跳转功能"></a>跳转功能</h3><p>正向跳转：</p>
+<p>在<code>vim</code>中按住\再按l再按v,跳转pdf</p>
+<p>反向跳转：</p>
+<p>在pdf中选中内容，跳转tex代码对应位置</p>
+<blockquote>
+<p>注意tex文件不要放mnt下</p>
+</blockquote>
+<h3 id="跳转功能实现-nvim-remote"><a href="#跳转功能实现-nvim-remote" class="headerlink" title="跳转功能实现(nvim-remote)"></a>跳转功能实现(nvim-remote)</h3><blockquote>
+<p>该方法较为繁琐，为初级探索时使用，在此仅做记录，不推荐使用。请跳转下文<code>VimtexInverseSearch</code>方法实现</p>
+</blockquote>
+<p>更改<code>/home/ubuntu22/.local/share/nvim/lazy/vimtex/autoload/vimtex/view</code>下的<code>sioyek.vim</code>文件中的<code>s:viewer._start(outfile)</code>函数，使得反向搜索使用我们自定义的脚本:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>! <span class="title">s:viewer</span>.<span class="title">_start</span><span class="params">(outfile)</span></span> dict abort <span class="string">" {{{1</span></span><br><span class="line"><span class="string">  "</span> Update file <span class="built_in">path</span> <span class="keyword">for</span> Windows+cygwin</span><br><span class="line">  let l:file = executable(<span class="string">'cygpath'</span>)</span><br><span class="line">        \ ? join(vimtex#jobs#capture(<span class="string">'cygpath -aw "'</span> . a:outfile . <span class="string">'"'</span>), <span class="string">''</span>)</span><br><span class="line">        \ : a:outfile</span><br><span class="line"><span class="string">"</span></span><br><span class="line"><span class="string">"</span>   let l:cmd  = g:vimtex_view_sioyek_exe</span><br><span class="line"><span class="string">"         \ . ' ' . g:vimtex_view_sioyek_options</span></span><br><span class="line"><span class="string">"</span>         \ . <span class="string">' --inverse-search "'</span> . s:inverse_search_cmd</span><br><span class="line"><span class="string">"         \ .   ' -c \"VimtexInverseSearch %2 ''%1''\""</span><span class="string">'</span></span><br><span class="line"><span class="string">"         \ . '</span> <span class="comment">--forward-search-file ' . vimtex#util#shellescape(expand('%:p'))</span></span><br><span class="line"><span class="string">"         \ . ' --forward-search-line ' . line('.')</span></span><br><span class="line"><span class="string">"</span>         \ . <span class="string">' '</span> . vimtex#util#shellescape(l:file)</span><br><span class="line"><span class="string">"   "</span> 添加这一行来打印执行的命令</span><br><span class="line"><span class="string">"   echom "</span>Executing command: <span class="string">" . l:cmd</span></span><br><span class="line"><span class="string">"</span>   <span class="string">" Start the view process</span></span><br><span class="line"><span class="string">"</span>   <span class="string">" NB: Use vimtex#jobs#start to ensure it runs in the background</span></span><br><span class="line"><span class="string">"</span>   let <span class="built_in">self</span>.job = vimtex#jobs#start(l:cmd, {<span class="string">'detached'</span>: v:<span class="literal">true</span>})</span><br><span class="line"><span class="string">"   let self.cmd_start = l:cmd</span></span><br><span class="line"><span class="string">"</span> endfunction</span><br><span class="line"><span class="string">" 更改</span></span><br><span class="line"><span class="string">  let l:cmd  = g:vimtex_view_sioyek_exe</span></span><br><span class="line"><span class="string">        \ . ' ' . g:vimtex_view_sioyek_options</span></span><br><span class="line"><span class="string">        \ . ' --inverse-search "</span><span class="string">' . '</span>NvimJump.bat %<span class="number">2</span> <span class="string">'</span></span><br><span class="line"><span class="string">        \ . vimtex#util#shellescape(expand('</span>%:p<span class="string">')) . '</span> %<span class="number">1</span><span class="string">"'</span></span><br><span class="line"><span class="string">        \ . ' --forward-search-file ' . vimtex#util#shellescape(expand('%:p'))</span></span><br><span class="line"><span class="string">        \ . ' --forward-search-line ' . line('.')</span></span><br><span class="line"><span class="string">        \ . ' ' . vimtex#util#shellescape(l:file)</span></span><br><span class="line"><span class="string">  "</span> 添加这一行来打印执行的命令</span><br><span class="line">  <span class="string">" echom "</span>Executing command: <span class="string">" . l:cmd</span></span><br><span class="line"><span class="string">  "</span> Start the view process</span><br><span class="line">  <span class="string">" NB: Use vimtex#jobs#start to ensure it runs in the background</span></span><br><span class="line"><span class="string">  let self.job = vimtex#jobs#start(l:cmd, {'detached': v:true})</span></span><br><span class="line"><span class="string">  let self.cmd_start = l:cmd</span></span><br><span class="line"><span class="string">endfunction</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+<p>我们这里在反向搜索时调用<code>Windows</code>下的<code>NvimJump.bat</code>来进行exe与wsl中的nvim的通信。<code>NvimJump.bat</code>内容如下:</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="comment">rem 获取参数</span></span><br><span class="line"><span class="built_in">set</span> LINE=%<span class="number">1</span></span><br><span class="line"><span class="built_in">set</span> FILE=%<span class="number">2</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">rem 使用 WSL 执行 nvr 命令</span></span><br><span class="line">wsl  ~/.local/bin/nvr --servername localhost:<span class="number">6197</span> +<span class="variable">%LINE%</span> <span class="variable">%FILE%</span></span><br></pre></td></tr></table></figure>
+<p>我们将<code>NvimJump.bat</code>添加进环境变量<code>path</code>,使得任何一个exe都可以与之通信。</p>
+<p>在<code>bat</code>文件中，我们使用了<code>nvr</code>命令，该命令可以从终端控制一个nvim进程,安装过程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install neovim-remote</span><br></pre></td></tr></table></figure>
+<p>我们在启动nvim时指定端口号为上文端口号即可,如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvim --listen localhost:6197 Bachelor-template.tex</span><br></pre></td></tr></table></figure>
+<h3 id="跳转功能实现-VimtexInverseSearch"><a href="#跳转功能实现-VimtexInverseSearch" class="headerlink" title="跳转功能实现(VimtexInverseSearch)"></a>跳转功能实现(VimtexInverseSearch)</h3><p>我们查看<code>vimtex/autoload/vimtex/view</code>源码：发现<code>BUG</code>实际上是由于<code>Windows</code>下的<code>%1</code>参数无法被正确解析引起的，只要令</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let l:cmd  = g:vimtex_view_sioyek_exe</span><br><span class="line">      \ . <span class="string">' '</span> . g:vimtex_view_sioyek_options</span><br><span class="line">      \ . <span class="string">' --inverse-search "'</span> . s:inverse_search_cmd</span><br><span class="line">      \ .   <span class="string">' -c \"VimtexInverseSearch %2 '</span><span class="string">'%1'</span><span class="string">'\""'</span></span><br><span class="line">      \ . <span class="string">' --forward-search-file '</span> . vimtex#util#shellescape(expand(<span class="string">'%:p'</span>))</span><br><span class="line">      \ . <span class="string">' --forward-search-line '</span> . line(<span class="string">'.'</span>)</span><br><span class="line">      \ . <span class="string">' '</span> . vimtex#util#shellescape(l:file)</span><br></pre></td></tr></table></figure>
+<p>为下面这些部分，实际上还是能继续使用<code>VimtexInverseSearch</code>功能的，注意这里错误的<code>%1</code>不能删除，如果删除，<code>%2</code>自动变成<code>%1</code>,我们将<code>%1</code>直接拼接在正确命令最后，不影响正确结果。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let l:cmd  = g:vimtex_view_sioyek_exe</span><br><span class="line">      \ . <span class="string">' '</span> . g:vimtex_view_sioyek_options</span><br><span class="line">      \ . <span class="string">' --inverse-search "'</span> . <span class="string">'wsl nvim'</span></span><br><span class="line">      \ . <span class="string">' --headless -c \"VimtexInverseSearch %2 '</span> . vimtex#util#shellescape(expand(<span class="string">'%:p'</span>)) . <span class="string">'\" %1"'</span> </span><br><span class="line">      \ . <span class="string">' --forward-search-file '</span> . vimtex#util#shellescape(expand(<span class="string">'%:p'</span>))</span><br><span class="line">      \ . <span class="string">' --forward-search-line '</span> . line(<span class="string">'.'</span>)</span><br><span class="line">      \ . <span class="string">' '</span> . vimtex#util#shellescape(l:file)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/10/31/OS-%E8%BF%9B%E7%A8%8B%E5%AE%9E%E9%AA%8C/" rel="prev" title="OS-进程实验">
+      <i class="fa fa-chevron-left"></i> OS-进程实验
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/11/14/%E8%AE%A1%E7%BD%91-%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/" rel="next" title="计网-知识整理">
+      计网-知识整理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ubuntu%E5%AE%89%E8%A3%85Latex"><span class="nav-number">1.</span> <span class="nav-text">ubuntu安装Latex</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%AD%97%E4%BD%93"><span class="nav-number">2.</span> <span class="nav-text">安装字体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windows%E5%AE%89%E8%A3%85Sioyekpdf%E9%98%85%E8%AF%BB%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">windows安装Sioyekpdf阅读器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3%E6%8F%92%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">vim导入相关插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#latexmkrc%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9%E8%AE%BE%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">latexmkrc编译选项设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%BD%AC%E5%8A%9F%E8%83%BD"><span class="nav-number">6.</span> <span class="nav-text">跳转功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%BD%AC%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0-nvim-remote"><span class="nav-number">7.</span> <span class="nav-text">跳转功能实现(nvim-remote)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%BD%AC%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0-VimtexInverseSearch"><span class="nav-number">8.</span> <span class="nav-text">跳转功能实现(VimtexInverseSearch)</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">P4yl04d</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">P4yl04d</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = 'true';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
